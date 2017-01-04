@@ -1,18 +1,27 @@
 import Ember from 'ember';
-import Resolver from './resolver';
+import Resolver from 'ember-resolver';
 import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
 
-let App;
+var App;
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
 App = Ember.Application.extend({
-  modulePrefix: config.modulePrefix,
+  modulePrefix   : config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver
+  Resolver       : Resolver.extend({
+    resolve(routeName) {
+      return this._super(routeName);
+    }
+  }),
+  ready: function() {
+    console.log('app ready');
+  }
 });
 
-loadInitializers(App, config.modulePrefix);
+console.log('before load initializers');
 
+loadInitializers(App, config.modulePrefix);
+console.log('after load initializers');
 export default App;

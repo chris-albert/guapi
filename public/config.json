@@ -1,0 +1,281 @@
+{
+  "display": "TicketFly",
+  "authSelector": {
+    "name": "authSelector",
+    "display": "Auth Header",
+    "type": "select",
+    "description": "Token will be your logged in token from top nav 'Log In', Client Credentials will be credentials from top nav 'Settings'.",
+    "values": [
+      {
+        "name": "token",
+        "display": "Token"
+      },
+      {
+        "name": "clientCredentials",
+        "display": "Client Credentials"
+      }
+    ]
+  },
+  "endpoints": {
+    "getToken": {
+      "display": "Get Token",
+      "path": "/account/oauth2/token",
+      "method": "POST",
+      "dataLocation": "form",
+      "fields": [
+        {
+          "name": "username",
+          "display": "Username"
+        },
+        {
+          "name": "password",
+          "display": "Password",
+          "type": "password"
+        },
+        {
+          "name": "grant_type",
+          "type": "hidden",
+          "value": "password"
+        }
+      ]
+    },
+    "checkToken": {
+      "display": "Check Token",
+      "path": "/account/oauth2/check_token",
+      "method": "POST",
+      "dataLocation": "query",
+      "fields": [
+        {
+          "name": "token",
+          "display": "Token"
+        }
+      ]
+    },
+    "me": {
+      "display": "Me",
+      "path": "/account/v2/users/me",
+      "method": "GET",
+      "auth": "oauth2",
+      "oauth2Header": "token",
+      "dataLocation": "query",
+      "fields": [],
+      "response": {
+        "jsonRoot": "user"
+      }
+    },
+    "clientDetails": {
+      "display": "Client Details",
+      "path": "/account/v1/clients",
+      "type": "rest",
+      "auth": "oauth2",
+      "oauth2Header": "token",
+      "dataLocation": "json",
+      "viewLink": "id",
+      "restId": "clientId",
+      "listable": [],
+      "viewable": [
+        {
+          "name": "clientId",
+          "display": "Client Id"
+        }
+      ],
+      "editable": [
+        {
+          "name": "appName",
+          "display": "App Name",
+          "value": "asdf"
+        },
+        {
+          "name": "clientId",
+          "display": "Client Id",
+          "value": "Generated on Server",
+          "disabled": true
+        },
+        {
+          "name": "clientSecret",
+          "display": "Client Secret",
+          "value": "Generated on Server",
+          "disabled": true
+        },
+        {
+          "name": "clientAuthorities",
+          "outName": "authorities",
+          "display": "Authorities",
+          "value": [
+            "ROLE_TFLY_CLIENT"
+          ],
+          "type": "select",
+          "multi": true,
+          "tags": true,
+          "values": [
+            {
+              "display": "Ticketfly Client",
+              "name": "ROLE_TFLY_CLIENT"
+            }
+          ]
+        },
+        {
+          "name": "grantTypes",
+          "outName": "authorizedGrantTypes",
+          "display": "Grant Types",
+          "value": [
+            "authorization_code",
+            "refresh_token"
+          ],
+          "type": "select",
+          "multi": true,
+          "values": [
+            {
+              "display": "Authorization Code",
+              "name": "authorization_code"
+            },
+            {
+              "display": "Refresh Token",
+              "name": "refresh_token"
+            },
+            {
+              "display": "Client Credentials",
+              "name": "client_credentials"
+            },
+            {
+              "display": "Password",
+              "name": "password"
+            },
+            {
+              "display": "Implicit",
+              "name": "implicit"
+            },
+            {
+              "display": "Assertion",
+              "name": "assertion"
+            }
+          ]
+        },
+        {
+          "name": "scopes",
+          "outName": "scope",
+          "display": "Scopes",
+          "value": [
+            "profile:read"
+          ],
+          "type": "select",
+          "multi": true,
+          "tags": true,
+          "values": [
+            {
+              "display": "Profile Read",
+              "name": "profile:read"
+            },
+            {
+              "display": "Account Read",
+              "name": "account:read"
+            }
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "appName",
+          "display": "App Name",
+          "value": "asdf"
+        },
+        {
+          "name": "clientId",
+          "display": "Client Id",
+          "value": "Generated on Server",
+          "disabled": true
+        },
+        {
+          "name": "clientSecret",
+          "display": "Client Secret",
+          "value": "Generated on Server",
+          "disabled": true
+        },
+        {
+          "name": "authorities",
+          "display": "Authorities",
+          "value": [
+            "ROLE_TFLY_CLIENT"
+          ],
+          "type": "select",
+          "multi": true,
+          "tags": true,
+          "values": [
+            {
+              "display": "Ticketfly Client",
+              "name": "ROLE_TFLY_CLIENT"
+            }
+          ]
+        },
+        {
+          "name": "authorizedGrantTypes",
+          "display": "Grant Types",
+          "value": [
+            "authorization_code",
+            "refresh_token"
+          ],
+          "type": "select",
+          "multi": true,
+          "values": [
+            {
+              "display": "Authorization Code",
+              "name": "authorization_code"
+            },
+            {
+              "display": "Refresh Token",
+              "name": "refresh_token"
+            },
+            {
+              "display": "Client Credentials",
+              "name": "client_credentials"
+            },
+            {
+              "display": "Password",
+              "name": "password"
+            },
+            {
+              "display": "Implicit",
+              "name": "implicit"
+            },
+            {
+              "display": "Assertion",
+              "name": "assertion"
+            }
+          ]
+        },
+        {
+          "name": "scope",
+          "display": "Scopes",
+          "value": [
+            "profile:read"
+          ],
+          "type": "select",
+          "multi": true,
+          "tags": true,
+          "values": [
+            {
+              "display": "Profile Read",
+              "name": "profile:read"
+            },
+            {
+              "display": "Account Read",
+              "name": "account:read"
+            }
+          ]
+        }
+      ],
+      "response": {
+        "jsonRoot": "clients",
+        "columns": [
+          "id",
+          "appName",
+          "clientId",
+          "clientSecret",
+          "clientAuthorities",
+          "grantTypes",
+          "scopes"
+        ]
+      }
+    }
+  }
+}

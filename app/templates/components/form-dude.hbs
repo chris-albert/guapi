@@ -1,0 +1,15 @@
+<form class="form-horizontal">
+  {{#if showOauth2}}
+    {{form-element field=authSelector}}
+      <hr class="auth-separator"/>
+  {{/if}}
+  {{#each fields as |field|}}
+    {{form-element field=field}}
+  {{/each}}
+    <div>
+        <button class="btn btn-default" {{action "submit"}}>{{submitName}}</button>
+      {{#each formActions as |actionItem|}}
+        {{#link-to actionItem.link tagName="button" classNames="btn btn-default pull-right"}}{{actionItem.display}}{{/link-to}}
+      {{/each}}
+    </div>
+</form>

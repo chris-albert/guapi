@@ -1,12 +1,37 @@
 import Ember from 'ember';
 import config from './config/environment';
+import _ from 'lodash/lodash';
+import apiConfig from './helpers/api-config';
 
-const Router = Ember.Router.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
+var Router = Ember.Router.extend({
+  location: config.locationType
 });
 
-Router.map(function() {
+var restEndpoints = ['list', 'create', 'edit', 'view'];
+
+function setupRest(router, route, routeDef) {
+  router.route(route, function () {
+    _.map(restEndpoints, restEndpoint => {
+      console.debug('Adding rest route [' + route + '.' + restEndpoint + ']');
+      if (restEndpoint === 'edit' || restEndpoint === 'view') {
+        this.route(restEndpoint, {path: '/' + restEndpoint + '/:id'});
+      } else {
+        this.route(restEndpoint);
+      }
+    });
+  });
+}
+
+Router.map(function () {
+  _.map(apiConfig.defaultConfig().get('endpoints'), (routeDef, route) => {
+    console.debug('Adding route [' + route + ']');
+    if (routeDef.type === 'rest') {
+      setupRest(this, route, routeDef);
+    } else {
+      this.route(route);
+    }
+  });
+  console.debug('Routes created');
 });
 
 export default Router;

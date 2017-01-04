@@ -1,0 +1,12 @@
+<ul class="nav nav-tabs">
+  {{#each tabs as |tab|}}
+    {{#link-to tab.route tagName="li" class="top-nav"}}
+        <a href={{tab.route}}>{{tab.display}}</a>
+    {{/link-to}}
+  {{/each}}
+</ul>
+<div class="panel panel-default tab-container">
+    <div class="panel-body">
+      {{yield}}
+    </div>
+</div>

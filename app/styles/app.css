@@ -1,0 +1,66 @@
+.top-nav {
+  cursor: pointer;
+}
+
+.dropdown-form {
+  margin: 10px;
+  width: 400px
+}
+
+.application-container {
+  padding-top: 60px;
+}
+
+.tab-container {
+  border-top: none;
+  border-radius: 0;
+}
+
+.gen-form-panel {
+  margin-top: 30px;
+}
+
+.gen-form-panel-body {
+  overflow: auto;
+}
+
+.login-error {
+  margin: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.response-error {
+  padding-left: 5px;
+}
+
+.details-well {
+  margin-top: 10px;
+}
+
+.panel-body pre,
+.panel-body p {
+  margin: 0;
+}
+
+.request-details-header {
+  cursor: pointer;
+}
+
+.auth-separator {
+  margin-top: 0;
+}
+
+.form-element-description {
+  margin-bottom: 0;
+}
+
+.response-out-type {
+  cursor: pointer;
+}
+
+.response-actions {
+  display: inline;
+  white-space: nowrap;
+}
+

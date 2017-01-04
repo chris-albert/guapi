@@ -1,0 +1,23 @@
+{{#form-dude
+  fields=model.fields
+  submitName=submitDisplay
+  showOauth2=showOauth2Select
+  authSelector=authSelector
+  onSubmit=(action "submit")
+  onActionClick=(action "actionClick")
+  formActions=model.additionalActions
+}}
+{{/form-dude}}
+
+{{#form-response
+  response=response
+  config=model.response
+  routeName=model.routeName
+  formConfig=model
+}}
+{{/form-response}}
+
+{{#request-details
+  request=request
+}}
+{{/request-details}}

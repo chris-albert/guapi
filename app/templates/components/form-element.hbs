@@ -1,0 +1,29 @@
+{{#if visible}}
+    <label for="{{field.name}}"
+           class="{{displayClass}} control-label">{{field.display}}</label>
+{{/if}}
+<div class="{{inputClass}}">
+  {{#if isText}}
+    {{input value=field.value
+    type=field.type
+    class="form-control"
+    placeholder=field.placeholder
+    disabled=field.disabled}}
+  {{else if isSelect}}
+    {{select-2-custom
+    content=field.values
+    value=field.value
+    multiple=field.multi
+    searchable=field.searchable
+    tags=field.tags
+    }}
+  {{/if}}
+</div>
+{{#if field.description}}
+  <div>
+      <div class="{{displayClass}}"></div>
+      <div class="{{inputClass}}">
+          <span class="help-block form-element-description">{{field.description}}</span>
+      </div>
+  </div>
+{{/if}}

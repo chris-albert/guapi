@@ -1,0 +1,12 @@
+<div class="panel panel-default">
+    <div class="panel-heading request-details-header" {{action "detailsClick"}}>
+        Request <span class="caret"></span>
+    </div>
+    <div class="panel-body {{detailsClass}}">
+      {{#if requestSet}}
+          <pre class="prettyprint">{{request}}</pre>
+      {{else}}
+          <p>There has been no request</p>
+      {{/if}}
+    </div>
+</div>
