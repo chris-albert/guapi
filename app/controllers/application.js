@@ -9,13 +9,23 @@ export default Ember.Controller.extend({
     this._super();
   },
   getRoutes() {
-    return _.map(apiConfig.defaultConfig().get('endpoints'), this.eachEndpoint);
-  },
-  eachEndpoint(routeDef, route) {
-    return {
-      display: routeDef.display,
-      name   : route,
-      route  : route
-    };
+    return _.map(apiConfig.defaultConfig().get('projects'), project => {
+      const e = _.map(project.endpoints, endpoint => {
+        const routeDef = apiConfig.defaultConfig().get('endpoints.' + endpoint);
+        const route = project.name + '.' + endpoint;
+        return {
+          display: routeDef.display,
+          name   : endpoint,
+          route  : route,
+          project: project.name
+        };
+      });
+      return {
+        display: project.display,
+        name   : project.name,
+        route  : project.name,
+        tabs   : e
+      };
+    });
   }
 });

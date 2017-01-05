@@ -23,13 +23,20 @@ function setupRest(router, route, routeDef) {
 }
 
 Router.map(function () {
-  _.map(apiConfig.defaultConfig().get('endpoints'), (routeDef, route) => {
-    console.debug('Adding route [' + route + ']');
-    if (routeDef.type === 'rest') {
-      setupRest(this, route, routeDef);
-    } else {
-      this.route(route);
-    }
+  _.map(apiConfig.defaultConfig().get('projects'), project => {
+    console.debug('Adding project route ['+ project.name + ']');
+    this.route(project.name, function() {
+      _.map(project.endpoints, endpoint => {
+        const routeDef = apiConfig.defaultConfig().get('endpoints.' + endpoint);
+        const route = endpoint;
+        console.debug('Adding route [' + route + ']');
+        if (routeDef.type === 'rest') {
+          setupRest(this, route, routeDef);
+        } else {
+          this.route(route);
+        }
+      });
+    });
   });
   console.debug('Routes created');
 });

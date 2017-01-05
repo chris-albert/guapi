@@ -9,11 +9,15 @@
 
 .application-container {
   padding-top: 60px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .tab-container {
   border-top: none;
   border-radius: 0;
+  padding: 10px 10px 0 10px;
+  margin-bottom: 10px;
 }
 
 .gen-form-panel {
