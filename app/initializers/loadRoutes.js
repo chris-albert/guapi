@@ -47,7 +47,7 @@ export default {
     }));
   },
   registerComponents(routeDef, route, application) {
-    console.debug('Registering route [' + route + ']');
+
     if (routeDef.type === 'rest') {
       this.registerRest(routeDef, route, application);
     } else {
@@ -96,6 +96,7 @@ export default {
     this.registerAll(this.genRouteDef(routeDef, 'viewable'), route + '.view', application, 'GET');
   },
   registerAll(routeDef, route, application, method) {
+    console.debug('Registering route [' + route + ']');
     this.registerRoute(routeDef, route, application, method, this.restModel);
     this.registerController(routeDef, route, application);
   },
@@ -148,7 +149,7 @@ export default {
     if(route.endsWith('.list')) {
       return [{
         'display': 'Create',
-        'link': _.head(n) + '.create'
+        'link': _.initial(n).join('.') + '.create'
       }];
     }
     return [];

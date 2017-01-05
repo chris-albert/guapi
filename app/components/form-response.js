@@ -97,43 +97,46 @@ export default Ember.Component.extend({
   }),
   responseValues  : onChange(function () {
     return this.getJson(json => {
-      var self    = this,
-          columns = this.get('config.columns');
-      if (columns) {
-        return _.map(json, item => {
-          var values = _.map(columns, column => {
-            if (item[column]) {
-              return {
-                link      : function () {
-                  if (false) {
-                    return _.head(self.get('routeName').split('.')) + '.view';
-                  }
-                }(),
-                queryParam: function () {
-                  return item['clientId'];
-                }(),
-                text      : item[column]
-              };
-            }
-          });
-          return {
-            id    : item[this.get('formConfig.restId')],
-            values: values
-          };
-        });
-      }
+      const splitRouteInital = _.initial(this.get('routeName').split('.')).join('.');
       return _.map(json, item => {
+        const columns = this.getColumns(item);
+        var actions = null;
+        if(this.get('isRest')) {
+          actions = {
+            edit: {
+              link: splitRouteInital + '.edit'
+            },
+            view: {
+              link: splitRouteInital + '.view'
+            }
+          };
+        }
         return {
-          id    : item[this.get('formConfig.restId')],
-          values: _.map(item, v => {
-            return {
-              text: v
-            };
-          })
+          id     : item[this.get('formConfig.restId')],
+          values : columns,
+          actions: actions
         };
       });
     });
   }),
+  getColumns(item) {
+    const columns = this.get('config.columns');
+    if(columns) {
+      return _.map(columns, column => {
+        if (item[column]) {
+          return {
+            text: item[column]
+          };
+        }
+      });
+    } else {
+      return _.map(item, v => {
+        return {
+          text: v
+        };
+      });
+    }
+  },
   getJson(func) {
     var json   = this.get('response.xhr.responseJSON'),
         config = this.get('config');
