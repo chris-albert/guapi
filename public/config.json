@@ -16,6 +16,24 @@
       }
     ]
   },
+  "projects": [
+    {
+      "name": "account",
+      "display": "Account",
+      "endpoints": [
+        "getToken",
+        "checkToken"
+      ]
+    },
+    {
+      "name": "permissions",
+      "display": "Permissions",
+      "endpoints": [
+        "me",
+        "clientDetails"
+      ]
+    }
+  ],
   "endpoints": {
     "getToken": {
       "display": "Get Token",

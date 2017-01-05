@@ -7,18 +7,47 @@ export default {
   name       : 'load-dynamic-routes',
   restActions: ['list', 'create', 'edit', 'view'],
   initialize(application) {
-    var self = this;
     application.deferReadiness();
     apiConfig.getConfig('/config.json').then(api => {
-      _.map(api.get('endpoints'), function (routeDef, route) {
-        self.registerComponents(routeDef, route, application);
-      });
-      self.setUpInjections(application,api);
+      this.handleApi(api,application);
       application.advanceReadiness();
     });
   },
+  handleApi(api, application) {
+    _.map(api.get('projects'),project => {
+      var tabs = {};
+      _.map(project.endpoints, endpoint => {
+        const routeDef = api.get('endpoints.' + endpoint);
+        const route = project.name + '.' + endpoint;
+        tabs[route] = routeDef;
+        this.registerComponents(routeDef, route, application);
+      });
+      this.registerProject(project, tabs, application);
+      this.setUpInjections(application,api);
+    });
+  },
+  registerProject(project, tabs, application) {
+    console.debug('Registering index route [' + project.name + ']');
+    application.register('route:' + project.name, Ember.Route.extend({
+      renderTemplate() {
+        this.render('components/tab-component');
+      },
+      model() {
+        return _.map(tabs, (tab, key) => {
+          return {
+            display: tab.display,
+            route: key
+          };
+        });
+      },
+      activate() {
+        console.debug('Entering route [' + project.name + ']');
+        this._super();
+      }
+    }));
+  },
   registerComponents(routeDef, route, application) {
-    console.debug('Registering route [' + route + ']');
+
     if (routeDef.type === 'rest') {
       this.registerRest(routeDef, route, application);
     } else {
@@ -67,6 +96,7 @@ export default {
     this.registerAll(this.genRouteDef(routeDef, 'viewable'), route + '.view', application, 'GET');
   },
   registerAll(routeDef, route, application, method) {
+    console.debug('Registering route [' + route + ']');
     this.registerRoute(routeDef, route, application, method, this.restModel);
     this.registerController(routeDef, route, application);
   },
@@ -119,7 +149,7 @@ export default {
     if(route.endsWith('.list')) {
       return [{
         'display': 'Create',
-        'link': _.head(n) + '.create'
+        'link': _.initial(n).join('.') + '.create'
       }];
     }
     return [];
