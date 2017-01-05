@@ -16,12 +16,10 @@ App = Ember.Application.extend({
     }
   }),
   ready: function() {
-    console.log('app ready');
+    console.debug('Application is ready');
   }
 });
 
-console.log('before load initializers');
 
 loadInitializers(App, config.modulePrefix);
-console.log('after load initializers');
 export default App;

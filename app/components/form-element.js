@@ -17,5 +17,10 @@ export default Ember.Component.extend({
   }),
   isSelect: Ember.computed('field.type',function() {
     return this.get('field.type') === 'select';
-  })
+  }),
+  actions: {
+    selectChange() {
+      console.log('select change');
+    }
+  }
 });

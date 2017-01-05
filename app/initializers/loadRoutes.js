@@ -36,7 +36,7 @@ export default {
         return _.map(tabs, (tab, key) => {
           return {
             display: tab.display,
-            route: key
+            route  : key
           };
         });
       },
@@ -75,7 +75,11 @@ export default {
         this.render('components/rest-container');
       },
       redirect() {
-        this.transitionTo(route + '.list');
+        //this.transitionTo(route + '.list');
+      },
+      activate() {
+        console.debug('Entering route [' + route + ']');
+        this._super();
       }
     }));
   },
