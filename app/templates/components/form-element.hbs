@@ -10,20 +10,14 @@
     placeholder=field.placeholder
     disabled=field.disabled}}
   {{else if isSelect}}
-    {{select-2-custom
-    content=field.values
-    value=field.value
-    multiple=field.multi
-    searchable=field.searchable
-    tags=field.tags
-    }}
-  {{/if}}
+    {{form-select field=field}}
+{{/if}}
 </div>
 {{#if field.description}}
-  <div>
-      <div class="{{displayClass}}"></div>
-      <div class="{{inputClass}}">
-          <span class="help-block form-element-description">{{field.description}}</span>
-      </div>
-  </div>
+<div>
+    <div class="{{displayClass}}"></div>
+    <div class="{{inputClass}}">
+        <span class="help-block form-element-description">{{field.description}}</span>
+    </div>
+</div>
 {{/if}}

@@ -217,7 +217,7 @@
           ],
           "type": "select",
           "multi": true,
-          "tags": true,
+          "addable": true,
           "values": [
             {
               "display": "Ticketfly Client",
@@ -269,7 +269,7 @@
           ],
           "type": "select",
           "multi": true,
-          "tags": true,
+          "addable": true,
           "values": [
             {
               "display": "Profile Read",

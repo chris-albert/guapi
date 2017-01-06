@@ -17,12 +17,15 @@ export default Ember.Component.extend({
           val = [];
         }
       }
-      this.$().select2('val', val);
+      console.log(val);
+      //this.$().select2();
+      //this.$().select2('val', val);
     }
   }),
   didInsertElement : function () {
     var self = this,
         el   = this.$();
+    console.log('heyou')
     el.select2({
       data                   : this.buildData(),
       multiple               : this.get('multiple'),
