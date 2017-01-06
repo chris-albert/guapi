@@ -1,11 +1,21 @@
-{{#power-select-multiple
+{{#if isMulti}}
+  {{#power-select-multiple
+    options=names
+    renderInPlace=true
+    selected=selected
+    onchange=(action "onChange")
+    onkeydown=(action "handleKeydown")
+    searchField="display"
+    as |option select|}}
+    {{option.display}}
+  {{/power-select-multiple}}
+{{else}}
+  {{#power-select
   options=names
   renderInPlace=true
   selected=selected
-  onchange=(action "onChange")
-  onkeydown=(action "handleKeydown")
-  oninput=(action "onInput")
   searchField="display"
   as |option select|}}
-  {{option.display}}
-{{/power-select-multiple}}
+    {{option.display}}
+  {{/power-select}}
+{{/if}}
