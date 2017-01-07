@@ -1,0 +1,30 @@
+{
+  "name": "permissions",
+  "display": "Permissions",
+  "endpoints": {
+    "createEmployee": {
+      "display": "Create Employee",
+      "path": "/aggregator/v1/employees",
+      "method": "POST",
+      "dataLocation": "form",
+      "fields": [
+        {
+          "name": "id",
+          "display": "Id"
+        },
+        {
+          "name": "firstName",
+          "display": "First Name"
+        },
+        {
+          "name": "lastName",
+          "display": "Last Name"
+        },
+        {
+          "name": "email",
+          "display": "Email"
+        }
+      ]
+    }
+  }
+}
