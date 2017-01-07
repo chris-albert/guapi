@@ -16,6 +16,9 @@ export default Ember.Component.extend({
   actions     : {
     detailsClick() {
       this.set('collapsed', !this.get('collapsed'));
+    },
+    refresh() {
+      console.log('refresh');
     }
   }
 });

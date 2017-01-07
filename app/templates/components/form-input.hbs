@@ -4,10 +4,13 @@
       <hr class="auth-separator"/>
   {{/if}}
   {{#each fields as |field|}}
-    {{form-element field=field}}
+    {{form-element
+      field=field
+      onInputChange=(action "formChange")
+    }}
   {{/each}}
     <div>
-        <button class="btn btn-default" {{action "submit"}}>{{submitName}}</button>
+        <button class="btn btn-primary" {{action "submit"}}>{{submitName}}</button>
       {{#each formActions as |actionItem|}}
         {{#link-to actionItem.link tagName="button" classNames="btn btn-default pull-right"}}{{actionItem.display}}{{/link-to}}
       {{/each}}

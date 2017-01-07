@@ -1,6 +1,8 @@
 {
   "name": "permissions",
   "display": "Permissions",
+  "baseUrl": "https://authorization-{{env}}.ticketfly.com",
+  "env": "dev16",
   "endpoints": {
     "createEmployee": {
       "display": "Create Employee",
@@ -23,6 +25,43 @@
         {
           "name": "email",
           "display": "Email"
+        }
+      ]
+    },
+    "getEmployee": {
+      "display": "Get Employee",
+      "path": "/aggregator/v1/employees/{{id}}",
+      "method": "GET",
+      "auth": "oauth2",
+      "oauth2Header": "token",
+      "dataLocation": "form",
+      "fields": [
+        {
+          "name": "id",
+          "display": "Id"
+        },
+        {
+          "name": "domainOrgId",
+          "display": "Domain Org Id"
+        },
+        {
+          "name": "clientOrgId",
+          "display": "Client Org Id"
+        }
+      ],
+      "response": {
+        "jsonRoot": "employee"
+      }
+    },
+    "getRole": {
+      "display": "Get Role",
+      "path": "/v2/roles",
+      "method": "GET",
+      "dataLocation": "form",
+      "fields": [
+        {
+          "name": "id",
+          "display": "Id"
         }
       ]
     }

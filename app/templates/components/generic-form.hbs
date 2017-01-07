@@ -1,13 +1,19 @@
-{{#form-dude
+{{#form-input
   fields=model.fields
   submitName=submitDisplay
   showOauth2=showOauth2Select
   authSelector=authSelector
   onSubmit=(action "submit")
   onActionClick=(action "actionClick")
+  onFormChange=(action "formChange")
   formActions=model.additionalActions
 }}
-{{/form-dude}}
+{{/form-input}}
+
+{{#request-details
+request=request
+}}
+{{/request-details}}
 
 {{#form-response
   response=response
@@ -17,7 +23,4 @@
 }}
 {{/form-response}}
 
-{{#request-details
-  request=request
-}}
-{{/request-details}}
+
