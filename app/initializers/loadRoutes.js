@@ -14,15 +14,14 @@ export default {
     });
   },
   handleApi(api, application) {
-    _.map(api.get('projects'),project => {
+    _.map(api.get('projectDefs'), projectDef => {
       var tabs = {};
-      _.map(project.endpoints, endpoint => {
-        const routeDef = api.get('endpoints.' + endpoint);
-        const route = project.name + '.' + endpoint;
-        tabs[route] = routeDef;
-        this.registerComponents(routeDef, route, application);
+      _.map(projectDef.endpoints, (endpointDef, endpoint) => {
+        var route = projectDef.name + '.' + endpoint;
+        tabs[route] = endpointDef;
+        this.registerComponents(endpointDef, route, application);
       });
-      this.registerProject(project, tabs, application);
+      this.registerProject(projectDef, tabs, application);
       this.setUpInjections(application,api);
     });
   },

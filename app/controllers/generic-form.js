@@ -42,12 +42,11 @@ export default Ember.Controller.extend({
       contentType: this.getContentType(),
       headers    : this.getAuth()
     };
-    console.log(data);
-    //$.ajax(_.merge(options, {
-    //  complete: function (xhr) {
-    //    complete(xhr, options);
-    //  }
-    //}));
+    $.ajax(_.merge(options, {
+      complete: function (xhr) {
+        complete(xhr, options);
+      }
+    }));
   },
   getData() {
     var data = this.allFilteredFields();

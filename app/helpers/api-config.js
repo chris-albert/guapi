@@ -2,7 +2,18 @@ import Ember from 'ember';
 import _ from 'lodash/lodash';
 
 var apiDefinition = Ember.Object.extend({
-
+  projectDefs: [],
+  load() {
+    return Promise.all(_.map(this.get('projects'), project => {
+      return $.ajax({
+        url: '/projects/' + project + '.json',
+        dataType: 'json'
+      }).then(p => this.addProject(p));
+    })).then(() => {return this;});
+  },
+  addProject(projectJson) {
+    this.set('projectDefs',this.get('projectDefs').concat(projectJson));
+  }
 });
 
 /**
@@ -20,19 +31,13 @@ export default Ember.Object.extend({
       } else {
         $.ajax({
           url     : url,
-          dataType: 'json',
-          complete(xhr) {
-            var json = xhr.responseJSON;
-            if (xhr.status === 200 && json) {
-              var api = self.buildApiDef(json);
-              self.putCache(url, api);
-              resolve(api);
-            } else {
-              console.log('error in fetching config from [' + url + ']');
-              reject();
-            }
-          }
-        });
+          dataType: 'json'
+        }).then(json => {
+          return self.buildApiDef(json);
+        }).then(api => {
+          self.putCache(url, api);
+          resolve(api);
+        }).catch(reject);
       }
     });
   },
@@ -44,7 +49,8 @@ export default Ember.Object.extend({
     throw new Error('Cant get cache since its empty');
   },
   buildApiDef(json) {
-    return apiDefinition.create(json);
+    const api = apiDefinition.create(json);
+    return api.load();
   },
   putCache(url, config) {
     this.set('cache.' + this.keyifyUrl(url), config);
