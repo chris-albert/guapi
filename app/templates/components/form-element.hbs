@@ -5,10 +5,12 @@
 <div class="{{inputClass}}">
   {{#if isText}}
     {{input value=field.value
-    type=field.type
-    class="form-control"
-    placeholder=field.placeholder
-    disabled=field.disabled}}
+      type=field.type
+      class="form-control"
+      placeholder=field.placeholder
+      disabled=field.disabled
+      key-up="onChange"
+    }}
   {{else if isSelect}}
     {{form-select field=field}}
 {{/if}}

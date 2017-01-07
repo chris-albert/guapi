@@ -12,6 +12,15 @@ var apiDefinition = Ember.Object.extend({
     })).then(() => {return this;});
   },
   addProject(projectJson) {
+    _.map(projectJson.endpoints, endpoint => {
+      var obj = {};
+      _.map(projectJson, (value,projectKey) => {
+        if(projectKey !== 'endpoints') {
+          obj[projectKey] = value;
+        }
+      });
+      endpoint.project = obj;
+    })
     this.set('projectDefs',this.get('projectDefs').concat(projectJson));
   }
 });

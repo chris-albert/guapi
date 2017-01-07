@@ -21,6 +21,9 @@ export default Ember.Component.extend({
   actions: {
     selectChange() {
       console.log('select change');
+    },
+    onChange() {
+      this.get('onInputChange')();
     }
   }
 });

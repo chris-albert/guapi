@@ -12,6 +12,9 @@ export default Ember.Controller.extend({
     },
     actionClick(action) {
       console.log(action);
+    },
+    formChange() {
+      this.updateRequest();
     }
   },
   oauth2ShowSwitch: false,
@@ -27,26 +30,32 @@ export default Ember.Controller.extend({
   setResponseAndRequest(xhr, request) {
     this.set('response', {});
     this.set('response.xhr', xhr);
-    this.setRequest(request);
   },
   setRequest(request) {
     this.set('request', JSON.stringify(request, null, 2));
   },
   rawApi(method, complete, url) {
-    var data = this.getData();
-    url      = url || this.getUrl(data);
-    var options = {
-      url        : url,
-      method     : method,
-      data       : data,
-      contentType: this.getContentType(),
-      headers    : this.getAuth()
-    };
+    var options = this.getRequestOptions(method, url);
     $.ajax(_.merge(options, {
       complete: function (xhr) {
         complete(xhr, options);
       }
     }));
+  },
+  getRequestOptions(method, url) {
+    var data = this.getData();
+    url      = url || this.getUrl(data);
+    return {
+      url        : url,
+      method     : this.get('model.method'),
+      data       : data,
+      contentType: this.getContentType(),
+      headers    : this.getAuth()
+    };
+  },
+  updateRequest() {
+    const options = this.getRequestOptions(this.get('model.method'));
+    this.setRequest(options);
   },
   getData() {
     var data = this.allFilteredFields();
@@ -70,24 +79,32 @@ export default Ember.Controller.extend({
   hasToken() {
     return this.get('settings').getStore('token');
   },
-  getUrl() {
+  getUrl(data) {
+    var d = _.clone(data);
     var url = this.getBaseUrl();
     //TODO: This needs to be generalized too, maybe like /endpoint/{{id}}, using
     //handlebars templates to replace the var
     if (_.endsWith(this.get('model.routeName'), '.view') || _.endsWith(this.get('model.routeName'), '.edit')) {
       url = url + '/' + this.allFilteredFields()[this.get('model.restId')];
     }
-    return url;
+    //this is here until we move env somewhere
+    d.env = this.get('model.project.env');
+    return Handlebars.compile(url)(d);
   },
   getBaseUrl() {
-    return this.get('settings').getStore('baseUrl') + this.get('model.path');
+    var projectBaseUrl = this.get('model.project.baseUrl');
+    if(projectBaseUrl) {
+      return projectBaseUrl + this.get('model.path');
+    } else {
+      return this.get('settings').getStore('baseUrl') + this.get('model.path');
+    }
   },
   getAuth() {
     if (this.get('isOauth2')) {
       switch (_.head(this.get('authSelector.value'))) {
         case 'token':
           return {
-            'Authorization': 'bearer ' + this.get('settings').getStore('token')
+            'Authorization': 'Bearer ' + this.get('settings').getStore('token')
           };
       }
     }
@@ -103,6 +120,7 @@ export default Ember.Controller.extend({
       this.apiCall();
     }
     this.preloadData();
+    this.updateRequest();
   }),
   submitDisplay: Ember.computed('model.submitDisplay',function() {
     var name = this.get('model.submitDisplay');
