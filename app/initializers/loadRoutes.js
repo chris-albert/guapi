@@ -71,10 +71,17 @@ export default {
   registerRestRoute(routeDef, route, application) {
     application.register('route:' + route, Ember.Route.extend({
       renderTemplate() {
-        this.render('components/rest-container');
+        //this.render('components/rest-container');
+        this.render('components/tab-component');
       },
-      redirect() {
-        //this.transitionTo(route + '.list');
+      model() {
+        var tabs = ['list','create','view','edit'];
+        return _.map(tabs, tab => {
+          return {
+            display: tab.capitalize(),
+            route: route + '.' + tab
+          };
+        });
       },
       activate() {
         console.debug('Entering route [' + route + ']');
