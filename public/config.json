@@ -20,6 +20,55 @@
     "account",
     "permissions"
   ],
+  "settings": [
+    {
+      "name": "env",
+      "display": "Environment"
+    }
+  ],
+  "loginForm": {
+    "baseUrl": "https://{{settings.env}}.ticketfly.com",
+    "path": "/account/oauth2/token",
+    "method": "POST",
+    "dataLocation": "form",
+    "auth": {
+      "type": "basic",
+      "user": "clientId",
+      "pass": "clientSecret"
+    },
+    "settingFields": [
+      "clientId",
+      "clientSecret"
+    ],
+    "dataFilter": [
+      "clientId",
+      "clientSecret"
+    ],
+    "fields": [
+      {
+        "name": "username",
+        "display": "Username"
+      },
+      {
+        "name": "password",
+        "display": "Password",
+        "type": "password"
+      },
+      {
+        "name": "clientId",
+        "display": "Client Id"
+      },
+      {
+        "name": "clientSecret",
+        "display": "Client Secret"
+      },
+      {
+        "name": "grant_type",
+        "type": "hidden",
+        "value": "password"
+      }
+    ]
+  },
   "endpoints": {
     "getToken": {
       "display": "Get Token",

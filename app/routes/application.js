@@ -8,6 +8,6 @@ export default Ember.Route.extend({
     }
   },
   model() {
-    return this.store.findRecord('local-store',1);
+    //return this.store.findRecord('local-store',1);
   }
 });

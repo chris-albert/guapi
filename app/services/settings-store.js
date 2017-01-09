@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
+import apiConfig from '../helpers/api-config';
 
 export default Ember.Service.extend({
   setStore(key, value) {
@@ -15,8 +16,14 @@ export default Ember.Service.extend({
     if (s) {
       return s;
     }
-    this.setStore(key, def);
     return def;
+  },
+  getStoreObj() {
+    var obj = {};
+    _.map(apiConfig.defaultConfig().get('settings'), setting => {
+      obj[setting.name] = this.getStore(setting.name);
+    })
+    return obj;
   },
   removeStore(key) {
     localStorage.removeItem(key);

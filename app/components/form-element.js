@@ -23,7 +23,10 @@ export default Ember.Component.extend({
       console.log('select change');
     },
     onChange() {
-      this.get('onInputChange')();
+      const onChangeFunc = this.get('onInputChange');
+      if(_.isFunction(onChangeFunc)) {
+        onChangeFunc();
+      }
     }
   }
 });

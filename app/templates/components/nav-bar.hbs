@@ -13,13 +13,17 @@
                     <li>
                         <form class="form dropdown-form">
                           {{#each fields as |field|}}
-                            {{form-element field=field displayClass="" inputClass=""}}
+                            {{form-element
+                              field=field
+                              displayClass=""
+                              inputClass=""
+                            }}
                           {{/each}}
                         </form>
                     </li>
                 {{/bs-dropdown-menu}}
               {{/bs-dropdown}}
-                <p class="navbar-text">Base Url [{{environment}}]</p>
+                <p class="navbar-text">{{settingsQuickView}}</p>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               {{#bs-dropdown tagName="li"}}
