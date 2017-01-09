@@ -4,28 +4,21 @@ import apiConfig from '../helpers/api-config';
 
 export default Ember.Component.extend({
   fields      : Ember.computed('', function () {
-    return [
-      {
-        'name'   : 'baseUrl',
-        'display': 'Base Url',
-        'value'  : this.get('settings').getStore('baseUrl','http://localhost:8085')
-      },
-      {
-        'name'   : 'clientId',
-        'display': 'Client Id',
-        'value'  : this.get('settings').getStore('clientId','LJlrqchx4HL42uvnJQgEsD')
-      },
-      {
-        'name'   : 'clientSecret',
-        'display': 'Client Secret',
-        'value'  : this.get('settings').getStore('clientSecret','ShLWiJN7qRTdJz3R4qympEyTHM5ZK0jwzq0SDq4D')
-      }
-    ];
+    var settings = apiConfig.defaultConfig().get('settings');
+    _.map(settings, setting => {
+      setting.value = this.get('settings').getStore(setting.name);
+    });
+    return settings;
   }),
-  environment : Ember.computed('fields.0.value', function () {
-    var parser  = document.createElement('a');
-    parser.href = this.get('fields.0.value');
-    return parser.hostname;
+  environment : Ember.computed('fields.@each.value', function () {
+    return this.get('fields.0.value');
+  }),
+  settingsQuickView: Ember.computed('formChanged', function() {
+    var view = '';
+    _.map(this.get('fields'), field => {
+      view = view + field.display + ' [' + field.value + '] ';
+    });
+    return view;
   }),
   token: Ember.computed('tokenChanged',function() {
     return this.get('settings').getStore('token');
@@ -59,11 +52,21 @@ export default Ember.Component.extend({
     //this.get('settings').setStoreObj(this.getSettings());
     //TODO: This needs to be added to the config
     //Cloning here so the login form and the getToken form don't have their values binded
-    this.set('loginFields', _.cloneDeep(this.getLoginForm().fields));
+    //this.set('loginFields', _.cloneDeep(this.getLoginForm().fields));
     this._super();
   },
+  loginFields: Ember.computed('', function() {
+    const settingFields = apiConfig.defaultConfig().get('loginForm.settingFields');
+    var loginFields = apiConfig.defaultConfig().get('loginForm.fields')
+    _.map(loginFields, field => {
+      if(_.includes(settingFields, field.name)) {
+        field.value = this.get('settings').getStore(field.name);
+      }
+    });
+    return loginFields;
+  }),
   getLoginForm() {
-    return apiConfig.defaultConfig().get('endpoints.getToken');
+    return apiConfig.defaultConfig().get('loginForm');
   },
   didInsertElement() {
     var self = this;
@@ -76,6 +79,7 @@ export default Ember.Component.extend({
     //So we save settings every time we close the settings dropdown
     this.$('.dont-close').on('focusout', e => {
       this.storeSettings(this.getSettings());
+      this.set('formChanged', this.get('formChanged') + 'i');
     });
     this.$('.login-button').on('click', e => {
       self.login();
@@ -90,18 +94,19 @@ export default Ember.Component.extend({
   },
   login() {
     this.set('loginError', null);
-    $.ajax({
-      url    : this.get('settings').getStore('baseUrl') + this.getLoginForm().path,
+    const data = this.flattenFields(this.get('loginFields'));
+    const authHeader = this.getAuthHeader(data)
+    this.handleSettingFields(data);
+    const options = {
+      url    : this.getUrl(),
       method : this.getLoginForm().method,
-      data   : this.flattenFields(this.get('loginFields')),
-      headers: this.buildAuthHeader(
-        this.get('settings').getStore('clientId'),
-        this.get('settings').getStore('clientSecret')
-      )
-    }).then(d => {
+      data   : this.dataFilter(data),
+      headers: authHeader
+    };
+    $.ajax(options).then(d => {
       if(d.access_token) {
         this.get('settings').setStore('token', d.access_token);
-        this.set('tokenChanged', !this.get('tokenChanged'));
+        this.toggleProperty('tokenChanged');
       }
     }, e => {
       var error;
@@ -113,10 +118,35 @@ export default Ember.Component.extend({
       this.set('loginError', error);
     });
   },
+  dataFilter(data) {
+    _.map(apiConfig.defaultConfig().get('loginForm.dataFilter'), dataFilter => {
+      delete data[dataFilter];
+    });
+    return data;
+  },
+  handleSettingFields(data) {
+    _.map(apiConfig.defaultConfig().get('loginForm.settingFields'), settingField => {
+      this.get('settings').setStore(settingField, data[settingField]);
+    });
+  },
   flattenFields(fields) {
     return _.object(_.map(fields, field => {
       return [field.name, field.value];
     }));
+  },
+  getUrl() {
+    const obj = {
+      settings: this.get('settings').getStoreObj()
+    };
+    return Handlebars.compile(this.getLoginForm().baseUrl)(obj) +
+        this.getLoginForm().path;
+  },
+  getAuthHeader(data) {
+    if(apiConfig.defaultConfig().get('loginForm.auth.type') === 'basic') {
+      const userKey = apiConfig.defaultConfig().get('loginForm.auth.user');
+      const passKey = apiConfig.defaultConfig().get('loginForm.auth.pass');
+      return this.buildAuthHeader(data[userKey], data[passKey]);
+    }
   },
   buildAuthHeader(user, pass) {
     return {

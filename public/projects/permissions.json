@@ -1,8 +1,7 @@
 {
   "name": "permissions",
   "display": "Permissions",
-  "baseUrl": "https://authorization-{{env}}.ticketfly.com",
-  "env": "dev16",
+  "baseUrl": "https://authorization-{{settings.env}}.ticketfly.com",
   "endpoints": {
     "createEmployee": {
       "display": "Create Employee",

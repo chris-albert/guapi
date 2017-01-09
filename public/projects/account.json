@@ -1,6 +1,7 @@
 {
   "name": "account",
   "display": "Account",
+  "baseUrl": "https://{{settings.env}}.ticketfly.com",
   "endpoints": {
     "getToken": {
       "display": "Get Token",

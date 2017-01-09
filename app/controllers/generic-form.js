@@ -43,8 +43,9 @@ export default Ember.Controller.extend({
     }));
   },
   getRequestOptions(method, url) {
+    var rawData = this.allFilteredFields();
     var data = this.getData();
-    url      = url || this.getUrl(data);
+    url      = url || this.getUrl(rawData);
     return {
       url        : url,
       method     : this.get('model.method'),
@@ -89,6 +90,7 @@ export default Ember.Controller.extend({
     }
     //this is here until we move env somewhere
     d.env = this.get('model.project.env');
+    d.settings = this.get('settings').getStoreObj();
     return Handlebars.compile(url)(d);
   },
   getBaseUrl() {
