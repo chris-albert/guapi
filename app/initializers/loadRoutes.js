@@ -90,20 +90,24 @@ export default {
     }));
   },
   registerListRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef, 'listable'), route + '.list', application, 'GET');
+    //this.registerAll(this.genRouteDef(routeDef, 'listable'), route + '.list', application, 'GET');
+    this.registerAll(this.genRouteDef(routeDef,'list'), route + '.list', application, 'GET');
   },
   registerCreateRoute(routeDef, route, application) {
-    this.registerAll(routeDef, route + '.create', application, 'POST');
+    //this.registerAll(routeDef, route + '.create', application, 'POST');
+    this.registerAll(this.genRouteDef(routeDef,'create'), route + '.create', application, 'POST');
   },
   /**
    * The edit route is special since we need to preload data for the form, so we need to
    * first go get the data from the `view` endpoint, then display the form as normal
    */
   registerEditRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef, 'editable'), route + '.edit', application, 'PUT');
+    //this.registerAll(this.genRouteDef(routeDef, 'editable'), route + '.edit', application, 'PUT');
+    this.registerAll(this.genRouteDef(routeDef,'edit'), route + '.edit', application, 'PUT');
   },
   registerViewRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef, 'viewable'), route + '.view', application, 'GET');
+    //this.registerAll(this.genRouteDef(routeDef, 'viewable'), route + '.view', application, 'GET');
+    this.registerAll(this.genRouteDef(routeDef,'view'), route + '.view', application, 'GET');
   },
   registerAll(routeDef, route, application, method) {
     console.debug('Registering route [' + route + ']');
@@ -143,9 +147,9 @@ export default {
       m.routeName = route;
     }
     m.submitDisplay = this.getSubmitDisplay(route);
-    m.additionalActions = this.getAdditionalAction(route);
+    //m.additionalActions = this.getAdditionalAction(route);
     m.params = params;
-    m.method = method;
+    m.method = routeDef.method;
     return m;
   },
   restModel(routeDef, route, method, params) {
@@ -184,9 +188,18 @@ export default {
     }
     return routeDef.fields;
   },
+  copyFromRequest(routeDef, requestKey, objKey, copyToObj) {
+    if(routeDef.request && routeDef.request[requestKey] && routeDef.request[requestKey][objKey]) {
+      copyToObj[objKey] = routeDef.request[requestKey][objKey];
+    }
+  },
   genRouteDef(routeDef, name) {
+    console.log(routeDef);
     var rd    = _.cloneDeep(routeDef);
-    rd.fields = this.filterFields(routeDef, name);
+    _.map(['fields','dataLocations','method','path'], copyKey => {
+      this.copyFromRequest(routeDef,name, copyKey, rd);
+    });
+    console.log(rd);
     return rd;
   }
 };

@@ -7,6 +7,9 @@
       "display": "Create Employee",
       "path": "/aggregator/v1/employees",
       "method": "POST",
+      "auth": {
+        "type": "bearer"
+      },
       "dataLocation": "form",
       "fields": [
         {
@@ -31,8 +34,9 @@
       "display": "Get Employee",
       "path": "/aggregator/v1/employees/{{id}}",
       "method": "GET",
-      "auth": "oauth2",
-      "oauth2Header": "token",
+      "auth": {
+        "type": "bearer"
+      },
       "dataLocation": "form",
       "fields": [
         {
@@ -52,17 +56,21 @@
         "jsonRoot": "employee"
       }
     },
-    "getRole": {
-      "display": "Get Role",
+    "roles": {
+      "display": "Roles",
       "path": "/v2/roles",
-      "method": "GET",
-      "dataLocation": "form",
-      "fields": [
-        {
-          "name": "id",
-          "display": "Id"
-        }
-      ]
+      "auth": {
+        "type": "bearer"
+      },
+      "type": "rest",
+      "restId": "id",
+      "request": {
+        "list"  : ["id", "name", "ownerOrgId"],
+        "create": ["id", "name", "ownerOrgId"],
+        "view"  : ["id"],
+        "edit"  : ["name", "ownerOrgId"]
+      },
+      "fields": ["id", "name", "ownerOrgId", "createdTime"]
     }
   }
 }

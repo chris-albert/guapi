@@ -45,6 +45,7 @@ export default Ember.Controller.extend({
   getRequestOptions(method, url) {
     var rawData = this.allFilteredFields();
     var data = this.getData();
+    console.log(rawData);
     url      = url || this.getUrl(rawData);
     return {
       url        : url,
@@ -83,13 +84,6 @@ export default Ember.Controller.extend({
   getUrl(data) {
     var d = _.clone(data);
     var url = this.getBaseUrl();
-    //TODO: This needs to be generalized too, maybe like /endpoint/{{id}}, using
-    //handlebars templates to replace the var
-    if (_.endsWith(this.get('model.routeName'), '.view') || _.endsWith(this.get('model.routeName'), '.edit')) {
-      url = url + '/' + this.allFilteredFields()[this.get('model.restId')];
-    }
-    //this is here until we move env somewhere
-    d.env = this.get('model.project.env');
     d.settings = this.get('settings').getStoreObj();
     return Handlebars.compile(url)(d);
   },
@@ -102,13 +96,10 @@ export default Ember.Controller.extend({
     }
   },
   getAuth() {
-    if (this.get('isOauth2')) {
-      switch (_.head(this.get('authSelector.value'))) {
-        case 'token':
-          return {
-            'Authorization': 'Bearer ' + this.get('settings').getStore('token')
-          };
-      }
+    if(this.get('model.auth.type') === 'bearer') {
+      return {
+        'Authorization': 'Bearer ' + this.get('settings').getStore('token')
+      };
     }
     return this.buildAuthHeader(
       this.get('settings').getStore('clientId'),
