@@ -7,61 +7,26 @@
       "display": "Create Employee",
       "path": "/aggregator/v1/employees",
       "method": "POST",
-      "auth": {
-        "type": "bearer"
+      "auth": "bearer",
+      "dataLocation": "json",
+      "jsonRoot": {
+        "employee": ["id", "firstName", "lastName", "email", "role", "allEvents", "events"]
       },
-      "dataLocation": "form",
-      "fields": [
-        {
-          "name": "id",
-          "display": "Id"
-        },
-        {
-          "name": "firstName",
-          "display": "First Name"
-        },
-        {
-          "name": "lastName",
-          "display": "Last Name"
-        },
-        {
-          "name": "email",
-          "display": "Email"
-        }
-      ]
+      "fields": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
     },
     "getEmployee": {
       "display": "Get Employee",
       "path": "/aggregator/v1/employees/{{id}}",
       "method": "GET",
-      "auth": {
-        "type": "bearer"
-      },
-      "dataLocation": "form",
-      "fields": [
-        {
-          "name": "id",
-          "display": "Id"
-        },
-        {
-          "name": "domainOrgId",
-          "display": "Domain Org Id"
-        },
-        {
-          "name": "clientOrgId",
-          "display": "Client Org Id"
-        }
-      ],
-      "response": {
-        "jsonRoot": "employee"
-      }
+      "auth": "bearer",
+      "jsonRoot": "employee",
+      "dataLocation": "query",
+      "fields": ["id", "domainOrgId", "clientOrgId"]
     },
     "roles": {
       "display": "Roles",
       "path": "/v2/roles",
-      "auth": {
-        "type": "bearer"
-      },
+      "auth": "bearer",
       "type": "rest",
       "restId": "id",
       "jsonRoot": "role",

@@ -44,6 +44,7 @@ var apiDefinition = Ember.Object.extend({
    * If we want to add fields or preprocessors, here is where to do it
    */
   genEndpoint(endpoint) {
+    this.defaults(endpoint);
     if(endpoint.type === 'rest') {
       const fieldsHash = _.groupBy(endpoint.fields,'name');
 
@@ -66,6 +67,14 @@ var apiDefinition = Ember.Object.extend({
       });
     }
     this.setUpResponse(endpoint);
+  },
+  defaults(endpoint) {
+    if(_.isString(_.get(endpoint,'auth'))) {
+      _.set(endpoint,'auth', {type: _.get(endpoint,'auth')});
+    }
+    if(_.isUndefined(_.get(endpoint,'type'))) {
+      _.set(endpoint,'type', 'single');
+    }
   },
   setUpResponse(endpoint) {
     if(!_.has(endpoint,'response')) {
