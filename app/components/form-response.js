@@ -88,12 +88,14 @@ export default Ember.Component.extend({
   }),
   responseHeaders : onChange(function () {
     var columns = this.get('config.columns');
-    if (columns) {
+    if (_.isArray(columns)) {
       return columns;
+    } else if(columns === '*') {
+      return this.getJson(json => {
+        return _.keys(_.first(json));
+      });
     }
-    return this.getJson(json => {
-      return _.keys(_.first(json));
-    });
+    return [];
   }),
   responseValues  : onChange(function () {
     return this.getJson(json => {
@@ -121,7 +123,7 @@ export default Ember.Component.extend({
   }),
   getColumns(item) {
     const columns = this.get('config.columns');
-    if(columns) {
+    if(_.isArray(columns)) {
       return _.map(columns, column => {
         if (item[column]) {
           return {
@@ -129,7 +131,7 @@ export default Ember.Component.extend({
           };
         }
       });
-    } else {
+    } else if(columns === '*') {
       return _.map(item, v => {
         return {
           text: v
@@ -141,9 +143,15 @@ export default Ember.Component.extend({
     var json   = this.get('response.xhr.responseJSON'),
         config = this.get('config');
     if (json && _.isObject(json)) {
-      var j = json;
-      if (config && config.jsonRoot && json[config.jsonRoot]) {
-        j = json[config.jsonRoot];
+      var j = null;
+      if (_.get(config,'jsonRoot') && !_.isUndefined(json[_.get(config,'jsonRoot')])) {
+        j = _.get(json, _.get(config, 'jsonRoot'));
+      }
+      if(_.isNull(j) && _.get(config,'pluralJsonRoot') && !_.isUndefined(json[_.get(config,'pluralJsonRoot')])) {
+        j = _.get(json, _.get(config, 'pluralJsonRoot'));
+      }
+      if(_.isNull(j)) {
+        j = json;
       }
       return func(j);
     }

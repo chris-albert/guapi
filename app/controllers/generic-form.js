@@ -36,6 +36,9 @@ export default Ember.Controller.extend({
   },
   rawApi(method, complete, url) {
     var options = this.getRequestOptions(method, url);
+    if(this.get('model.dataLocation') === 'json') {
+      options.data = JSON.stringify(options.data);
+    }
     $.ajax(_.merge(options, {
       complete: function (xhr) {
         complete(xhr, options);
@@ -65,7 +68,13 @@ export default Ember.Controller.extend({
       case 'query':
         return data;
       case 'json':
-        return JSON.stringify(data);
+        var d = {};
+        if(this.get('model.jsonRoot')) {
+          d[this.get('model.jsonRoot')] = data;
+        } else {
+          d = data;
+        }
+        return d;
     }
   },
   getContentType() {

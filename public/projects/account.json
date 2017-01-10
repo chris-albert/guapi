@@ -41,12 +41,9 @@
       "display": "Me",
       "path": "/account/v2/users/me",
       "method": "GET",
-      "auth": "oauth2",
-      "oauth2Header": "token",
-      "dataLocation": "query",
-      "fields": [],
-      "response": {
-        "jsonRoot": "user"
+      "jsonRoot": "user",
+      "auth": {
+        "type": "bearer"
       }
     }
   }

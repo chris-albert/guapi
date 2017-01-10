@@ -46,6 +46,7 @@ var apiDefinition = Ember.Object.extend({
   genEndpoint(endpoint) {
     if(endpoint.type === 'rest') {
       const fieldsHash = _.groupBy(endpoint.fields,'name');
+
       _.map(endpoint.request, (fields, restType) => {
         endpoint.request[restType] = {
           fields: []
@@ -54,7 +55,7 @@ var apiDefinition = Ember.Object.extend({
           if(fieldsHash[key]) {
             endpoint.request[restType].fields.push(_.head(fieldsHash[key]));
             if(restDataLocation[restType]) {
-              endpoint.request[restType].dataLocations = restDataLocation[restType];
+              endpoint.request[restType].dataLocation = restDataLocation[restType];
             }
             if(restMethod[restType]) {
               endpoint.request[restType].method = restMethod[restType];
@@ -63,6 +64,21 @@ var apiDefinition = Ember.Object.extend({
           }
         });
       });
+    }
+    this.setUpResponse(endpoint);
+  },
+  setUpResponse(endpoint) {
+    if(!_.has(endpoint,'response')) {
+      _.set(endpoint,'response',{});
+    }
+    if(!_.has(endpoint,'response.jsonRoot') && _.has(endpoint, 'jsonRoot')) {
+      _.set(endpoint, 'response.jsonRoot', _.get(endpoint, 'jsonRoot'));
+    }
+    if(!_.has(endpoint,'response.pluralJsonRoot')) {
+      _.set(endpoint, 'response.pluralJsonRoot', _.get(endpoint, 'jsonRoot') + 's');
+    }
+    if(!_.has(endpoint,'response.columns')) {
+      _.set(endpoint, 'response.columns', '*');
     }
   },
   /**
