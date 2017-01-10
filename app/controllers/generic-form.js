@@ -45,7 +45,6 @@ export default Ember.Controller.extend({
   getRequestOptions(method, url) {
     var rawData = this.allFilteredFields();
     var data = this.getData();
-    console.log(rawData);
     url      = url || this.getUrl(rawData);
     return {
       url        : url,
@@ -127,28 +126,28 @@ export default Ember.Controller.extend({
     var self = this;
     //If we are in a rest edit route then we need to load the data
     //for the record so we can then edit it
-    if (_.endsWith(this.get('model.routeName'), '.edit')) {
-      this.getRestView((xhr,request) => {
-        var resp = xhr.responseJSON;
-        _.map(self.get('model.fields'), field => {
-          if (!_.isUndefined(resp[field.name])) {
-            Ember.set(field, 'value', resp[field.name]);
-          }
-        });
-        this.setRequest(request);
-      });
-    } else if (_.endsWith(this.get('model.routeName'), '.view')) {
-      //Here we want to set the views field value for the restId
-      _.map(this.get('model.fields'), field => {
-        if (field.name === this.get('model.restId')) {
-          field.value = this.get('model.params.id');
-        }
-      });
-      //Then we need to fetch the data and set the response
-      this.getRestView((xhr, request) => {
-        this.setResponseAndRequest(xhr, request);
-      });
-    }
+    //if (_.endsWith(this.get('model.routeName'), '.edit')) {
+    //  this.getRestView((xhr,request) => {
+    //    var resp = xhr.responseJSON;
+    //    _.map(self.get('model.fields'), field => {
+    //      if (!_.isUndefined(resp[field.name])) {
+    //        Ember.set(field, 'value', resp[field.name]);
+    //      }
+    //    });
+    //    this.setRequest(request);
+    //  });
+    //} else if (_.endsWith(this.get('model.routeName'), '.view')) {
+    //  //Here we want to set the views field value for the restId
+    //  _.map(this.get('model.fields'), field => {
+    //    if (field.name === this.get('model.restId')) {
+    //      field.value = this.get('model.params.id');
+    //    }
+    //  });
+    //  //Then we need to fetch the data and set the response
+    //  this.getRestView((xhr, request) => {
+    //    this.setResponseAndRequest(xhr, request);
+    //  });
+    //}
   },
   isEdit() {
     return _.endsWith(this.get('model.routeName'), '.edit');
@@ -198,6 +197,7 @@ export default Ember.Controller.extend({
     return this.filterOutFields(this.allFields());
   },
   beforeSubmit() {
+
   },
   authSelector: Ember.computed('',function() {
     var auth = _.cloneDeep(this.get('globalConfig.authSelector'));

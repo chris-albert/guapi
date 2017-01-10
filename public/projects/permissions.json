@@ -64,6 +64,7 @@
       },
       "type": "rest",
       "restId": "id",
+      "jsonRoot": "role",
       "request": {
         "list"  : ["id", "name", "ownerOrgId"],
         "create": ["id", "name", "ownerOrgId"],

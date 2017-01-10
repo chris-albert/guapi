@@ -194,12 +194,11 @@ export default {
     }
   },
   genRouteDef(routeDef, name) {
-    console.log(routeDef);
     var rd    = _.cloneDeep(routeDef);
     _.map(['fields','dataLocations','method','path'], copyKey => {
       this.copyFromRequest(routeDef,name, copyKey, rd);
     });
-    console.log(rd);
+    delete rd.request;
     return rd;
   }
 };
