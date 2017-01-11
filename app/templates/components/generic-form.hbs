@@ -11,14 +11,17 @@
 {{/form-input}}
 
 {{#request-details
-request=request
+  request=request.current
+  settings=model
 }}
 {{/request-details}}
 
 {{#form-response
   response=response
+  fields=model.fields
   config=model.response
-  routeName=model.routeName
+  route=model.route
+  request=request.lastObj
   formConfig=model
 }}
 {{/form-response}}

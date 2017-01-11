@@ -13,6 +13,7 @@ export default Ember.Component.extend({
       this.get('field.type') === 'password' ||
       this.get('field.type') === 'hidden' ||
       this.get('field.type') === 'array' ||
+      this.get('field.type') === 'uuid' ||
       _.isUndefined(this.get('field.type'));
   }),
   isSelect: Ember.computed('field.type',function() {

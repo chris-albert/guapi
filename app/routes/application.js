@@ -6,8 +6,5 @@ export default Ember.Route.extend({
       console.error(error.message);
       return true;
     }
-  },
-  model() {
-    //return this.store.findRecord('local-store',1);
   }
 });

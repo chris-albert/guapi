@@ -13,11 +13,7 @@ function setupRest(router, route, routeDef) {
   router.route(route, function () {
     _.map(restEndpoints, restEndpoint => {
       console.debug('Adding rest route [' + route + '.' + restEndpoint + ']');
-      if (restEndpoint === 'edit' || restEndpoint === 'view') {
-        this.route(restEndpoint, {path: '/' + restEndpoint + '/:id'});
-      } else {
-        this.route(restEndpoint);
-      }
+      this.route(restEndpoint);
     });
   });
 }
@@ -36,6 +32,7 @@ Router.map(function () {
       });
     });
   });
+  this.route('config');
   console.debug('Routes created');
 });
 

@@ -1,0 +1,7 @@
+{{#if isIcon}}
+<a href="#" {{action "actionClicked" action}}>
+  <span class="glyphicon glyphicon-{{action.icon}}"aria-hidden="true"></span>
+</a>
+{{else if isButton}}
+  <button class="btn btn-primary" {{action "actionClicked" action}}>{{action.display}}</button>
+{{/if}}

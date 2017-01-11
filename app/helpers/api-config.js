@@ -1,6 +1,20 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
 
+const restDataLocation = {
+  list  : 'query',
+  create: 'json',
+  view  : 'query',
+  edit  : 'json'
+};
+
+const restMethod = {
+  list  : 'GET',
+  create: 'POST',
+  view  : 'GET',
+  edit  : 'PUT'
+};
+
 var apiDefinition = Ember.Object.extend({
   projectDefs: [],
   load() {
@@ -20,8 +34,95 @@ var apiDefinition = Ember.Object.extend({
         }
       });
       endpoint.project = obj;
-    })
+      endpoint.fields = this.expandFields(endpoint.fields);
+      this.genEndpoint(endpoint);
+    });
     this.set('projectDefs',this.get('projectDefs').concat(projectJson));
+  },
+  /**
+   * Here we will do any pre-processing on the def json files
+   * If we want to add fields or preprocessors, here is where to do it
+   */
+  genEndpoint(endpoint) {
+    this.defaults(endpoint);
+    if(endpoint.type === 'rest') {
+      const fieldsHash = _.groupBy(endpoint.fields,'name');
+
+      _.map(endpoint.request, (fields, restType) => {
+        endpoint.request[restType] = {
+          fields: []
+        };
+        _.map(fields, key => {
+          if(fieldsHash[key]) {
+            endpoint.request[restType].fields.push(_.head(fieldsHash[key]));
+            if(restDataLocation[restType]) {
+              endpoint.request[restType].dataLocation = restDataLocation[restType];
+            }
+            if(restMethod[restType]) {
+              endpoint.request[restType].method = restMethod[restType];
+            }
+            endpoint.request[restType].path = this.restPath(restType, endpoint);
+          }
+        });
+      });
+    }
+    this.setUpResponse(endpoint);
+  },
+  defaults(endpoint) {
+    if(_.isString(_.get(endpoint,'auth'))) {
+      _.set(endpoint,'auth', {type: _.get(endpoint,'auth')});
+    }
+    if(_.isUndefined(_.get(endpoint,'type'))) {
+      _.set(endpoint,'type', 'single');
+    }
+  },
+  setUpResponse(endpoint) {
+    if(!_.has(endpoint,'response')) {
+      _.set(endpoint,'response',{});
+    }
+    if(!_.has(endpoint,'response.jsonRoot') && _.has(endpoint, 'jsonRoot')) {
+      _.set(endpoint, 'response.jsonRoot', _.get(endpoint, 'jsonRoot'));
+    }
+    if(!_.has(endpoint,'response.pluralJsonRoot')) {
+      _.set(endpoint, 'response.pluralJsonRoot', _.get(endpoint, 'response.jsonRoot') + 's');
+    }
+    if(!_.has(endpoint,'response.columns')) {
+      _.set(endpoint, 'response.columns', '*');
+    }
+  },
+  /**
+   * Expands endpoint fields, so you don't have to define a full field
+   *
+   * If you have field that is just a `name` and you want the display to be
+   * the the same as name but with spaces and caps, this will recreate a field for you
+   */
+  expandFields(fields) {
+    var f = [];
+    _.map(fields, field => {
+      if(_.isString(field)) {
+        f.push({
+          name: field,
+          display: this.formatDisplay(field)
+        });
+      } else if(_.isObject(field)) {
+        if(_.isUndefined(field.display)) {
+          field.display = this.formatDisplay(field.name);
+        }
+        f.push(field);
+      }
+    });
+    return f;
+  },
+  restPath(type, routeDef) {
+    if(type === 'view' || type === 'edit' && routeDef.restId) {
+      return routeDef.path + '/{{' + routeDef.restId + '}}';
+    }
+    return routeDef.path;
+  },
+  formatDisplay(s) {
+    return _.map(s.decamelize().split('_'), ss =>{
+      return ss.capitalize();
+    }).join(' ');
   }
 });
 

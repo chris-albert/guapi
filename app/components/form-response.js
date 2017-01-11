@@ -10,6 +10,9 @@ export default Ember.Component.extend({
   actions         : {
     responseToggle() {
       this.set('raw', !this.get('raw'));
+    },
+    actionClicked(action) {
+      this.get('router').transitionTo(action.link, {queryParams: action.queryParams});
     }
   },
   responseViewText: Ember.computed('raw', function () {
@@ -83,45 +86,64 @@ export default Ember.Component.extend({
       });
     });
   }),
+  objectActions: onChange(function() {
+    return this.getJson(json => {
+      return this.getActions(json);
+    });
+  }),
   isRest          : Ember.computed('model.type', function () {
-    return this.get('formConfig.type') === 'rest';
+    return false;
+  }),
+  hasActions: onChange(function() {
+    return !_.isUndefined(this.get('config.actions'));
   }),
   responseHeaders : onChange(function () {
     var columns = this.get('config.columns');
-    if (columns) {
+    if (_.isArray(columns)) {
       return columns;
+    } else if(columns === '*') {
+      return this.getJson(json => {
+        return _.keys(_.first(json));
+      });
     }
-    return this.getJson(json => {
-      return _.keys(_.first(json));
-    });
+    return [];
   }),
   responseValues  : onChange(function () {
     return this.getJson(json => {
-      const splitRouteInital = _.initial(this.get('routeName').split('.')).join('.');
       return _.map(json, item => {
-        const columns = this.getColumns(item);
-        var actions = null;
-        if(this.get('isRest')) {
-          actions = {
-            edit: {
-              link: splitRouteInital + '.edit'
-            },
-            view: {
-              link: splitRouteInital + '.view'
-            }
-          };
-        }
         return {
           id     : item[this.get('formConfig.restId')],
-          values : columns,
-          actions: actions
+          values : this.getColumns(item),
+          actions: this.getActions(item)
         };
       });
     });
   }),
+  getActions(item) {
+    var actions = [];
+    if(this.get('config.actions')) {
+      _.map(this.get('config.actions'), action => {
+        console.log(action);
+        action.link = Handlebars.compile(action.link)(this);
+        action.queryParams = {};
+        if(_.has(action,'autoSubmit') && _.get(action, 'autoSubmit') === true) {
+          action.queryParams.as = true;
+        }
+        _.map(action.params, param => {
+          if(_.isUndefined(item[param])) {
+            action.queryParams[param] = this.get('request.data.' + param);
+          } else {
+            action.queryParams[param] = item[param];
+          }
+        });
+        actions.push(action);
+      });
+    }
+    return actions;
+  },
   getColumns(item) {
     const columns = this.get('config.columns');
-    if(columns) {
+    if(_.isArray(columns)) {
       return _.map(columns, column => {
         if (item[column]) {
           return {
@@ -129,7 +151,7 @@ export default Ember.Component.extend({
           };
         }
       });
-    } else {
+    } else if(columns === '*') {
       return _.map(item, v => {
         return {
           text: v
@@ -141,9 +163,15 @@ export default Ember.Component.extend({
     var json   = this.get('response.xhr.responseJSON'),
         config = this.get('config');
     if (json && _.isObject(json)) {
-      var j = json;
-      if (config && config.jsonRoot && json[config.jsonRoot]) {
-        j = json[config.jsonRoot];
+      var j = null;
+      if (_.get(config,'jsonRoot') && !_.isUndefined(json[_.get(config,'jsonRoot')])) {
+        j = _.get(json, _.get(config, 'jsonRoot'));
+      }
+      if(_.isNull(j) && _.get(config,'pluralJsonRoot') && !_.isUndefined(json[_.get(config,'pluralJsonRoot')])) {
+        j = _.get(json, _.get(config, 'pluralJsonRoot'));
+      }
+      if(_.isNull(j)) {
+        j = json;
       }
       return func(j);
     }

@@ -3,66 +3,69 @@
   "display": "Permissions",
   "baseUrl": "https://authorization-{{settings.env}}.ticketfly.com",
   "endpoints": {
-    "createEmployee": {
-      "display": "Create Employee",
+
+    "employees": {
+      "display": "Employees",
       "path": "/aggregator/v1/employees",
-      "method": "POST",
-      "dataLocation": "form",
-      "fields": [
-        {
-          "name": "id",
-          "display": "Id"
-        },
-        {
-          "name": "firstName",
-          "display": "First Name"
-        },
-        {
-          "name": "lastName",
-          "display": "Last Name"
-        },
-        {
-          "name": "email",
-          "display": "Email"
-        }
-      ]
-    },
-    "getEmployee": {
-      "display": "Get Employee",
-      "path": "/aggregator/v1/employees/{{id}}",
-      "method": "GET",
-      "auth": "oauth2",
-      "oauth2Header": "token",
-      "dataLocation": "form",
-      "fields": [
-        {
-          "name": "id",
-          "display": "Id"
-        },
-        {
-          "name": "domainOrgId",
-          "display": "Domain Org Id"
-        },
-        {
-          "name": "clientOrgId",
-          "display": "Client Org Id"
-        }
-      ],
+      "auth": "bearer",
+      "type": "rest",
+      "restId": "id",
+      "jsonRoot": {
+        "employee": ["id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+      },
+      "request": {
+        "list"  : ["domainOrgId", "clientOrgId"],
+        "create": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"],
+        "view"  : ["id","domainOrgId", "clientOrgId"],
+        "edit"  : ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+      },
       "response": {
-        "jsonRoot": "employee"
-      }
-    },
-    "getRole": {
-      "display": "Get Role",
-      "path": "/v2/roles",
-      "method": "GET",
-      "dataLocation": "form",
-      "fields": [
-        {
-          "name": "id",
-          "display": "Id"
+        "jsonRoot": "employee",
+        "actions": {
+          "list": [
+            {
+              "type": "icon",
+              "link": "{{route.base}}.view",
+              "params": ["id","domainOrgId", "clientOrgId"],
+              "autoSubmit": true,
+              "icon": "info-sign"
+            }
+          ],
+          "view": [
+            {
+              "type": "button",
+              "display": "Edit",
+              "link": "{{route.base}}.edit",
+              "params": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+            }
+          ],
+          "edit": [
+            {
+              "type": "button",
+              "display": "View",
+              "link": "{{route.base}}.view",
+              "autoSubmit": true,
+              "params": ["id","domainOrgId", "clientOrgId"]
+            }
+          ]
         }
-      ]
+      },
+      "fields": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+    },
+    "roles": {
+      "display": "Roles",
+      "path": "/v2/roles",
+      "auth": "bearer",
+      "type": "rest",
+      "restId": "id",
+      "jsonRoot": "role",
+      "request": {
+        "list"  : ["id", "name", "ownerOrgId"],
+        "create": ["id", "name", "ownerOrgId"],
+        "view"  : ["id"],
+        "edit"  : ["name", "ownerOrgId"]
+      },
+      "fields": ["id", "name", "ownerOrgId", "createdTime"]
     }
   }
 }

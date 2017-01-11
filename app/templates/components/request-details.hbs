@@ -4,12 +4,12 @@
       <div class="col-md-10 request-details-header" {{action "detailsClick"}}>
         Request <span class="caret"></span>
       </div>
-      <div class="col-md-2 text-right">
-
+      <div class="col-md-2 text-right" {{action "settingsClick"}}>
+        &nbsp;
       </div>
     </div>
   </div>
   <div class="panel-body {{detailsClass}}">
-    <pre class="prettyprint">{{request}}</pre>
+    <pre class="prettyprint">{{requestBody}}</pre>
   </div>
 </div>

@@ -50,7 +50,7 @@ export default {
     if (routeDef.type === 'rest') {
       this.registerRest(routeDef, route, application);
     } else {
-      this.registerAll(routeDef, route, application, routeDef.method);
+      this.registerAll(routeDef, route, application);
     }
   },
   setUpInjections(application,api) {
@@ -58,6 +58,7 @@ export default {
     application.inject('component','globalConfig','config:main');
     application.inject('controller','globalConfig','config:main');
     application.inject('route','globalConfig','config:main');
+    application.inject('component','router','router:main');
   },
   registerRest(routeDef, route, application) {
     //This is the base page of the rest tab
@@ -71,10 +72,16 @@ export default {
   registerRestRoute(routeDef, route, application) {
     application.register('route:' + route, Ember.Route.extend({
       renderTemplate() {
-        this.render('components/rest-container');
+        this.render('components/tab-component');
       },
-      redirect() {
-        //this.transitionTo(route + '.list');
+      model() {
+        var tabs = ['list','create','view','edit'];
+        return _.map(tabs, tab => {
+          return {
+            display: tab.capitalize(),
+            route: route + '.' + tab
+          };
+        });
       },
       activate() {
         console.debug('Entering route [' + route + ']');
@@ -83,34 +90,30 @@ export default {
     }));
   },
   registerListRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef, 'listable'), route + '.list', application, 'GET');
+    this.registerAll(this.genRouteDef(routeDef,'list'), route + '.list', application);
   },
   registerCreateRoute(routeDef, route, application) {
-    this.registerAll(routeDef, route + '.create', application, 'POST');
+    this.registerAll(this.genRouteDef(routeDef,'create'), route + '.create', application);
   },
-  /**
-   * The edit route is special since we need to preload data for the form, so we need to
-   * first go get the data from the `view` endpoint, then display the form as normal
-   */
   registerEditRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef, 'editable'), route + '.edit', application, 'PUT');
+    this.registerAll(this.genRouteDef(routeDef,'edit'), route + '.edit', application);
   },
   registerViewRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef, 'viewable'), route + '.view', application, 'GET');
+    this.registerAll(this.genRouteDef(routeDef,'view'), route + '.view', application);
   },
-  registerAll(routeDef, route, application, method) {
+  registerAll(routeDef, route, application) {
     console.debug('Registering route [' + route + ']');
-    this.registerRoute(routeDef, route, application, method, this.restModel);
+    this.registerRoute(routeDef, route, application, this.restModel);
     this.registerController(routeDef, route, application);
   },
-  registerRoute(routeDef, route, application, method, modelFunc) {
+  registerRoute(routeDef, route, application, modelFunc) {
     var self = this;
     application.register('route:' + route, Ember.Route.extend({
       renderTemplate() {
         this.render('components/generic-form');
       },
       model(params) {
-        return modelFunc.call(self, routeDef, route, method, params, this);
+        return modelFunc.call(self, routeDef, route, params, this);
       },
       setupController(controller, model) {
         controller.set('content', model);
@@ -130,32 +133,24 @@ export default {
       queryParams: qp
     }));
   },
-  setUpRestModel(routeDef, route, method, params) {
+  setUpRestModel(routeDef, route, params) {
     var m = _.cloneDeep(routeDef);
-    if (!m.routeName) {
-      m.routeName = route;
-    }
+    var routeSplit = route.split('.');
     m.submitDisplay = this.getSubmitDisplay(route);
-    m.additionalActions = this.getAdditionalAction(route);
+    m.route = {
+      name: route,
+      last: _.last(routeSplit),
+      base: _.initial(routeSplit).join('.')
+    };
     m.params = params;
-    m.method = method;
+    m.method = routeDef.method;
     return m;
   },
-  restModel(routeDef, route, method, params) {
-    var m = this.setUpRestModel(routeDef, route, method, params);
+  restModel(routeDef, route, params) {
+    var m = this.setUpRestModel(routeDef, route, params);
     return new Ember.RSVP.Promise(function (resolve) {
       resolve(m);
     });
-  },
-  getAdditionalAction(route) {
-    var n = route.split('.');
-    if(route.endsWith('.list')) {
-      return [{
-        'display': 'Create',
-        'link': _.initial(n).join('.') + '.create'
-      }];
-    }
-    return [];
   },
   getSubmitDisplay(route) {
     var n = route.split('.');
@@ -177,9 +172,28 @@ export default {
     }
     return routeDef.fields;
   },
-  genRouteDef(routeDef, name) {
+  copyFromRequest(routeDef, requestKey, objKey, copyToObj) {
+    if(routeDef.request && routeDef.request[requestKey] && routeDef.request[requestKey][objKey]) {
+      copyToObj[objKey] = routeDef.request[requestKey][objKey];
+    }
+  },
+  genRequest(routeDef, routeName) {
+    _.map(['fields','dataLocation','method','path'], copyKey => {
+      this.copyFromRequest(routeDef,routeName, copyKey, routeDef);
+    });
+  },
+  genResponse(routeDef, routeName) {
+    const routeAction = _.get(routeDef,'response.actions.' + routeName);
+    routeDef.response.actions = [];
+    if(!_.isUndefined(routeAction)) {
+      routeDef.response.actions = routeAction;
+    }
+  },
+  genRouteDef(routeDef, routeName) {
     var rd    = _.cloneDeep(routeDef);
-    rd.fields = this.filterFields(routeDef, name);
+    this.genRequest(rd, routeName);
+    this.genResponse(rd, routeName);
+    delete rd.request;
     return rd;
   }
 };
