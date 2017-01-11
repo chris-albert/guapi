@@ -25,7 +25,7 @@ export default Ember.Controller.extend({
     return this.get('model.auth') === 'oauth2';
   }),
   apiCall() {
-    this.rawApi(this.get('model.method'), (x, r) => this.setResponseAndRequest(x, r));
+    this.api((x, r) => this.setResponseAndRequest(x, r));
   },
   setResponseAndRequest(xhr, request) {
     this.set('response', {});
@@ -34,31 +34,32 @@ export default Ember.Controller.extend({
   setRequest(request) {
     this.set('request', JSON.stringify(request, null, 2));
   },
-  rawApi(method, complete, url) {
-    var options = this.getRequestOptions(method, url);
+  api(complete) {
+    var options = this.getRequestOptions();
     if(this.get('model.dataLocation') === 'json') {
       options.data = JSON.stringify(options.data);
     }
+    this.rawApi(options, complete);
+  },
+  rawApi(options, complete) {
     $.ajax(_.merge(options, {
       complete: function (xhr) {
         complete(xhr, options);
       }
     }));
   },
-  getRequestOptions(method, url) {
+  getRequestOptions() {
     var rawData = this.allFilteredFields();
-    var data = this.getData();
-    url      = url || this.getUrl(rawData);
     return {
-      url        : url,
+      url        : this.getUrl(rawData),
       method     : this.get('model.method'),
-      data       : data,
+      data       : this.getData(),
       contentType: this.getContentType(),
       headers    : this.getAuth()
     };
   },
   updateRequest() {
-    const options = this.getRequestOptions(this.get('model.method'));
+    const options = this.getRequestOptions();
     this.setRequest(options);
   },
   getData() {
@@ -159,31 +160,39 @@ export default Ember.Controller.extend({
   }),
   //TODO: Generalize this
   preloadData() {
-    var self = this;
     //If we are in a rest edit route then we need to load the data
     //for the record so we can then edit it
-    //if (_.endsWith(this.get('model.routeName'), '.edit')) {
-    //  this.getRestView((xhr,request) => {
-    //    var resp = xhr.responseJSON;
-    //    _.map(self.get('model.fields'), field => {
-    //      if (!_.isUndefined(resp[field.name])) {
-    //        Ember.set(field, 'value', resp[field.name]);
-    //      }
-    //    });
-    //    this.setRequest(request);
-    //  });
-    //} else if (_.endsWith(this.get('model.routeName'), '.view')) {
-    //  //Here we want to set the views field value for the restId
-    //  _.map(this.get('model.fields'), field => {
-    //    if (field.name === this.get('model.restId')) {
-    //      field.value = this.get('model.params.id');
-    //    }
-    //  });
-    //  //Then we need to fetch the data and set the response
-    //  this.getRestView((xhr, request) => {
-    //    this.setResponseAndRequest(xhr, request);
-    //  });
-    //}
+    if (_.endsWith(this.get('model.routeName'), '.edit')) {
+      var options = {
+        url        : this.getUrl({id: this.get('model.params.id')}),
+        method     : 'GET',
+        contentType: this.getContentType(),
+        headers    : this.getAuth()
+      };
+      this.rawApi(options,(xhr, request) => {
+        if(xhr.status === 200 && _.isObject(xhr.responseJSON)) {
+          var resp = xhr.responseJSON;
+          if(this.get('model.response.jsonRoot')) {
+            resp = _.get(resp, this.get('model.response.jsonRoot'));
+          }
+          const fieldHash = _.indexBy(this.get('model.fields'),f => f.name);
+          console.log(fieldHash);
+          _.map(resp, (value, key) => {
+            if(_.get(fieldHash,key)) {
+              Ember.set(_.get(fieldHash,key), 'value', value);
+            } else {
+              console.log(this.get('model.fields'));
+              this.get('model.fields').push({
+                name: key,
+                value: value,
+                display: 'hidden'
+              });
+            }
+          });
+          this.updateRequest();
+        }
+      });
+    }
   },
   isEdit() {
     return _.endsWith(this.get('model.routeName'), '.edit');
@@ -194,7 +203,7 @@ export default Ember.Controller.extend({
       if (xhr.status === 200 && _.isObject(xhr.responseJSON)) {
         cb(xhr, request);
       }
-    }, this.getBaseUrl() + '/' + id);
+    }, this.getUrl({id: id}));
   },
   bindQueryParams() {
     _.map(this.get('model.fields'), field => {

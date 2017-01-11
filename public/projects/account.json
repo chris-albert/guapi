@@ -30,12 +30,7 @@
       "path": "/account/oauth2/check_token",
       "method": "POST",
       "dataLocation": "query",
-      "fields": [
-        {
-          "name": "token",
-          "display": "Token"
-        }
-      ]
+      "fields": ["token"]
     },
     "me": {
       "display": "Me",
@@ -45,6 +40,128 @@
       "auth": {
         "type": "bearer"
       }
+    },
+    "clientDetails": {
+      "display": "Client Details",
+      "path": "/account/v1/clients",
+      "auth": "bearer",
+      "type": "rest",
+      "restId": "clientId",
+      "jsonRoot": "clients",
+      "request": {
+        "list"  : [],
+        "create": ["appName", "clientIdGen", "clientSecret", "authorities","grantTypes", "scopes"],
+        "view"  : ["clientId"],
+        "edit"  : ["name", "ownerOrgId"]
+      },
+      "response": {
+        "columns": [
+          "id",
+          "appName",
+          "clientId",
+          "clientSecret",
+          "clientAuthorities",
+          "grantTypes",
+          "scopes"
+        ]
+      },
+      "fields": [
+        {
+          "name": "appName",
+          "display": "App Name"
+        },
+        {
+          "name": "clientId",
+          "display": "Client Id"
+        },
+        {
+          "name": "clientIdGen",
+          "outName": "clientId",
+          "display": "Client Id",
+          "value": "Generated on Server",
+          "disabled": true
+        },
+        {
+          "name": "clientSecret",
+          "display": "Client Secret",
+          "value": "Generated on Server",
+          "disabled": true
+        },
+        {
+          "name": "authorities",
+          "display": "Authorities",
+          "value": [
+            "ROLE_TFLY_CLIENT"
+          ],
+          "type": "select",
+          "multi": true,
+          "tags": true,
+          "values": [
+            {
+              "display": "Ticketfly Client",
+              "name": "ROLE_TFLY_CLIENT"
+            }
+          ]
+        },
+        {
+          "name": "grantTypes",
+          "outName": "authorizedGrantTypes",
+          "display": "Grant Types",
+          "value": [
+            "authorization_code",
+            "refresh_token"
+          ],
+          "type": "select",
+          "multi": true,
+          "values": [
+            {
+              "display": "Authorization Code",
+              "name": "authorization_code"
+            },
+            {
+              "display": "Refresh Token",
+              "name": "refresh_token"
+            },
+            {
+              "display": "Client Credentials",
+              "name": "client_credentials"
+            },
+            {
+              "display": "Password",
+              "name": "password"
+            },
+            {
+              "display": "Implicit",
+              "name": "implicit"
+            },
+            {
+              "display": "Assertion",
+              "name": "assertion"
+            }
+          ]
+        },
+        {
+          "name": "scopes",
+          "outName": "scope",
+          "display": "Scopes",
+          "value": [
+            "profile:read"
+          ],
+          "type": "select",
+          "multi": true,
+          "tags": true,
+          "values": [
+            {
+              "display": "Profile Read",
+              "name": "profile:read"
+            },
+            {
+              "display": "Account Read",
+              "name": "account:read"
+            }
+          ]
+        }
+      ]
     }
   }
 }

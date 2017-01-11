@@ -84,7 +84,7 @@ var apiDefinition = Ember.Object.extend({
       _.set(endpoint, 'response.jsonRoot', _.get(endpoint, 'jsonRoot'));
     }
     if(!_.has(endpoint,'response.pluralJsonRoot')) {
-      _.set(endpoint, 'response.pluralJsonRoot', _.get(endpoint, 'jsonRoot') + 's');
+      _.set(endpoint, 'response.pluralJsonRoot', _.get(endpoint, 'response.jsonRoot') + 's');
     }
     if(!_.has(endpoint,'response.columns')) {
       _.set(endpoint, 'response.columns', '*');

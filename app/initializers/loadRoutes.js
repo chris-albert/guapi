@@ -58,6 +58,7 @@ export default {
     application.inject('component','globalConfig','config:main');
     application.inject('controller','globalConfig','config:main');
     application.inject('route','globalConfig','config:main');
+    application.inject('component','router','router:main');
   },
   registerRest(routeDef, route, application) {
     //This is the base page of the rest tab

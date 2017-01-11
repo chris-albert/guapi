@@ -14,14 +14,39 @@
       },
       "fields": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
     },
-    "getEmployee": {
-      "display": "Get Employee",
-      "path": "/aggregator/v1/employees/{{id}}",
-      "method": "GET",
+    "employees": {
+      "display": "Employees",
+      "path": "/aggregator/v1/employees",
       "auth": "bearer",
-      "jsonRoot": "employee",
-      "dataLocation": "query",
-      "fields": ["id", "domainOrgId", "clientOrgId"]
+      "type": "rest",
+      "restId": "id",
+      "jsonRoot": {
+        "employee": ["id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+      },
+      "request": {
+        "list"  : ["domainOrgId", "clientOrgId"],
+        "create": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"],
+        "view"  : ["id","domainOrgId", "clientOrgId"],
+        "edit"  : ["role", "allEvents", "events"]
+      },
+      "response": {
+        "jsonRoot": "employee",
+        "list": {
+          "actions": {
+            "view": {
+              "link": "{{routeName}}.view",
+              "params": ["id","domainOrgId", "clientOrgId"],
+              "icon": "info-sign"
+            },
+            "edit": {
+              "link": "{{routeName}}.edit",
+              "params": ["id","domainOrgId", "clientOrgId"],
+              "icon": "pencil"
+            }
+          }
+        }
+      },
+      "fields": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
     },
     "roles": {
       "display": "Roles",

@@ -10,6 +10,10 @@ export default Ember.Component.extend({
   actions         : {
     responseToggle() {
       this.set('raw', !this.get('raw'));
+    },
+    actionClicked(item) {
+      console.log(item);
+      this.get('router').transitionTo(item.link,{queryParams: item.queryParams});
     }
   },
   responseViewText: Ember.computed('raw', function () {
@@ -104,12 +108,16 @@ export default Ember.Component.extend({
         const columns = this.getColumns(item);
         var actions = null;
         if(this.get('isRest')) {
+          var queryParams = {};
+          queryParams['as'] = true;
+          queryParams[this.get('formConfig.restId')] = item[this.get('formConfig.restId')];
           actions = {
             edit: {
               link: splitRouteInital + '.edit'
             },
             view: {
-              link: splitRouteInital + '.view'
+              link: splitRouteInital + '.view',
+              queryParams: queryParams
             }
           };
         }
