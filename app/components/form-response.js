@@ -11,9 +11,8 @@ export default Ember.Component.extend({
     responseToggle() {
       this.set('raw', !this.get('raw'));
     },
-    actionClicked(item) {
-      console.log(item);
-      this.get('router').transitionTo(item.link,{queryParams: item.queryParams});
+    actionClicked(action) {
+      this.get('router').transitionTo(action.link, {queryParams: action.queryParams});
     }
   },
   responseViewText: Ember.computed('raw', function () {
@@ -87,8 +86,16 @@ export default Ember.Component.extend({
       });
     });
   }),
+  objectActions: onChange(function() {
+    return this.getJson(json => {
+      return this.getActions(json);
+    });
+  }),
   isRest          : Ember.computed('model.type', function () {
-    return this.get('formConfig.type') === 'rest';
+    return false;
+  }),
+  hasActions: onChange(function() {
+    return !_.isUndefined(this.get('config.' + this.get('route.last') + '.actions'));
   }),
   responseHeaders : onChange(function () {
     var columns = this.get('config.columns');
@@ -103,32 +110,36 @@ export default Ember.Component.extend({
   }),
   responseValues  : onChange(function () {
     return this.getJson(json => {
-      const splitRouteInital = _.initial(this.get('routeName').split('.')).join('.');
       return _.map(json, item => {
-        const columns = this.getColumns(item);
-        var actions = null;
-        if(this.get('isRest')) {
-          var queryParams = {};
-          queryParams['as'] = true;
-          queryParams[this.get('formConfig.restId')] = item[this.get('formConfig.restId')];
-          actions = {
-            edit: {
-              link: splitRouteInital + '.edit'
-            },
-            view: {
-              link: splitRouteInital + '.view',
-              queryParams: queryParams
-            }
-          };
-        }
         return {
           id     : item[this.get('formConfig.restId')],
-          values : columns,
-          actions: actions
+          values : this.getColumns(item),
+          actions: this.getActions(item)
         };
       });
     });
   }),
+  getActions(item) {
+    var actions = [];
+    if(this.get('config.' + this.get('route.last') + '.actions')) {
+      _.map(this.get('config.' + this.get('route.last') + '.actions'), action => {
+        action.link = Handlebars.compile(action.link)(this);
+        action.queryParams = {};
+        if(_.has(action,'autoSubmit') && _.get(action, 'autoSubmit') === true) {
+          action.queryParams.as = true;
+        }
+        _.map(action.params, param => {
+          if(_.isUndefined(item[param])) {
+            action.queryParams[param] = this.get('request.data.' + param);
+          } else {
+            action.queryParams[param] = item[param];
+          }
+        });
+        actions.push(action);
+      });
+    }
+    return actions;
+  },
   getColumns(item) {
     const columns = this.get('config.columns');
     if(_.isArray(columns)) {

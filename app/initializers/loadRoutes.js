@@ -72,7 +72,6 @@ export default {
   registerRestRoute(routeDef, route, application) {
     application.register('route:' + route, Ember.Route.extend({
       renderTemplate() {
-        //this.render('components/rest-container');
         this.render('components/tab-component');
       },
       model() {
@@ -91,23 +90,15 @@ export default {
     }));
   },
   registerListRoute(routeDef, route, application) {
-    //this.registerAll(this.genRouteDef(routeDef, 'listable'), route + '.list', application, 'GET');
     this.registerAll(this.genRouteDef(routeDef,'list'), route + '.list', application, 'GET');
   },
   registerCreateRoute(routeDef, route, application) {
-    //this.registerAll(routeDef, route + '.create', application, 'POST');
     this.registerAll(this.genRouteDef(routeDef,'create'), route + '.create', application, 'POST');
   },
-  /**
-   * The edit route is special since we need to preload data for the form, so we need to
-   * first go get the data from the `view` endpoint, then display the form as normal
-   */
   registerEditRoute(routeDef, route, application) {
-    //this.registerAll(this.genRouteDef(routeDef, 'editable'), route + '.edit', application, 'PUT');
     this.registerAll(this.genRouteDef(routeDef,'edit'), route + '.edit', application, 'PUT');
   },
   registerViewRoute(routeDef, route, application) {
-    //this.registerAll(this.genRouteDef(routeDef, 'viewable'), route + '.view', application, 'GET');
     this.registerAll(this.genRouteDef(routeDef,'view'), route + '.view', application, 'GET');
   },
   registerAll(routeDef, route, application, method) {
@@ -144,11 +135,13 @@ export default {
   },
   setUpRestModel(routeDef, route, method, params) {
     var m = _.cloneDeep(routeDef);
-    if (!m.routeName) {
-      m.routeName = route;
-    }
+    var routeSplit = route.split('.');
     m.submitDisplay = this.getSubmitDisplay(route);
-    //m.additionalActions = this.getAdditionalAction(route);
+    m.route = {
+      name: route,
+      last: _.last(routeSplit),
+      base: _.initial(routeSplit).join('.')
+    };
     m.params = params;
     m.method = routeDef.method;
     return m;

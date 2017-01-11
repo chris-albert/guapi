@@ -27,23 +27,41 @@
         "list"  : ["domainOrgId", "clientOrgId"],
         "create": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"],
         "view"  : ["id","domainOrgId", "clientOrgId"],
-        "edit"  : ["role", "allEvents", "events"]
+        "edit"  : ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
       },
       "response": {
         "jsonRoot": "employee",
         "list": {
-          "actions": {
-            "view": {
-              "link": "{{routeName}}.view",
+          "actions": [
+            {
+              "type": "icon",
+              "link": "{{route.base}}.view",
               "params": ["id","domainOrgId", "clientOrgId"],
+              "autoSubmit": true,
               "icon": "info-sign"
-            },
-            "edit": {
-              "link": "{{routeName}}.edit",
-              "params": ["id","domainOrgId", "clientOrgId"],
-              "icon": "pencil"
             }
-          }
+          ]
+        },
+        "view": {
+          "actions": [
+            {
+              "type": "button",
+              "display": "Edit",
+              "link": "{{route.base}}.edit",
+              "params": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+            }
+          ]
+        },
+        "edit": {
+          "actions": [
+            {
+              "type": "button",
+              "display": "View",
+              "link": "{{route.base}}.view",
+              "autoSubmit": true,
+              "params": ["id","domainOrgId", "clientOrgId"]
+            }
+          ]
         }
       },
       "fields": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]

@@ -1,8 +1,4 @@
 <form class="form-horizontal">
-  {{#if showOauth2}}
-    {{form-element field=authSelector}}
-      <hr class="auth-separator"/>
-  {{/if}}
   {{#each fields as |field|}}
     {{form-element
       field=field

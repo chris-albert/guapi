@@ -2,9 +2,8 @@ import Ember from 'ember';
 import _ from 'lodash/lodash';
 
 export default Ember.Controller.extend({
-  headers     : {},
-  url         : null,
   settings    : Ember.inject.service('settings-store'),
+  request     : {},
   actions     : {
     submit() {
       this.beforeSubmit();
@@ -17,22 +16,17 @@ export default Ember.Controller.extend({
       this.updateRequest();
     }
   },
-  oauth2ShowSwitch: false,
-  showOauth2Select: Ember.computed('model.auth', 'oauth2ShowSwitch',function () {
-    return this.get('model.auth') === 'oauth2' && this.get('oauth2ShowSwitch');
-  }),
-  isOauth2    : Ember.computed('model.auth', function () {
-    return this.get('model.auth') === 'oauth2';
-  }),
   apiCall() {
     this.api((x, r) => this.setResponseAndRequest(x, r));
   },
   setResponseAndRequest(xhr, request) {
     this.set('response', {});
     this.set('response.xhr', xhr);
+    this.set('request.last', request);
   },
   setRequest(request) {
-    this.set('request', JSON.stringify(request, null, 2));
+    this.set('request.lastObj', request);
+    this.set('request.current', JSON.stringify(request, null, 2));
   },
   api(complete) {
     var options = this.getRequestOptions();
@@ -114,9 +108,6 @@ export default Ember.Controller.extend({
         return 'application/json; charset=UTF-8';
     }
   },
-  hasToken() {
-    return this.get('settings').getStore('token');
-  },
   getUrl(data) {
     var d = _.clone(data);
     var url = this.getBaseUrl();
@@ -137,10 +128,12 @@ export default Ember.Controller.extend({
         'Authorization': 'Bearer ' + this.get('settings').getStore('token')
       };
     }
-    return this.buildAuthHeader(
-      this.get('settings').getStore('clientId'),
-      this.get('settings').getStore('clientSecret')
-    );
+    if(this.get('model.auth.type') === 'basic') {
+      return this.buildAuthHeader(
+        this.get('settings').getStore('clientId'),
+        this.get('settings').getStore('clientSecret')
+      );
+    }
   },
   routeEntered: Ember.observer('model', function () {
     this.bindQueryParams();
@@ -148,7 +141,6 @@ export default Ember.Controller.extend({
     if (this.get('as')) {
       this.apiCall();
     }
-    this.preloadData();
     this.updateRequest();
   }),
   submitDisplay: Ember.computed('model.submitDisplay',function() {
@@ -158,53 +150,6 @@ export default Ember.Controller.extend({
     }
     return 'Submit';
   }),
-  //TODO: Generalize this
-  preloadData() {
-    //If we are in a rest edit route then we need to load the data
-    //for the record so we can then edit it
-    if (_.endsWith(this.get('model.routeName'), '.edit')) {
-      var options = {
-        url        : this.getUrl({id: this.get('model.params.id')}),
-        method     : 'GET',
-        contentType: this.getContentType(),
-        headers    : this.getAuth()
-      };
-      this.rawApi(options,(xhr, request) => {
-        if(xhr.status === 200 && _.isObject(xhr.responseJSON)) {
-          var resp = xhr.responseJSON;
-          if(this.get('model.response.jsonRoot')) {
-            resp = _.get(resp, this.get('model.response.jsonRoot'));
-          }
-          const fieldHash = _.indexBy(this.get('model.fields'),f => f.name);
-          console.log(fieldHash);
-          _.map(resp, (value, key) => {
-            if(_.get(fieldHash,key)) {
-              Ember.set(_.get(fieldHash,key), 'value', value);
-            } else {
-              console.log(this.get('model.fields'));
-              this.get('model.fields').push({
-                name: key,
-                value: value,
-                display: 'hidden'
-              });
-            }
-          });
-          this.updateRequest();
-        }
-      });
-    }
-  },
-  isEdit() {
-    return _.endsWith(this.get('model.routeName'), '.edit');
-  },
-  getRestView(cb) {
-    var id = this.get('model.params.id');
-    this.rawApi('GET', (xhr, request) => {
-      if (xhr.status === 200 && _.isObject(xhr.responseJSON)) {
-        cb(xhr, request);
-      }
-    }, this.getUrl({id: id}));
-  },
   bindQueryParams() {
     _.map(this.get('model.fields'), field => {
       var q = this.get(field.name);
@@ -244,13 +189,6 @@ export default Ember.Controller.extend({
   beforeSubmit() {
 
   },
-  authSelector: Ember.computed('',function() {
-    var auth = _.cloneDeep(this.get('globalConfig.authSelector'));
-    if(this.get('model.oauth2Header')) {
-      auth.value = [this.get('model.oauth2Header')];
-    }
-    return auth;
-  }),
   buildAuthHeader(user, pass) {
     return {
       "Authorization": "Basic " + btoa(user + ':' + pass)
