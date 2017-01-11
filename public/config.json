@@ -1,21 +1,5 @@
 {
   "display": "TicketFly",
-  "authSelector": {
-    "name": "authSelector",
-    "display": "Auth Header",
-    "type": "select",
-    "description": "Token will be your logged in token from top nav 'Log In', Client Credentials will be credentials from top nav 'Settings'.",
-    "values": [
-      {
-        "name": "token",
-        "display": "Token"
-      },
-      {
-        "name": "clientCredentials",
-        "display": "Client Credentials"
-      }
-    ]
-  },
   "projects": [
     "account",
     "permissions"

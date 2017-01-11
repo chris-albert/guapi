@@ -50,7 +50,7 @@ export default {
     if (routeDef.type === 'rest') {
       this.registerRest(routeDef, route, application);
     } else {
-      this.registerAll(routeDef, route, application, routeDef.method);
+      this.registerAll(routeDef, route, application);
     }
   },
   setUpInjections(application,api) {
@@ -90,30 +90,30 @@ export default {
     }));
   },
   registerListRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef,'list'), route + '.list', application, 'GET');
+    this.registerAll(this.genRouteDef(routeDef,'list'), route + '.list', application);
   },
   registerCreateRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef,'create'), route + '.create', application, 'POST');
+    this.registerAll(this.genRouteDef(routeDef,'create'), route + '.create', application);
   },
   registerEditRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef,'edit'), route + '.edit', application, 'PUT');
+    this.registerAll(this.genRouteDef(routeDef,'edit'), route + '.edit', application);
   },
   registerViewRoute(routeDef, route, application) {
-    this.registerAll(this.genRouteDef(routeDef,'view'), route + '.view', application, 'GET');
+    this.registerAll(this.genRouteDef(routeDef,'view'), route + '.view', application);
   },
-  registerAll(routeDef, route, application, method) {
+  registerAll(routeDef, route, application) {
     console.debug('Registering route [' + route + ']');
-    this.registerRoute(routeDef, route, application, method, this.restModel);
+    this.registerRoute(routeDef, route, application, this.restModel);
     this.registerController(routeDef, route, application);
   },
-  registerRoute(routeDef, route, application, method, modelFunc) {
+  registerRoute(routeDef, route, application, modelFunc) {
     var self = this;
     application.register('route:' + route, Ember.Route.extend({
       renderTemplate() {
         this.render('components/generic-form');
       },
       model(params) {
-        return modelFunc.call(self, routeDef, route, method, params, this);
+        return modelFunc.call(self, routeDef, route, params, this);
       },
       setupController(controller, model) {
         controller.set('content', model);
@@ -133,7 +133,7 @@ export default {
       queryParams: qp
     }));
   },
-  setUpRestModel(routeDef, route, method, params) {
+  setUpRestModel(routeDef, route, params) {
     var m = _.cloneDeep(routeDef);
     var routeSplit = route.split('.');
     m.submitDisplay = this.getSubmitDisplay(route);
@@ -146,8 +146,8 @@ export default {
     m.method = routeDef.method;
     return m;
   },
-  restModel(routeDef, route, method, params) {
-    var m = this.setUpRestModel(routeDef, route, method, params);
+  restModel(routeDef, route, params) {
+    var m = this.setUpRestModel(routeDef, route, params);
     return new Ember.RSVP.Promise(function (resolve) {
       resolve(m);
     });

@@ -32,6 +32,7 @@ Router.map(function () {
       });
     });
   });
+  this.route('config');
   console.debug('Routes created');
 });
 

@@ -3,17 +3,7 @@
   "display": "Permissions",
   "baseUrl": "https://authorization-{{settings.env}}.ticketfly.com",
   "endpoints": {
-    "createEmployee": {
-      "display": "Create Employee",
-      "path": "/aggregator/v1/employees",
-      "method": "POST",
-      "auth": "bearer",
-      "dataLocation": "json",
-      "jsonRoot": {
-        "employee": ["id", "firstName", "lastName", "email", "role", "allEvents", "events"]
-      },
-      "fields": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
-    },
+
     "employees": {
       "display": "Employees",
       "path": "/aggregator/v1/employees",
