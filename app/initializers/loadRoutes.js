@@ -152,16 +152,6 @@ export default {
       resolve(m);
     });
   },
-  getAdditionalAction(route) {
-    var n = route.split('.');
-    if(route.endsWith('.list')) {
-      return [{
-        'display': 'Create',
-        'link': _.initial(n).join('.') + '.create'
-      }];
-    }
-    return [];
-  },
   getSubmitDisplay(route) {
     var n = route.split('.');
     if(n.length >= 2) {
@@ -187,11 +177,20 @@ export default {
       copyToObj[objKey] = routeDef.request[requestKey][objKey];
     }
   },
-  genRouteDef(routeDef, name) {
-    var rd    = _.cloneDeep(routeDef);
+  genRequest(routeDef, routeName) {
     _.map(['fields','dataLocation','method','path'], copyKey => {
-      this.copyFromRequest(routeDef,name, copyKey, rd);
+      this.copyFromRequest(routeDef,routeName, copyKey, routeDef);
     });
+  },
+  genResponse(routeDef, routeName) {
+    if(_.has(routeDef,'response.' + name)) {
+      _.get(routeDef,'response.' + name);
+    }
+  },
+  genRouteDef(routeDef, routeName) {
+    var rd    = _.cloneDeep(routeDef);
+    this.genRequest(rd, routeName);
+    this.genResponse(rd, routeName);
     delete rd.request;
     return rd;
   }
