@@ -95,7 +95,7 @@ export default Ember.Component.extend({
     return false;
   }),
   hasActions: onChange(function() {
-    return !_.isUndefined(this.get('config.' + this.get('route.last') + '.actions'));
+    return !_.isUndefined(this.get('config.actions'));
   }),
   responseHeaders : onChange(function () {
     var columns = this.get('config.columns');
@@ -121,8 +121,9 @@ export default Ember.Component.extend({
   }),
   getActions(item) {
     var actions = [];
-    if(this.get('config.' + this.get('route.last') + '.actions')) {
-      _.map(this.get('config.' + this.get('route.last') + '.actions'), action => {
+    if(this.get('config.actions')) {
+      _.map(this.get('config.actions'), action => {
+        console.log(action);
         action.link = Handlebars.compile(action.link)(this);
         action.queryParams = {};
         if(_.has(action,'autoSubmit') && _.get(action, 'autoSubmit') === true) {

@@ -47,14 +47,14 @@
       "auth": "bearer",
       "type": "rest",
       "restId": "clientId",
-      "jsonRoot": "clients",
       "request": {
         "list"  : [],
         "create": ["appName", "clientIdGen", "clientSecret", "authorities","grantTypes", "scopes"],
         "view"  : ["clientId"],
-        "edit"  : ["name", "ownerOrgId"]
+        "edit"  : ["appName", "clientIdGen", "clientSecret", "authorities","grantTypes", "scopes"]
       },
       "response": {
+        "jsonRoot": "clients",
         "columns": [
           "id",
           "appName",
@@ -63,7 +63,35 @@
           "clientAuthorities",
           "grantTypes",
           "scopes"
-        ]
+        ],
+        "actions": {
+          "list": [
+            {
+              "type": "icon",
+              "link": "{{route.base}}.view",
+              "params": ["clientId"],
+              "autoSubmit": true,
+              "icon": "info-sign"
+            }
+          ],
+          "view": [
+            {
+              "type": "button",
+              "display": "Edit",
+              "link": "{{route.base}}.edit",
+              "params": ["appName", "clientIdGen", "clientSecret", "authorities","grantTypes", "scopes"]
+            }
+          ],
+          "edit": [
+            {
+              "type": "button",
+              "display": "View",
+              "link": "{{route.base}}.view",
+              "autoSubmit": true,
+              "params": ["clientId"]
+            }
+          ]
+        }
       },
       "fields": [
         {

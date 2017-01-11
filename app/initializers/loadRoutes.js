@@ -183,8 +183,10 @@ export default {
     });
   },
   genResponse(routeDef, routeName) {
-    if(_.has(routeDef,'response.' + name)) {
-      _.get(routeDef,'response.' + name);
+    const routeAction = _.get(routeDef,'response.actions.' + routeName);
+    routeDef.response.actions = [];
+    if(!_.isUndefined(routeAction)) {
+      routeDef.response.actions = routeAction;
     }
   },
   genRouteDef(routeDef, routeName) {

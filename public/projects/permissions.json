@@ -21,8 +21,8 @@
       },
       "response": {
         "jsonRoot": "employee",
-        "list": {
-          "actions": [
+        "actions": {
+          "list": [
             {
               "type": "icon",
               "link": "{{route.base}}.view",
@@ -30,20 +30,16 @@
               "autoSubmit": true,
               "icon": "info-sign"
             }
-          ]
-        },
-        "view": {
-          "actions": [
+          ],
+          "view": [
             {
               "type": "button",
               "display": "Edit",
               "link": "{{route.base}}.edit",
               "params": ["domainOrgId", "clientOrgId", "id", "firstName", "lastName", "email", "role", "allEvents", "events"]
             }
-          ]
-        },
-        "edit": {
-          "actions": [
+          ],
+          "edit": [
             {
               "type": "button",
               "display": "View",
