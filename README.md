@@ -1,52 +1,49 @@
-# api-explorer
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+Content is a renderable object
 
-## Prerequisites
-
-You will need the following things properly installed on your computer.
-
-* [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with NPM)
-* [Bower](https://bower.io/)
-* [Ember CLI](https://ember-cli.com/)
-* [PhantomJS](http://phantomjs.org/)
-
-## Installation
-
-* `git clone <repository-url>` this repository
-* `cd api-explorer`
-* `npm install`
-* `bower install`
-
-## Running / Development
-
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-
-### Code Generators
-
-Make use of the many generators for code, try `ember help generate` for more details
-
-### Running Tests
-
-* `ember test`
-* `ember test --server`
-
-### Building
-
-* `ember build` (development)
-* `ember build --environment production` (production)
-
-### Deploying
-
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
-
-* [ember.js](http://emberjs.com/)
-* [ember-cli](https://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+Content Types
+ - tabs
+ - form
+ 
+The `tabs` content type renders tabs to the page.
+ ```
+ {
+   "name": "The name used for routes, this should only be camel case",
+   "display": "The name displayed on the tab",
+   "content": {
+     "tabs|form": ... //Can be more nested tabs, or another type of content
+   }
+ }
+ ```
+ 
+ 
+The `form` content type renders a form to the page.
+```
+content": {
+  "form": {
+    "path": "Path to call",
+    "method": "HTTP method to use [GET|PUT|POST]",
+    "request": {
+      "location": "Location of form data [query|body]",
+      "auth": {
+        "type": "Type of authentication [bearer|basic|none]"
+      },
+      "fields": [
+        {
+          "display": "Field display name",
+          "name": "Name used when adding to query or body",
+          "type": "Field type [text,password,select]",
+          "disabled": "Weather field is disabled [true,false]"
+        }
+      ],
+      "submitButton": "Name of submit button"
+    },
+    "response": {
+      "root": "json root to get data from",
+      "type": "Response type [array|object]",
+      "fields": "Response fields to show, * for all that were retrieved, or array of fields to show"
+    }
+  }
+}
+```
+ 

@@ -1,0 +1,289 @@
+{
+  "display": "TicketFly",
+  "settings": [
+    {
+      "name": "env",
+      "display": "Environment"
+    }
+  ],
+  "content": {
+    "tabs": [
+      {
+        "display": "Account",
+        "name": "account",
+        "content": {
+          "tabs": [
+            {
+              "display": "Get Token",
+              "name": "getToken",
+              "content": {
+                "form": {
+                  "path": "/account/oauth2/token",
+                  "method": "POST",
+                  "dataLocation": "form",
+                  "fields": [
+                    {
+                      "name": "username",
+                      "display": "Username"
+                    },
+                    {
+                      "name": "password",
+                      "display": "Password",
+                      "type": "password"
+                    },
+                    {
+                      "name": "grant_type",
+                      "type": "hidden",
+                      "value": "password"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "display": "Check Token",
+              "name": "checkToken",
+              "content": {
+                "path": "/account/oauth2/check_token",
+                "method": "POST",
+                "dataLocation": "query",
+                "fields": ["token"]
+              }
+            },
+            {
+              "display": "Me",
+              "name": "me",
+              "content": {
+                "display": "Me",
+                "path": "/account/v2/users/me",
+                "method": "GET",
+                "jsonRoot": "user",
+                "auth": {
+                  "type": "bearer"
+                }
+              }
+            },
+            {
+              "display": "Client Details",
+              "name": "client_details"
+            }
+          ]
+        }
+      },
+      {
+        "display": "Permissions",
+        "name": "permissions",
+        "content": {
+          "tabs": [
+            {
+              "display": "Employees",
+              "name": "employees",
+              "content": {
+                "tabs": [
+                  {
+                    "display": "List",
+                    "name": "list",
+                    "content": {
+                      "form": {
+                        "path": "/aggregator/v1/employees",
+                        "method": "GET",
+                        "request": {
+                          "location": "query",
+                          "auth": {
+                            "type": "bearer"
+                          },
+                          "fields": [
+                            {
+                              "display": "Domain Org Id",
+                              "name": "domainOrgId"
+                            },
+                            {
+                              "display": "Client Org Id",
+                              "name": "clientOrgId"
+                            }
+                          ],
+                          "submitButton": "List"
+                        },
+                        "response": {
+                          "root": "employees",
+                          "type": "array",
+                          "fields": "*"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "display": "Create",
+                    "name": "create",
+                    "content": {
+                      "form": {
+                        "path": "/aggregator/v1/employees",
+                        "method": "POST",
+                        "request": {
+                          "root": {
+                            "employee": ["id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+                          },
+                          "location": "body",
+                          "auth": {
+                            "type": "bearer"
+                          },
+                          "fields": [
+                            {
+                              "display": "Domain Org Id",
+                              "name": "domainOrgId"
+                            },
+                            {
+                              "display": "Client Org Id",
+                              "name": "clientOrgId"
+                            },
+                            {
+                              "display": "Id",
+                              "name": "id"
+                            },
+                            {
+                              "display": "First Name",
+                              "name": "firstName"
+                            },
+                            {
+                              "display": "Last Name",
+                              "name": "lastName"
+                            },
+                            {
+                              "display": "Email",
+                              "name": "email"
+                            },
+                            {
+                              "display": "Role",
+                              "name": "role"
+                            },
+                            {
+                              "display": "All Events",
+                              "name": "allEvents"
+                            },
+                            {
+                              "display": "Events",
+                              "name": "events"
+                            }
+                          ],
+                          "submitButton": "Create"
+                        },
+                        "response": {
+                          "root": "employee",
+                          "type": "object",
+                          "fields": "*"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "display": "View",
+                    "name": "view",
+                    "content": {
+                      "form": {
+                        "path": "/aggregator/v1/employees/{{id}}",
+                        "method": "GET",
+                        "request": {
+                          "location": "query",
+                          "auth": {
+                            "type": "bearer"
+                          },
+                          "fields": [
+                            {
+                              "display": "Id",
+                              "name": "id"
+                            },
+                            {
+                              "display": "Domain Org Id",
+                              "name": "domainOrgId"
+                            },
+                            {
+                              "display": "Client Org Id",
+                              "name": "clientOrgId"
+                            }
+                          ],
+                          "submitButton": "List"
+                        },
+                        "response": {
+                          "root": "employee",
+                          "type": "object",
+                          "fields": "*"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "display": "Edit",
+                    "name": "edit",
+                    "content": {
+                      "form": {
+                        "path": "/aggregator/v1/employees/{{id}}",
+                        "method": "PUT",
+                        "request": {
+                          "root": {
+                            "employee": ["id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+                          },
+                          "location": "body",
+                          "auth": {
+                            "type": "bearer"
+                          },
+                          "fields": [
+                            {
+                              "display": "Domain Org Id",
+                              "name": "domainOrgId"
+                            },
+                            {
+                              "display": "Client Org Id",
+                              "name": "clientOrgId"
+                            },
+                            {
+                              "display": "Id",
+                              "name": "id"
+                            },
+                            {
+                              "display": "First Name",
+                              "name": "firstName"
+                            },
+                            {
+                              "display": "Last Name",
+                              "name": "lastName"
+                            },
+                            {
+                              "display": "Email",
+                              "name": "email"
+                            },
+                            {
+                              "display": "Role",
+                              "name": "role"
+                            },
+                            {
+                              "display": "All Events",
+                              "name": "allEvents"
+                            },
+                            {
+                              "display": "Events",
+                              "name": "events"
+                            }
+                          ],
+                          "submitButton": "Edit"
+                        },
+                        "response": {
+                          "root": "employee",
+                          "type": "object",
+                          "fields": "*"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "display": "Roles",
+              "name": "roles"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
