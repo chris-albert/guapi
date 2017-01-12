@@ -49,6 +49,9 @@ export default Ember.Component.extend({
     }
     return 'danger';
   }),
+  isGoodStatus: onChange(function() {
+    return this.isSuccess(this.get('response.xhr.status'));
+  }),
   statusCode      : onChange(function () {
     return this.get('response.xhr.status');
   }),
