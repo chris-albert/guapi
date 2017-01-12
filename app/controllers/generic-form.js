@@ -4,6 +4,7 @@ import _ from 'lodash/lodash';
 export default Ember.Controller.extend({
   settings    : Ember.inject.service('settings-store'),
   request     : {},
+  formChanged: true,
   actions     : {
     submit() {
       this.beforeSubmit();
@@ -14,6 +15,7 @@ export default Ember.Controller.extend({
     },
     formChange() {
       this.updateRequest();
+      this.toggleProperty('formChanged');
     }
   },
   apiCall() {
@@ -135,6 +137,20 @@ export default Ember.Controller.extend({
       );
     }
   },
+  link: Ember.computed('formChanged', function() {
+    var data = this.allFilteredFields();
+    var queryString = _.filter(_.map(data,(value,key) => {
+      if(!_.isUndefined(value)) {
+        return key + "=" + value;
+      } else {
+        return null;
+      }
+    }),i => !_.isNull(i)).join('&');
+    if(queryString != '') {
+      queryString = '?' + queryString;
+    }
+    return window.location.origin + window.location.pathname + queryString;
+  }),
   routeEntered: Ember.observer('model', function () {
     this.bindQueryParams();
     //if auto submit
