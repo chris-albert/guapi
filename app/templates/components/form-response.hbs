@@ -24,7 +24,9 @@
                 {{#object-table data=objectData}}{{/object-table}}
               </div>
               <div class="col-md-2">
-                {{form-actions formActions=objectActions}}
+                {{#if isGoodStatus}}
+                  {{form-actions formActions=objectActions}}
+                {{/if}}
               </div>
             </div>
           {{else if responseIsArray}}
@@ -45,7 +47,9 @@
                         {{#if hasActions}}
                           <td>
                             <div class="response-actions">
+                            {{#if isGoodStatus}}
                               {{form-actions formActions=item.actions}}
+                            {{/if}}
                             </div>
                           </td>
                         {{/if}}
