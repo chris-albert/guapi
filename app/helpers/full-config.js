@@ -88,7 +88,6 @@ const Tab = Ember.EddyObject.extend({
   }
 });
 
-
 const Form = Ember.EddyObject.extend({
   configType: 'Form',
   request: null,

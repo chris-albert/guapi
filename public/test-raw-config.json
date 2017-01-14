@@ -39,6 +39,45 @@
                       "display": "Test Password",
                       "name": "testPassword",
                       "type": "password"
+                    },
+                    {
+                      "display": "Test Disabled",
+                      "name": "testDisabled",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "display": "Test Select",
+                      "name": "testSelect",
+                      "type": "select",
+                      "value": "option1",
+                      "values": [
+                        {
+                          "display": "Option 1",
+                          "name": "option1"
+                        },
+                        {
+                          "display": "Option 2",
+                          "name": "option2"
+                        }
+                      ]
+                    },
+                    {
+                      "display": "Test Multi Select",
+                      "name": "testMultiSelect",
+                      "type": "select",
+                      "multi": true,
+                      "value": ["option1"],
+                      "values": [
+                        {
+                          "display": "Option 1",
+                          "name": "option1"
+                        },
+                        {
+                          "display": "Option 2",
+                          "name": "option2"
+                        }
+                      ]
                     }
                   ]
                 },
