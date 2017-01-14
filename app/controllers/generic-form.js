@@ -1,3 +1,12 @@
+import Ember from 'ember';
+import _ from 'lodash/lodash';
+
+export default Ember.Controller.extend({
+  init() {
+    console.log('generic form controller');
+    this._super(...arguments);
+  },
+});
 //import Ember from 'ember';
 //import _ from 'lodash/lodash';
 //

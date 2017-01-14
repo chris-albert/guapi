@@ -2,14 +2,11 @@
   <span class="glyphicon glyphicon-link pull-right" aria-hidden="true"></span>
 </a>
 {{#form-input
-  fields=model.fields
-  submitName=submitDisplay
-  showOauth2=showOauth2Select
-  authSelector=authSelector
+  fields=model.request.fields
+  submitName=model.request.submitButton
   onSubmit=(action "submit")
   onActionClick=(action "actionClick")
   onFormChange=(action "formChange")
-  formActions=model.additionalActions
 }}
 {{/form-input}}
 

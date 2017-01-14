@@ -21,6 +21,7 @@
               "content": {
                 "type": "form",
                 "request": {
+                  "url": "https://{{settings.env}}.google.com/{{settings.env}}",
                   "path": "/test/path",
                   "method": "POST",
                   "location": "query",
@@ -54,6 +55,7 @@
               "content": {
                 "type": "form",
                 "request": {
+                  "url": "http://google.com/{{settings.env}}",
                   "path": "/test/path",
                   "method": "POST",
                   "location": "query",
@@ -102,6 +104,7 @@
                     "content": {
                       "type": "form",
                       "request": {
+                        "url": "http://google.com/{{settings.env}}",
                         "path": "/test/path",
                         "method": "POST",
                         "location": "query",

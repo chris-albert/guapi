@@ -7,7 +7,6 @@ export default Ember.Component.extend({
   formChanged: true,
   actions     : {
     submit() {
-      this.beforeSubmit();
       this.apiCall();
     },
     actionClick(action) {
@@ -17,6 +16,15 @@ export default Ember.Component.extend({
       this.updateRequest();
       this.toggleProperty('formChanged');
     }
+  },
+  init() {
+    this.bindQueryParams();
+    //if auto submit
+    if (this.get('as')) {
+      this.apiCall();
+    }
+    this.updateRequest();
+    this._super(...arguments);
   },
   apiCall() {
     this.api((x, r) => this.setResponseAndRequest(x, r));
@@ -32,7 +40,7 @@ export default Ember.Component.extend({
   },
   api(complete) {
     var options = this.getRequestOptions();
-    if(this.get('model.dataLocation') === 'json') {
+    if(this.get('model.request.location') === 'json') {
       options.data = JSON.stringify(options.data);
     }
     this.rawApi(options, complete);
@@ -48,7 +56,7 @@ export default Ember.Component.extend({
     var rawData = this.allFilteredFields();
     return {
       url        : this.getUrl(rawData),
-      method     : this.get('model.method'),
+      method     : this.get('model.request.method'),
       data       : this.getData(),
       contentType: this.getContentType(),
       headers    : this.getAuth()
@@ -60,10 +68,9 @@ export default Ember.Component.extend({
   },
   getData() {
     var data = this.allFilteredFields();
-    switch (this.get('model.dataLocation')) {
+    switch (this.get('model.request.location')) {
       case 'form':
       case 'query':
-        //return data;
         return this.handleQueryRoot(data);
       case 'json':
         return this.handleJsonRoot(data);
@@ -113,7 +120,7 @@ export default Ember.Component.extend({
     return d;
   },
   getContentType() {
-    switch (this.get('model.dataLocation')) {
+    switch (this.get('model.request.location')) {
       case 'form':
       case 'query':
         return 'application/x-www-form-urlencoded; charset=UTF-8';
@@ -123,20 +130,13 @@ export default Ember.Component.extend({
   },
   getUrl(data) {
     var d = _.clone(data);
-    var url = this.getBaseUrl();
+    var url = this.get('model.request.url');
     d.settings = this.get('settings').getStoreObj();
+    console.log(this.get('settings').getStoreObj());
     return Handlebars.compile(url)(d);
   },
-  getBaseUrl() {
-    var projectBaseUrl = this.get('model.project.baseUrl');
-    if(projectBaseUrl) {
-      return projectBaseUrl + this.get('model.path');
-    } else {
-      return this.get('settings').getStore('baseUrl') + this.get('model.path');
-    }
-  },
   getAuth() {
-    if(this.get('model.auth.type') === 'bearer') {
+    if(this.get('model.request.auth.type') === 'bearer') {
       return {
         'Authorization': 'Bearer ' + this.get('settings').getStore('token')
       };
@@ -162,31 +162,16 @@ export default Ember.Component.extend({
     }
     return window.location.origin + window.location.pathname + queryString;
   }),
-  routeEntered: Ember.observer('model', function () {
-    this.bindQueryParams();
-    //if auto submit
-    if (this.get('as')) {
-      this.apiCall();
-    }
-    this.updateRequest();
-  }),
-  submitDisplay: Ember.computed('model.submitDisplay',function() {
-    var name = this.get('model.submitDisplay');
-    if(name) {
-      return name;
-    }
-    return 'Submit';
-  }),
   bindQueryParams() {
-    _.map(this.get('model.fields'), field => {
-      var q = this.get(field.name);
+    _.map(this.get('model.request.fields'), field => {
+      var q = this.get('queryParams.' + field.name);
       if (q) {
         field.value = q;
       }
     });
   },
   allFields() {
-    return _.object(_.map(this.get('model.fields'), function (field) {
+    return _.object(_.map(this.get('model.request.fields'), function (field) {
       return [field.name, field];
     }));
   },
@@ -212,9 +197,6 @@ export default Ember.Component.extend({
   },
   allFilteredFields() {
     return this.filterOutFields(this.allFields());
-  },
-  beforeSubmit() {
-
   },
   buildAuthHeader(user, pass) {
     return {

@@ -27,7 +27,9 @@ const Content = Ember.EddyObject.extend({
         this.set('tabs', tabs);
         return;
       case 'form':
-        this.set('form', new Form(this));
+        const form = new Form(this);
+        form.parent = this;
+        this.set('form', form);
         return;
       default:
         throw new Error('Tab type [' + this.get('type') + '] not valid');
@@ -56,9 +58,6 @@ const Content = Ember.EddyObject.extend({
     }
     recurse(this);
     return routeStack.reverse().join('.');
-  },
-  genRoute() {
-    return 'index';
   }
 });
 
@@ -98,6 +97,22 @@ const Form = Ember.EddyObject.extend({
     this.validate('Form', ['request', 'response']);
     this.set('request', new Request(this.get('request')));
     this.set('response', new Response(this.get('response')));
+  },
+  genRoute() {
+    var routeStack = [];
+    function recurse(tab) {
+      if(tab.get('parent')) {
+        routeStack.push(tab.get('parent.name'));
+        recurse(tab.get('parent'));
+      }
+    }
+    recurse(this);
+    return _.compact(routeStack.reverse()).join('.');
+  },
+  fieldValues() {
+    return _.map(this.get('request.fields'),field => {
+      return field.name;
+    });
   }
 });
 

@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
-import apiConfig from '../helpers/api-config';
+import fullConfig from '../helpers/full-config';
 
 export default Ember.Service.extend({
   setStore(key, value) {
@@ -20,7 +20,7 @@ export default Ember.Service.extend({
   },
   getStoreObj() {
     var obj = {};
-    _.map(apiConfig.defaultConfig().get('settings'), setting => {
+    _.map(fullConfig.defaultConfig().get('settings'), setting => {
       obj[setting.name] = this.getStore(setting.name);
     })
     return obj;

@@ -3,5 +3,5 @@
     {{outlet}}
   {{/tab-component}}
 {{else if isForm}}
-  {{#generic-form model=content.form}}{{/generic-form}}
+  {{#generic-form model=content.form queryParams=queryParams}}{{/generic-form}}
 {{/if}}

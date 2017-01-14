@@ -10,16 +10,11 @@ export default {
     fullConfig.getConfig('/test-raw-config.json')
       .then(config => {
         this.registerRoot(config, application);
-        this.setUpInjections(application, config);
+        this.setUpInjections(application);
         application.advanceReadiness();
       });
   },
-  setUpInjections(application,api) {
-    application.register('config:main',api,{ instantiate: false });
-    application.inject('component','globalConfig','config:main');
-    application.inject('controller','globalConfig','config:main');
-    application.inject('route','globalConfig','config:main');
-    application.inject('controller','router','router:main');
+  setUpInjections(application) {
     application.inject('component','router','router:main');
   },
   registerRoot(config, application) {
@@ -40,15 +35,15 @@ export default {
   },
   registerContent(content, application) {
     if(content.invoke('isTabs')) {
-      content.each(t => this.registerTab(t, application));
+      content.invoke('each', t => this.registerTab(t, application));
     } else if(content.invoke('isForm')) {
-      content.each(f => this.registerForm(f, application));
+      content.invoke('each', f => this.registerForm(f, application));
     }
   },
   registerTab(tab, application) {
     const route = tab.invoke('genRoute');
     const content = tab.get('content');
-    console.debug('Registering tab: [' + tab.get('name') + '] at route [' + route + ']');
+    console.debug('Registering route: [' + tab.get('name') + '] at route [' + route + ']');
     application.register('route:' + route, Ember.Route.extend({
       templateName: 'components/content-wrapper',
       model() {
@@ -65,6 +60,18 @@ export default {
     this.registerContent(content, application);
   },
   registerForm(form, application) {
-    console.debug('Registering form');
+    const route = form.invoke('genRoute');
+    console.debug('Registering controller at route [' + route + ']');
+    const queryParamKeys = form.invoke('fieldValues');
+    application.register('controller:' + route, Ember.Object.extend({
+      queryParams: queryParamKeys,
+      qp: Ember.computed('model', function() {
+        var obj = {};
+        _.map(queryParamKeys, key => {
+          obj[key] = this.get(key);
+        });
+        return obj;
+      })
+    }));
   }
 };
