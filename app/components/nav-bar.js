@@ -1,8 +1,8 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
-//import apiConfig from '../helpers/api-config';
+import Requester from '../helpers/requester';
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(Requester, {
   settings    : Ember.inject.service('settings-store'),
   fields      : Ember.computed('nav.settings', function () {
     return _.map(this.get('nav.settings'), setting => {
@@ -45,6 +45,10 @@ export default Ember.Component.extend({
     logout() {
       this.get('settings').removeStore('token');
       this.set('tokenChanged',!this.get('tokenChanged'));
+    },
+    submit() {
+      console.log(this.getRequestOptions());
+      console.log('loging form submit');
     }
   },
   init() {
@@ -52,6 +56,7 @@ export default Ember.Component.extend({
     //TODO: This needs to be added to the config
     //Cloning here so the login form and the getToken form don't have their values binded
     //this.set('loginFields', _.cloneDeep(this.getLoginForm().fields));
+    this.set('model',this.get('nav.auth'));
     this._super();
   },
   loginFields: Ember.computed('', function() {
@@ -81,7 +86,7 @@ export default Ember.Component.extend({
       this.set('formChanged', this.get('formChanged') + 'i');
     });
     this.$('.login-button').on('click', e => {
-      self.login();
+      //self.login();
       e.stopPropagation();
     });
   },
@@ -92,6 +97,7 @@ export default Ember.Component.extend({
     this.get('settings').setStoreObj(data);
   },
   login() {
+    console.log('nav-bar login');
     this.set('loginError', null);
     const data = this.flattenFields(this.get('loginFields'));
     const authHeader = this.getAuthHeader(data);
@@ -117,39 +123,39 @@ export default Ember.Component.extend({
       this.set('loginError', error);
     });
   },
-  dataFilter(data) {
+  //dataFilter(data) {
     //_.map(apiConfig.defaultConfig().get('loginForm.dataFilter'), dataFilter => {
     //  delete data[dataFilter];
     //});
     //return data;
-  },
-  handleSettingFields(data) {
+  //},
+  //handleSettingFields(data) {
     //_.map(apiConfig.defaultConfig().get('loginForm.settingFields'), settingField => {
     //  this.get('settings').setStore(settingField, data[settingField]);
     //});
-  },
+  //},
   flattenFields(fields) {
     return _.object(_.map(fields, field => {
       return [field.name, field.value];
     }));
   },
-  getUrl() {
-    const obj = {
-      settings: this.get('settings').getStoreObj()
-    };
-    return Handlebars.compile(this.getLoginForm().baseUrl)(obj) +
-        this.getLoginForm().path;
-  },
-  getAuthHeader(data) {
+  //getUrl() {
+  //  const obj = {
+  //    settings: this.get('settings').getStoreObj()
+  //  };
+  //  return Handlebars.compile(this.getLoginForm().baseUrl)(obj) +
+  //      this.getLoginForm().path;
+  //},
+  //getAuthHeader(data) {
     //if(apiConfig.defaultConfig().get('loginForm.auth.type') === 'basic') {
     //  const userKey = apiConfig.defaultConfig().get('loginForm.auth.user');
     //  const passKey = apiConfig.defaultConfig().get('loginForm.auth.pass');
     //  return this.buildAuthHeader(data[userKey], data[passKey]);
     //}
-  },
-  buildAuthHeader(user, pass) {
-    return {
-      'Authorization': 'Basic ' + btoa(user + ':' + pass)
-    };
-  }
+  //},
+  //buildAuthHeader(user, pass) {
+  //  return {
+  //    'Authorization': 'Basic ' + btoa(user + ':' + pass)
+  //  };
+  //}
 });

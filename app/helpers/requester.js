@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
 
-export default Ember.Object.extend({
+export default Ember.Mixin.create({
   settings    : Ember.inject.service('settings-store'),
   request     : {},
   api(complete) {
