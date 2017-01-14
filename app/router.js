@@ -37,13 +37,25 @@ var Router = Ember.Router.extend({
 //});
 
 Router.map(function () {
-  this.route('tab1', function() {
+  //this.route('index', {path: '/'}, function() {
+    this.route('tab1', function() {
+      this.route('nestTab1', function() {
 
-  });
+      });
+      this.route('nestTab2', function() {
 
-  this.route('tab2', function() {
+      });
+    });
 
-  });
+    this.route('tab2', function() {
+      this.route('nestTab1', function() {
+        this.route('2NestsTab1', function() {
+
+        });
+      });
+    });
+  //});
+
 });
 
 export default Router;

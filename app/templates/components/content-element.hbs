@@ -1,1 +1,7 @@
-<p>content element</p>
+{{#if isTabs}}
+  {{#tab-component model=content.tabs}}
+    {{outlet}}
+  {{/tab-component}}
+{{else if isForm}}
+  {{#generic-form model=content.form}}{{/generic-form}}
+{{/if}}

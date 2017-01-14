@@ -2,6 +2,7 @@ import Ember from 'ember';
 import _ from 'lodash/lodash';
 
 const Root = Ember.EddyObject.extend({
+  configType: 'Root',
   display: null,
   settings: null,
   content: null,
@@ -12,6 +13,7 @@ const Root = Ember.EddyObject.extend({
 });
 
 const Content = Ember.EddyObject.extend({
+  configType: 'Content',
   type: null,
   init() {
     this.validate('Content', ['type']);
@@ -19,9 +21,8 @@ const Content = Ember.EddyObject.extend({
       case 'tabs':
         this.validate('Content', ['tabs']);
         var tabs = _.map(this.get('tabs'), tab => {
-          const t = new Tab(tab);
-          t.set('parent', this.get('parent'));
-          return t;
+          tab.parent = this;
+          return new Tab(tab);
         });
         this.set('tabs', tabs);
         return;
@@ -62,6 +63,7 @@ const Content = Ember.EddyObject.extend({
 });
 
 const Tab = Ember.EddyObject.extend({
+  configType: 'Tab',
   name: null,
   display: null,
   content: null,
@@ -69,8 +71,9 @@ const Tab = Ember.EddyObject.extend({
   parent: null,
   init() {
     this.validate('Tab', ['name', 'display', 'content']);
-    this.set('content.parent', this);
-    this.set('content', new Content(this.get('content')));
+    const content = this.get('content');
+    content.parent = this;
+    this.set('content', new Content(content));
     this.set('route', this.genRoute());
   },
   genRoute() {
@@ -82,12 +85,13 @@ const Tab = Ember.EddyObject.extend({
       }
     }
     recurse(this);
-    return routeStack.reverse().join('.');
+    return _.compact(routeStack.reverse()).join('.');
   }
 });
 
 
 const Form = Ember.EddyObject.extend({
+  configType: 'Form',
   request: null,
   response: null,
   init() {
@@ -98,6 +102,7 @@ const Form = Ember.EddyObject.extend({
 });
 
 const Request = Ember.EddyObject.extend({
+  configType: 'Request',
   path: null,
   method: null,
   location: null,
@@ -110,6 +115,7 @@ const Request = Ember.EddyObject.extend({
 });
 
 const Response = Ember.EddyObject.extend({
+  configType: 'Response',
   root: null,
   type: null,
   fields: null,
@@ -119,6 +125,7 @@ const Response = Ember.EddyObject.extend({
 });
 
 const Field = Ember.EddyObject.extend({
+  configType: 'Field',
   display: null,
   name: null,
   type: null,

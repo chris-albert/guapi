@@ -53,7 +53,6 @@ export default Ember.Component.extend({
     //TODO: This needs to be added to the config
     //Cloning here so the login form and the getToken form don't have their values binded
     //this.set('loginFields', _.cloneDeep(this.getLoginForm().fields));
-    console.log(this.get('nav'));
     this._super();
   },
   loginFields: Ember.computed('', function() {
