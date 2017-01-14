@@ -6,6 +6,65 @@
       "display": "Environment"
     }
   ],
+  "auth": {
+    "request": {
+      "url": "https://{{settings.env}}.ticketfly.com",
+      "path": "/account/oauth2/token",
+      "method": "POST",
+      "location": "form",
+      "root": "",
+      "auth": {
+        "type": "basic",
+        "user": "clientId",
+        "pass": "clientSecret"
+      },
+      "submit": {
+        "display": "Login",
+        "type": "default",
+        "size": "xs"
+      },
+      "fields": [
+        {
+          "name": "username",
+          "display": "Username",
+          "type": "text"
+        },
+        {
+          "name": "password",
+          "display": "Password",
+          "type": "password"
+        },
+        {
+          "name": "clientId",
+          "display": "Client Id",
+          "type": "text"
+        },
+        {
+          "name": "clientSecret",
+          "display": "Client Secret",
+          "type": "text"
+        },
+        {
+          "name": "grant_type",
+          "type": "hidden",
+          "value": "password"
+        }
+      ],
+      "settingFields": [
+        "clientId",
+        "clientSecret"
+      ]
+    },
+    "response": {
+      "root": "",
+      "type": "none",
+      "fields": []
+    },
+    "dataFilter": [
+      "clientId",
+      "clientSecret"
+    ]
+  },
   "content": {
     "type": "tabs",
     "tabs": [
@@ -28,7 +87,11 @@
                   "auth": {
                     "type": "bearer"
                   },
-                  "submitButton": "Submit Text",
+                  "submit": {
+                    "display": "Submit Text",
+                    "type": "primary",
+                    "size": "sm"
+                  },
                   "fields": [
                     {
                       "display": "Test Text",
@@ -101,7 +164,11 @@
                   "auth": {
                     "type": "bearer"
                   },
-                  "submitButton": "Submit Text",
+                  "submit": {
+                    "display": "Submit Text",
+                    "type": "primary",
+                    "size": "sm"
+                  },
                   "fields": [
                     {
                       "display": "Test Text",
@@ -150,7 +217,11 @@
                         "auth": {
                           "type": "bearer"
                         },
-                        "submitButton": "Submit Text",
+                        "submit": {
+                          "display": "Submit Text",
+                          "type": "primary",
+                          "size": "sm"
+                        },
                         "fields": [
                           {
                             "display": "Test Text",

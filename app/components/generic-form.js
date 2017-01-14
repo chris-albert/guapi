@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
+import Requester from '../helpers/requester';
 
 export default Ember.Component.extend({
   settings    : Ember.inject.service('settings-store'),
@@ -132,7 +133,6 @@ export default Ember.Component.extend({
     var d = _.clone(data);
     var url = this.get('model.request.url');
     d.settings = this.get('settings').getStoreObj();
-    console.log(this.get('settings').getStoreObj());
     return Handlebars.compile(url)(d);
   },
   getAuth() {

@@ -1,14 +1,17 @@
 <a href="{{link}}" >
   <span class="glyphicon glyphicon-link pull-right" aria-hidden="true"></span>
 </a>
+<form class="form-horizontal">
 {{#form-input
   fields=model.request.fields
-  submitName=model.request.submitButton
+  submit=model.request.submit
+  layout="default"
   onSubmit=(action "submit")
   onActionClick=(action "actionClick")
   onFormChange=(action "formChange")
 }}
 {{/form-input}}
+</form>
 
 {{#request-details
   request=request.current

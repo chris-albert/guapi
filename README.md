@@ -96,11 +96,12 @@ This hold all the info for the top bar, name etc
 
 ##### `request` Type
 
-* `location`
-* `path`
-* `method`
-* `auth`
-* `fields`
+* `url`: String
+* `location`: String (form,query,json)
+* `path`: String
+* `method`: String (GET,POST,PUT,DELETE)
+* `auth`: Auth
+* `fields`: Array[Field]
 
  
  Content Types

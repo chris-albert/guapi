@@ -6,9 +6,11 @@ const Root = Ember.EddyObject.extend({
   display: null,
   settings: null,
   content: null,
+  auth: null,
   init() {
     this.validate('Root', ['display','settings','content']);
     this.set('content', new Content(this.get('content')));
+    this.set('auth', Form.create(this.get('auth')));
   }
 });
 
@@ -123,8 +125,9 @@ const Request = Ember.EddyObject.extend({
   auth: null,
   fields: null,
   root: null,
+  submit: null,
   init() {
-    this.validate('Request',['path','method','location','auth','fields']);
+    this.validate('Request',['path','method','location','auth','fields','submit']);
   }
 });
 
@@ -145,6 +148,16 @@ const Field = Ember.EddyObject.extend({
   type: null,
   init() {
 
+  }
+});
+
+const Submit = Ember.EddyObject.extend({
+  configType: 'Submit',
+  display: null,
+  type: null,
+  size: null,
+  init() {
+    this.validate('Submit', ['display','type', 'size']);
   }
 });
 

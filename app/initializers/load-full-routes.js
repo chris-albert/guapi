@@ -22,7 +22,7 @@ export default {
     application.register('route:application', Ember.Route.extend({
       model() {
         return {
-          nav: config,
+          nav    : config,
           content: config.get('content')
         };
       },
@@ -63,6 +63,7 @@ export default {
     const route = form.invoke('genRoute');
     console.debug('Registering controller at route [' + route + ']');
     const queryParamKeys = form.invoke('fieldValues');
+    queryParamKeys.push('as');
     application.register('controller:' + route, Ember.Object.extend({
       queryParams: queryParamKeys,
       qp: Ember.computed('model', function() {

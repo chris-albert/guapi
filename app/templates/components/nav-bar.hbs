@@ -40,11 +40,12 @@
                                 </button>
                             </div>
                             <div class="{{loginHidden}}">
-                              {{#each loginFields as |field|}}
-                                {{form-element field=field displayClass="" inputClass=""}}
-                              {{/each}}
-                                <button type="button" class="btn btn-default btn-xs login-button">Login
-                                </button>
+                              {{#form-input
+                                fields=nav.auth.request.fields
+                                submit=nav.auth.request.submit
+                                layout="stacked"
+                              }}
+                              {{/form-input}}
                             </div>
                         </form>
                         <div class="bg-danger login-error">

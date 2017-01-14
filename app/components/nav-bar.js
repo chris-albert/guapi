@@ -47,7 +47,6 @@ export default Ember.Component.extend({
       this.set('tokenChanged',!this.get('tokenChanged'));
     }
   },
-
   init() {
     //this.get('settings').setStoreObj(this.getSettings());
     //TODO: This needs to be added to the config
@@ -95,7 +94,7 @@ export default Ember.Component.extend({
   login() {
     this.set('loginError', null);
     const data = this.flattenFields(this.get('loginFields'));
-    const authHeader = this.getAuthHeader(data)
+    const authHeader = this.getAuthHeader(data);
     this.handleSettingFields(data);
     const options = {
       url    : this.getUrl(),
