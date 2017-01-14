@@ -2,16 +2,19 @@ import Ember from 'ember';
 import _ from 'lodash/lodash';
 import GenericForm from '../controllers/generic-form';
 import apiConfig from '../helpers/api-config';
+import fullConfig from '../helpers/full-config';
 
 export default {
   name       : 'load-dynamic-routes',
   restActions: ['list', 'create', 'edit', 'view'],
   initialize(application) {
     application.deferReadiness();
-    apiConfig.getConfig('/config.json').then(api => {
-      this.handleApi(api,application);
-      application.advanceReadiness();
-    });
+    fullConfig.getConfig('/test-raw-config.json')
+      .then(console.log);
+    //apiConfig.getConfig('/config.json').then(api => {
+    //  this.handleApi(api,application);
+    //  application.advanceReadiness();
+    //});
   },
   handleApi(api, application) {
     _.map(api.get('projectDefs'), projectDef => {

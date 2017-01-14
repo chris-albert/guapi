@@ -57,7 +57,7 @@
                 "display": "Me",
                 "path": "/account/v2/users/me",
                 "method": "GET",
-                "jsonRoot": "user",
+                "root": "user",
                 "auth": {
                   "type": "bearer"
                 }

@@ -63,10 +63,21 @@ export default Ember.Controller.extend({
     switch (this.get('model.dataLocation')) {
       case 'form':
       case 'query':
-        return data;
+        //return data;
+        return this.handleQueryRoot(data);
       case 'json':
         return this.handleJsonRoot(data);
     }
+  },
+  handleQueryRoot(data) {
+    var d = {};
+    var jsonRoot = this.get('model.jsonRoot');
+    if(!_.isUndefined(jsonRoot)) {
+      _.map(data,(value,key) => {
+        d[jsonRoot + '.' + key] = value;
+      });
+    }
+    return data;
   },
   handleJsonRoot(data) {
     var d = {};
@@ -194,7 +205,7 @@ export default Ember.Controller.extend({
     return data;
   },
   buildFieldValue(field) {
-    if (field.type === 'select' && _.isString(field.value)) {
+    if ((field.type === 'select' || field.type === 'array') && _.isString(field.value)) {
       return field.value.split(",");
     }
     return field.value;

@@ -1,0 +1,140 @@
+{
+  "display": "Test",
+  "settings": [
+    {
+      "name": "env",
+      "display": "Environment"
+    }
+  ],
+  "content": {
+    "type": "tabs",
+    "tabs": [
+      {
+        "display": "Tab 1",
+        "name": "tab1",
+        "content": {
+          "type": "tabs",
+          "tabs": [
+            {
+              "display": "Nest Tab 1",
+              "name": "nestTab1",
+              "content": {
+                "type": "form",
+                "request": {
+                  "path": "/test/path",
+                  "method": "POST",
+                  "location": "query",
+                  "auth": {
+                    "type": "bearer"
+                  },
+                  "submitButton": "Submit Text",
+                  "fields": [
+                    {
+                      "display": "Test Text",
+                      "name": "testText",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Test Password",
+                      "name": "testPassword",
+                      "type": "password"
+                    }
+                  ]
+                },
+                "response": {
+                  "root": "employees",
+                  "type": "array",
+                  "fields": "*"
+                }
+              }
+            },
+            {
+              "display": "Nest Tab 2",
+              "name": "nestTab2",
+              "content": {
+                "type": "form",
+                "request": {
+                  "path": "/test/path",
+                  "method": "POST",
+                  "location": "query",
+                  "auth": {
+                    "type": "bearer"
+                  },
+                  "submitButton": "Submit Text",
+                  "fields": [
+                    {
+                      "display": "Test Text",
+                      "name": "testText",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Test Password",
+                      "name": "testPassword",
+                      "type": "password"
+                    }
+                  ]
+                },
+                "response": {
+                  "root": "employees",
+                  "type": "array",
+                  "fields": "*"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "display": "Tab 2",
+        "name": "tab2",
+        "content": {
+          "type": "tabs",
+          "tabs": [
+            {
+              "display": "Nest Tab 1",
+              "name": "nestTab1",
+              "content": {
+                "type": "tabs",
+                "tabs": [
+                  {
+                    "display": "2 Nests Tab 1",
+                    "name": "2NestsTab1",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "path": "/test/path",
+                        "method": "POST",
+                        "location": "query",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submitButton": "Submit Text",
+                        "fields": [
+                          {
+                            "display": "Test Text",
+                            "name": "testText",
+                            "type": "text"
+                          },
+                          {
+                            "display": "Test Password",
+                            "name": "testPassword",
+                            "type": "password"
+                          }
+                        ]
+                      },
+                      "response": {
+                        "root": "employees",
+                        "type": "array",
+                        "fields": "*"
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
