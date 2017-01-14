@@ -1,14 +1,14 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
-import apiConfig from '../helpers/api-config';
+//import apiConfig from '../helpers/api-config';
 
 export default Ember.Component.extend({
-  fields      : Ember.computed('', function () {
-    var settings = apiConfig.defaultConfig().get('settings');
-    _.map(settings, setting => {
+  settings    : Ember.inject.service('settings-store'),
+  fields      : Ember.computed('nav.settings', function () {
+    return _.map(this.get('nav.settings'), setting => {
       setting.value = this.get('settings').getStore(setting.name);
+      return setting;
     });
-    return settings;
   }),
   environment : Ember.computed('fields.@each.value', function () {
     return this.get('fields.0.value');
@@ -47,26 +47,27 @@ export default Ember.Component.extend({
       this.set('tokenChanged',!this.get('tokenChanged'));
     }
   },
-  settings    : Ember.inject.service('settings-store'),
+
   init() {
     //this.get('settings').setStoreObj(this.getSettings());
     //TODO: This needs to be added to the config
     //Cloning here so the login form and the getToken form don't have their values binded
     //this.set('loginFields', _.cloneDeep(this.getLoginForm().fields));
+    console.log(this.get('nav'));
     this._super();
   },
   loginFields: Ember.computed('', function() {
-    const settingFields = apiConfig.defaultConfig().get('loginForm.settingFields');
-    var loginFields = apiConfig.defaultConfig().get('loginForm.fields')
-    _.map(loginFields, field => {
-      if(_.includes(settingFields, field.name)) {
-        field.value = this.get('settings').getStore(field.name);
-      }
-    });
-    return loginFields;
+    //const settingFields = apiConfig.defaultConfig().get('loginForm.settingFields');
+    //var loginFields = apiConfig.defaultConfig().get('loginForm.fields')
+    //_.map(loginFields, field => {
+    //  if(_.includes(settingFields, field.name)) {
+    //    field.value = this.get('settings').getStore(field.name);
+    //  }
+    //});
+    //return loginFields;
   }),
   getLoginForm() {
-    return apiConfig.defaultConfig().get('loginForm');
+    //return apiConfig.defaultConfig().get('loginForm');
   },
   didInsertElement() {
     var self = this;
@@ -119,15 +120,15 @@ export default Ember.Component.extend({
     });
   },
   dataFilter(data) {
-    _.map(apiConfig.defaultConfig().get('loginForm.dataFilter'), dataFilter => {
-      delete data[dataFilter];
-    });
-    return data;
+    //_.map(apiConfig.defaultConfig().get('loginForm.dataFilter'), dataFilter => {
+    //  delete data[dataFilter];
+    //});
+    //return data;
   },
   handleSettingFields(data) {
-    _.map(apiConfig.defaultConfig().get('loginForm.settingFields'), settingField => {
-      this.get('settings').setStore(settingField, data[settingField]);
-    });
+    //_.map(apiConfig.defaultConfig().get('loginForm.settingFields'), settingField => {
+    //  this.get('settings').setStore(settingField, data[settingField]);
+    //});
   },
   flattenFields(fields) {
     return _.object(_.map(fields, field => {
@@ -142,11 +143,11 @@ export default Ember.Component.extend({
         this.getLoginForm().path;
   },
   getAuthHeader(data) {
-    if(apiConfig.defaultConfig().get('loginForm.auth.type') === 'basic') {
-      const userKey = apiConfig.defaultConfig().get('loginForm.auth.user');
-      const passKey = apiConfig.defaultConfig().get('loginForm.auth.pass');
-      return this.buildAuthHeader(data[userKey], data[passKey]);
-    }
+    //if(apiConfig.defaultConfig().get('loginForm.auth.type') === 'basic') {
+    //  const userKey = apiConfig.defaultConfig().get('loginForm.auth.user');
+    //  const passKey = apiConfig.defaultConfig().get('loginForm.auth.pass');
+    //  return this.buildAuthHeader(data[userKey], data[passKey]);
+    //}
   },
   buildAuthHeader(user, pass) {
     return {

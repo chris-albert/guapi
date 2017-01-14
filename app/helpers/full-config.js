@@ -1,30 +1,17 @@
 import Ember from 'ember';
 import _ from 'lodash/lodash';
 
-const HelperObject = Ember.Mixin.create({
-  validate(name, keys) {
-    var errors = [];
-    _.each(keys, key => {
-      if(_.isUndefined(this.get(key)) || _.isNull(this.get(key))) {
-        errors.push(key);
-      }
-    });
-    if(!_.isEmpty(errors)) {
-      throw new Error('Error validating [' + name + ']: missing properties [' + errors + ']');
-    }
-  }
-});
-
-const Root = Ember.Object.extend({
+const Root = Ember.EddyObject.extend({
   display: null,
   settings: null,
   content: null,
   init() {
+    this.validate('Root', ['display','settings','content']);
     this.set('content', new Content(this.get('content')));
   }
 });
 
-const Content = Ember.Object.extend(HelperObject, {
+const Content = Ember.EddyObject.extend({
   type: null,
   init() {
     this.validate('Content', ['type']);
@@ -32,7 +19,9 @@ const Content = Ember.Object.extend(HelperObject, {
       case 'tabs':
         this.validate('Content', ['tabs']);
         var tabs = _.map(this.get('tabs'), tab => {
-          return new Tab(tab);
+          const t = new Tab(tab);
+          t.set('parent', this.get('parent'));
+          return t;
         });
         this.set('tabs', tabs);
         return;
@@ -48,21 +37,57 @@ const Content = Ember.Object.extend(HelperObject, {
   },
   isForm() {
     return this.get('type') === 'form';
+  },
+  each(f) {
+    if(this.isTabs()) {
+      _.each(this.get('tabs'),f);
+    } else if(this.isForm()) {
+      f(this.get('form'));
+    }
+  },
+  genRoute() {
+    var routeStack = [this.get('name')];
+    function recurse(tab) {
+      if(tab.get('parent')) {
+        routeStack.push(tab.get('parent.name'));
+        recurse(tab.get('parent'));
+      }
+    }
+    recurse(this);
+    return routeStack.reverse().join('.');
+  },
+  genRoute() {
+    return 'index';
   }
 });
 
-const Tab = Ember.Object.extend(HelperObject, {
+const Tab = Ember.EddyObject.extend({
   name: null,
   display: null,
   content: null,
+  route: null,
+  parent: null,
   init() {
     this.validate('Tab', ['name', 'display', 'content']);
+    this.set('content.parent', this);
     this.set('content', new Content(this.get('content')));
+    this.set('route', this.genRoute());
+  },
+  genRoute() {
+    var routeStack = [this.get('name')];
+    function recurse(tab) {
+      if(tab.get('parent')) {
+        routeStack.push(tab.get('parent.name'));
+        recurse(tab.get('parent'));
+      }
+    }
+    recurse(this);
+    return routeStack.reverse().join('.');
   }
 });
 
 
-const Form = Ember.Object.extend(HelperObject, {
+const Form = Ember.EddyObject.extend({
   request: null,
   response: null,
   init() {
@@ -72,7 +97,7 @@ const Form = Ember.Object.extend(HelperObject, {
   }
 });
 
-const Request = Ember.Object.extend(HelperObject, {
+const Request = Ember.EddyObject.extend({
   path: null,
   method: null,
   location: null,
@@ -84,7 +109,7 @@ const Request = Ember.Object.extend(HelperObject, {
   }
 });
 
-const Response = Ember.Object.extend(HelperObject, {
+const Response = Ember.EddyObject.extend({
   root: null,
   type: null,
   fields: null,
@@ -93,7 +118,7 @@ const Response = Ember.Object.extend(HelperObject, {
   }
 });
 
-const Field = Ember.Object.extend(HelperObject, {
+const Field = Ember.EddyObject.extend({
   display: null,
   name: null,
   type: null,
@@ -105,7 +130,7 @@ const Field = Ember.Object.extend(HelperObject, {
 const FullConfig = Ember.Object.extend({
   init() {
     console.log('FullConfig.init Starting');
-    const root = new Root(this);
+    this.set('root',new Root(this));
     console.log('FullConfig.init Done');
   }
 });
@@ -140,7 +165,8 @@ export default Ember.Object.extend({
     throw new Error('Cant get cache since its empty');
   },
   buildApiDef(json) {
-    return FullConfig.create(json);
+    const fullConfig = FullConfig.create(json)
+    return fullConfig.get('root');
   },
   putCache(url, config) {
     this.set('cache.' + this.keyifyUrl(url), config);

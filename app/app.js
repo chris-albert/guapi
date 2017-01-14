@@ -2,6 +2,8 @@ import Ember from 'ember';
 import Resolver from 'ember-resolver';
 import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
+import Validation from './helpers/validation';
+import ExtendedObject from './helpers/extended-object';
 
 var App;
 
@@ -20,6 +22,12 @@ App = Ember.Application.extend({
   }
 });
 
+Ember.Mixins = {
+  Validation: Validation,
+  ExtendedObject: ExtendedObject
+};
+
+Ember.EddyObject = Ember.Object.extend(Validation, ExtendedObject);
 
 loadInitializers(App, config.modulePrefix);
 export default App;

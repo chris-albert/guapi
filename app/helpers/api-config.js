@@ -152,11 +152,12 @@ export default Ember.Object.extend({
     });
   },
   defaultConfig() {
-    var cache = this.getCache('/config.json');
-    if(cache) {
-      return cache;
-    }
-    throw new Error('Cant get cache since its empty');
+    //var cache = this.getCache('/config.json');
+    //if(cache) {
+    //  return cache;
+    //}
+    return Ember.Object.create();
+    //throw new Error('Cant get cache since its empty');
   },
   buildApiDef(json) {
     const api = apiDefinition.create(json);
