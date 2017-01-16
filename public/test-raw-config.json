@@ -36,14 +36,12 @@
         {
           "name": "username",
           "display": "Username",
-          "type": "text",
-          "value": "chris.albert@ticketfly.com"
+          "type": "text"
         },
         {
           "name": "password",
           "display": "Password",
-          "type": "password",
-          "value": "asdf"
+          "type": "password"
         },
         {
           "name": "clientId",
