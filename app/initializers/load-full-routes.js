@@ -5,6 +5,9 @@ import fullConfig from '../helpers/full-config';
 
 export default {
   name: 'load-full-routes',
+  addRoute(route) {
+    fullConfig.routes.push(route);
+  },
   initialize(application) {
     application.deferReadiness();
     fullConfig.getConfig('/test-raw-config.json')
@@ -44,6 +47,7 @@ export default {
     const route = tab.invoke('genRoute');
     const content = tab.get('content');
     console.debug('Registering route: [' + tab.get('name') + '] at route [' + route + ']');
+    this.addRoute(route);
     application.register('route:' + route, Ember.Route.extend({
       templateName: 'components/content-wrapper',
       model() {

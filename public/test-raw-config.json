@@ -183,39 +183,82 @@
               }
             },
             {
-              "display": "Nest Tab 2",
-              "name": "nestTab2",
+              "display": "Get Employees",
+              "name": "getEmployees",
               "content": {
                 "type": "form",
                 "request": {
-                  "url": "http://google.com/{{settings.env}}",
-                  "path": "/test/path",
-                  "method": "POST",
+                  "url": "https://authorization-{{settings.env}}.ticketfly.com",
+                  "path": "/aggregator/v1/employees",
+                  "method": "GET",
                   "location": "query",
                   "auth": {
                     "type": "bearer"
                   },
                   "submit": {
-                    "display": "Submit Text",
+                    "display": "Get",
                     "type": "primary",
                     "size": "sm"
                   },
                   "fields": [
                     {
-                      "display": "Test Text",
-                      "name": "testText",
+                      "display": "Domain Org Id",
+                      "name": "domainOrgId",
                       "type": "text"
                     },
                     {
-                      "display": "Test Password",
-                      "name": "testPassword",
-                      "type": "password"
+                      "display": "Client Org Id",
+                      "name": "clientOrgId",
+                      "type": "text"
                     }
                   ]
                 },
                 "response": {
                   "root": "employees",
                   "type": "array",
+                  "fields": "*"
+                }
+              }
+            },
+            {
+              "display": "Get Employee",
+              "name": "getEmployee",
+              "content": {
+                "type": "form",
+                "request": {
+                  "url": "https://authorization-{{settings.env}}.ticketfly.com",
+                  "path": "/aggregator/v1/employees/{{id}}",
+                  "method": "GET",
+                  "location": "query",
+                  "auth": {
+                    "type": "bearer"
+                  },
+                  "submit": {
+                    "display": "Get",
+                    "type": "primary",
+                    "size": "sm"
+                  },
+                  "fields": [
+                    {
+                      "display": "Id",
+                      "name": "id",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Domain Org Id",
+                      "name": "domainOrgId",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Client Org Id",
+                      "name": "clientOrgId",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "response": {
+                  "root": "employee",
+                  "type": "object",
                   "fields": "*"
                 }
               }

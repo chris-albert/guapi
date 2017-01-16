@@ -171,6 +171,18 @@ const FullConfig = Ember.Object.extend({
 
 export default Ember.Object.extend({
   cache: {},
+  routes: [],
+  nestedRoutes() {
+    const obj = {};
+    function setNest(route) {
+      const r = _.get(obj,route);
+      if(!r) {
+        _.set(obj,route);
+      }
+    };
+    _.each(this.get('routes'),setNest);
+    return obj;
+  },
   getConfig(url) {
     var self = this;
     return new Promise(function (resolve, reject) {
@@ -199,7 +211,7 @@ export default Ember.Object.extend({
     throw new Error('Cant get cache since its empty');
   },
   buildApiDef(json) {
-    const fullConfig = FullConfig.create(json)
+    const fullConfig = FullConfig.create(json);
     return fullConfig.get('root');
   },
   putCache(url, config) {
