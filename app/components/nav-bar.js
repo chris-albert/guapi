@@ -59,6 +59,10 @@ export default Ember.Component.extend(Requester, {
       this.api()
         .then(d => this.loggedIn(d))
         .catch(e => this.loginFailed(e));
+    },
+    settingsSave() {
+      this.storeSettings(this.getSettings());
+      this.toggleProperty('formChanged');
     }
   },
   loggedIn(data) {
@@ -87,18 +91,6 @@ export default Ember.Component.extend(Requester, {
       }
     });
     this._super();
-  },
-  didInsertElement() {
-    this.$('.dont-close').on('click', e => {
-      if ($(e.target).prop('tagName') !== 'BUTTON') {
-        e.stopPropagation();
-      }
-    });
-    //So we save settings every time we close the settings dropdown
-    this.$('.dont-close').on('focusout', e => {
-      this.storeSettings(this.getSettings());
-      this.set('formChanged', this.get('formChanged') + 'i');
-    });
   },
   getSettings() {
     return this.flattenFields(this.get('fields'));

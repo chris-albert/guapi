@@ -5,7 +5,7 @@
                 <a class="navbar-brand" href="#">{{nav.display}}</a>
             </div>
             <ul class="nav navbar-nav">
-              {{#bs-dropdown tagName="li"}}
+              {{#bs-dropdown tagName="li" closeOnMenuClick=false}}
                 {{#bs-dropdown-toggle}}
                     Settings <span class="caret"></span>
                 {{/bs-dropdown-toggle}}
@@ -19,6 +19,9 @@
                               inputClass=""
                             }}
                           {{/each}}
+                          <button type="button"
+                                  class="btn btn-default btn-xs" {{action "settingsSave"}}>Save
+                          </button>
                         </form>
                     </li>
                 {{/bs-dropdown-menu}}
@@ -26,7 +29,7 @@
                 <p class="navbar-text">{{settingsQuickView}}</p>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-              {{#bs-dropdown tagName="li"}}
+              {{#bs-dropdown tagName="li" closeOnMenuClick=false}}
                 {{#bs-dropdown-toggle}}
                   {{loginMessage}}
                 {{/bs-dropdown-toggle}}
