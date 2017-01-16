@@ -4,28 +4,24 @@ import _ from 'lodash/lodash';
 export default Ember.Mixin.create({
   settings    : Ember.inject.service('settings-store'),
   request     : {},
-  api(complete) {
+  api() {
     var options = this.getRequestOptions();
     if(this.get('model.request.location') === 'json') {
       options.data = JSON.stringify(options.data);
     }
-    this.rawApi(options, complete);
+    return this.rawApi(options);
   },
-  rawApi(options, complete) {
-    $.ajax(_.merge(options, {
-      complete: function (xhr) {
-        complete(xhr, options);
-      }
-    }));
+  rawApi(options) {
+    return $.ajax(options);
   },
   getRequestOptions() {
-    var rawData = this.allFilteredFields();
+    var data = this.allFilteredFields();
     return {
-      url        : this.getUrl(rawData),
+      url        : this.getUrl(data),
       method     : this.get('model.request.method'),
       data       : this.getData(),
       contentType: this.getContentType(),
-      headers    : this.getAuth()
+      headers    : this.getAuth(data)
     };
   },
   getData() {
@@ -92,19 +88,22 @@ export default Ember.Mixin.create({
   },
   getUrl(data) {
     var d = _.clone(data);
-    var url = this.get('model.request.url');
+    const url = this.get('model.request.url');
+    const path = this.get('model.request.path');
     d.settings = this.get('settings').getStoreObj();
-    return Handlebars.compile(url)(d);
+    return Handlebars.compile(url + path)(d);
   },
-  getAuth() {
+  getAuth(data) {
+    var d = _.clone(data);
+    d.settings = this.get('settings').getStoreObj();
     if(this.get('model.request.auth.type') === 'bearer') {
       return {
         'Authorization': 'Bearer ' + this.get('settings').getStore('token')
       };
     }
-    if(this.get('model.auth.type') === 'basic') {
-      const user = this.get('settings').getStore('clientId');
-      const pass = this.get('settings').getStore('clientSecret');
+    if(this.get('model.request.auth.type') === 'basic') {
+      const user = _.get(data,this.get('model.request.auth.user'));
+      const pass = _.get(data,this.get('model.request.auth.pass'));
       return {
         "Authorization": "Basic " + btoa(user + ':' + pass)
       };

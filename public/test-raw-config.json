@@ -3,7 +3,16 @@
   "settings": [
     {
       "name": "env",
-      "display": "Environment"
+      "display": "Environment",
+      "editable": true
+    },
+    {
+      "name": "clientId",
+      "editable": false
+    },
+    {
+      "name": "clientSecret",
+      "editable": false
     }
   ],
   "auth": {
@@ -27,12 +36,14 @@
         {
           "name": "username",
           "display": "Username",
-          "type": "text"
+          "type": "text",
+          "value": "chris.albert@ticketfly.com"
         },
         {
           "name": "password",
           "display": "Password",
-          "type": "password"
+          "type": "password",
+          "value": "asdf"
         },
         {
           "name": "clientId",
@@ -49,13 +60,12 @@
           "type": "hidden",
           "value": "password"
         }
-      ],
-      "settingFields": [
-        "clientId",
-        "clientSecret"
       ]
     },
     "response": {
+      "settings": {
+        "access_token": "token"
+      },
       "root": "",
       "type": "none",
       "fields": []
@@ -85,7 +95,8 @@
                   "method": "POST",
                   "location": "query",
                   "auth": {
-                    "type": "bearer"
+                    "type": "bearer",
+                    "value": "settings.token"
                   },
                   "submit": {
                     "display": "Submit Text",
