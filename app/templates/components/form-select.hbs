@@ -1,6 +1,6 @@
 {{#if isMulti}}
   {{#power-select-multiple
-    options=names
+    options=options
     renderInPlace=true
     selected=selected
     onchange=(action "onChange")
@@ -11,7 +11,7 @@
   {{/power-select-multiple}}
 {{else}}
   {{#power-select
-  options=names
+  options=options
   renderInPlace=true
   selected=selected
   searchField="display"

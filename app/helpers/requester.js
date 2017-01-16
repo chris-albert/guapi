@@ -19,13 +19,12 @@ export default Ember.Mixin.create({
     return {
       url        : this.getUrl(data),
       method     : this.get('model.request.method'),
-      data       : this.getData(),
+      data       : this.getData(data),
       contentType: this.getContentType(),
       headers    : this.getAuth(data)
     };
   },
-  getData() {
-    var data = this.allFilteredFields();
+  getData(data) {
     switch (this.get('model.request.location')) {
       case 'form':
       case 'query':
@@ -117,6 +116,7 @@ export default Ember.Mixin.create({
   filterOutFields(fields) {
     var self = this,
         data = {};
+    //console.log(fields);
     _.map(fields, function (field) {
       if (_.isUndefined(field.send) || field.send) {
         var key = field.name;
@@ -129,6 +129,7 @@ export default Ember.Mixin.create({
     return data;
   },
   buildFieldValue(field) {
+    //console.log(field.name + ": " + field.value);
     if ((field.type === 'select' || field.type === 'array') && _.isString(field.value)) {
       return field.value.split(",");
     }

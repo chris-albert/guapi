@@ -35,6 +35,7 @@ export default Ember.Component.extend({
       console.log('select change');
     },
     onChange() {
+      console.log('form-element change');
       const onChangeFunc = this.get('onInputChange');
       if(_.isFunction(onChangeFunc)) {
         onChangeFunc();

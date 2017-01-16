@@ -12,7 +12,10 @@
       key-up="onChange"
     }}
   {{else if isSelect}}
-    {{form-select field=field}}
+    {{form-select
+      field=field
+      change=(action "onChange")
+    }}
 {{/if}}
 </div>
 {{#if field.description}}
