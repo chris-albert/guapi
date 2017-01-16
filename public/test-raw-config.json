@@ -262,6 +262,82 @@
                   "fields": "*"
                 }
               }
+            },
+            {
+              "display": "Create Employee",
+              "name": "createEmployee",
+              "content": {
+                "type": "form",
+                "request": {
+                  "url": "https://authorization-{{settings.env}}.ticketfly.com",
+                  "path": "/aggregator/v1/employees",
+                  "method": "POST",
+                  "location": "json",
+                  "root": {
+                    "employee": ["id", "firstName", "lastName", "email", "role", "allEvents", "events"]
+                  },
+                  "auth": {
+                    "type": "bearer"
+                  },
+                  "submit": {
+                    "display": "Create",
+                    "type": "primary",
+                    "size": "sm"
+                  },
+                  "fields": [
+                    {
+                      "display": "Domain Org Id",
+                      "name": "domainOrgId",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Client Org Id",
+                      "name": "clientOrgId",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Id",
+                      "name": "id",
+                      "type": "text"
+                    },
+                    {
+                      "display": "First Name",
+                      "name": "firstName",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Last Name",
+                      "name": "lastName",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Email",
+                      "name": "email",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Role",
+                      "name": "role",
+                      "type": "text"
+                    },
+                    {
+                      "display": "All Events",
+                      "name": "allEvents",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Events",
+                      "name": "events",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "response": {
+                  "root": "employee",
+                  "type": "object",
+                  "fields": "*"
+                }
+              }
             }
           ]
         }

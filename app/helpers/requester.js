@@ -34,47 +34,40 @@ export default Ember.Mixin.create({
     }
   },
   handleQueryRoot(data) {
-    //var d = {};
-    //var jsonRoot = this.get('model.jsonRoot');
-    //if(!_.isUndefined(jsonRoot)) {
-    //  _.map(data,(value,key) => {
-    //    d[jsonRoot + '.' + key] = value;
-    //  });
-    //}
     return data;
   },
   handleJsonRoot(data) {
-    //var d = {};
-    //var jsonRoot = this.get('model.jsonRoot');
-    //if(!_.isUndefined(jsonRoot)) {
-    //  if(_.isString(jsonRoot)) {
-    //    d[jsonRoot] = data;
-    //  } else if(_.isObject(jsonRoot)) {
-    //    var rootHash = {};
-    //    _.map(jsonRoot, (values, key) => {
-    //      _.map(values, value => {
-    //        if(_.isUndefined(rootHash[value])) {
-    //          rootHash[value] = [];
-    //        }
-    //        rootHash[value].push(key);
-    //      });
-    //    });
-    //    _.map(data, (value,key) => {
-    //      var hashLookup = _.get(rootHash,key);
-    //      if(_.isUndefined(hashLookup)) {
-    //        _.set(d,key,value);
-    //      } else {
-    //        if(_.isUndefined(_.get(d,hashLookup))) {
-    //          _.set(d,hashLookup, {});
-    //        }
-    //        _.set(d, hashLookup + '.' + key, value);
-    //      }
-    //    });
-    //  }
-    //} else {
-    //  d = data;
-    //}
-    return data;
+    var d = {};
+    var jsonRoot = this.get('model.request.root');
+    if(!_.isUndefined(jsonRoot)) {
+      if(_.isString(jsonRoot)) {
+        d[jsonRoot] = data;
+      } else if(_.isObject(jsonRoot)) {
+        var rootHash = {};
+        _.map(jsonRoot, (values, key) => {
+          _.map(values, value => {
+            if(_.isUndefined(rootHash[value])) {
+              rootHash[value] = [];
+            }
+            rootHash[value].push(key);
+          });
+        });
+        _.map(data, (value,key) => {
+          var hashLookup = _.get(rootHash,key);
+          if(_.isUndefined(hashLookup)) {
+            _.set(d,key,value);
+          } else {
+            if(_.isUndefined(_.get(d,hashLookup))) {
+              _.set(d,hashLookup, {});
+            }
+            _.set(d, hashLookup + '.' + key, value);
+          }
+        });
+      }
+    } else {
+      d = data;
+    }
+    return d;
   },
   getContentType() {
     switch (this.get('model.request.location')) {

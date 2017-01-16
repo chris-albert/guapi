@@ -43,10 +43,10 @@ export default Ember.Component.extend(Requester, {
   },
   apiCall() {
     this.api()
-      .then((a,b,x) => this.setResponse(x));
+      .then((a,b,x) => this.setResponse(x))
+      .catch((x) =>this.setResponse(x));
   },
   setResponse(xhr) {
-    console.log(xhr);
     this.set('response', {});
     this.set('response.xhr', xhr);
   },

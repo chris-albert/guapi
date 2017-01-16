@@ -21,6 +21,7 @@
           {{#if responseIsObject}}
             <div class="row">
               <div class="col-md-10">
+                {{log 'temp log' objectData}}
                 {{#object-table data=objectData}}{{/object-table}}
               </div>
               <div class="col-md-2">
