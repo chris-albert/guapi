@@ -1,52 +1,150 @@
-# api-explorer
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+Content is a renderable object
 
-## Prerequisites
+Content Types
+ - tabs
+ - form
+ 
+The `tabs` content type renders tabs to the page.
+ ```
+ {
+   "name": "The name used for routes, this should only be camel case",
+   "display": "The name displayed on the tab",
+   "content": {
+     "tabs|form": ... //Can be more nested tabs, or another type of content
+   }
+ }
+ ```
+ 
+ 
+The `form` content type renders a form to the page.
+```
+content": {
+  "form": {
+    "path": "Path to call",
+    "method": "HTTP method to use [GET|PUT|POST]",
+    "request": {
+      "location": "Location of form data [query|body]",
+      "auth": {
+        "type": "Type of authentication [bearer|basic|none]"
+      },
+      "fields": [
+        {
+          "display": "Field display name",
+          "name": "Name used when adding to query or body",
+          "type": "Field type [text,password,select]",
+          "disabled": "Weather field is disabled [true,false]"
+        }
+      ],
+      "submitButton": "Name of submit button"
+    },
+    "response": {
+      "root": "json root to get data from",
+      "type": "Response type [array|object]",
+      "fields": "Response fields to show, * for all that were retrieved, or array of fields to show"
+    }
+  }
+}
+```
 
-You will need the following things properly installed on your computer.
+ 
+## Config
 
-* [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with NPM)
-* [Bower](https://bower.io/)
-* [Ember CLI](https://ember-cli.com/)
-* [PhantomJS](http://phantomjs.org/)
+There are 2 different types of configs `condensed` and `full`, the `full` config has every field
+set and is very verbose, lots of duplicates. So there is also a `condensed` version that will get 
+processed to create the `full` version, the processing will make sure the `condensed` version was
+valid and generate any needed config content. This will also be where all the defaults are so
+when in the code we don't have to worry about them.
 
-## Installation
 
-* `git clone <repository-url>` this repository
-* `cd api-explorer`
-* `npm install`
-* `bower install`
 
-## Running / Development
+### `full` config
 
-* `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
 
-### Code Generators
+ 
+#### Object Types
+* `root`: (This holds all the global info, like name, settings, and auth)
+* `tab` (Names of the tabs and its content)
+* `form` (The good stuff, all info about how a form is processed)
 
-Make use of the many generators for code, try `ember help generate` for more details
 
-### Running Tests
+##### `root` Type
+This hold all the info for the top bar, name etc
 
-* `ember test`
-* `ember test --server`
+* `display`: String
+  * What is displayed on the top left of app, usually this is your company or app name
+* `settings`: Array of objects
+  * an array of objects that have `name` and `display` properties, 
+    these are what settings are available in the "Settings" dropdown
+* `content`: Object
+** What content you want rendered, of `content` type 
 
-### Building
+##### `tab` Type
 
-* `ember build` (development)
-* `ember build --environment production` (production)
+* `name`: String
+* `display`: String
+* `content`: Array of objects
 
-### Deploying
 
-Specify what it takes to deploy your app.
 
-## Further Reading / Useful Links
+##### `form` Type
 
-* [ember.js](http://emberjs.com/)
-* [ember-cli](https://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+* `name`: String
+* `display`: String
+* `request`
+* `response`
+
+##### `request` Type
+
+* `url`: String
+* `location`: String (form,query,json)
+* `path`: String
+* `method`: String (GET,POST,PUT,DELETE)
+* `auth`: Auth
+* `fields`: Array[Field]
+
+ 
+ Content Types
+  - tabs
+  - form
+The `tabs` content type renders tabs to the page.
+ ```
+ {
+   "name": "The name used for routes, this should only be camel case",
+   "display": "The name displayed on the tab",
+   "content": {
+     "tabs|form": ... //Can be more nested tabs, or another type of content
+   }
+ }
+ ```
+ 
+ 
+The `form` content type renders a form to the page.
+```
+content": {
+  "form": {
+    "path": "Path to call",
+    "method": "HTTP method to use [GET|PUT|POST]",
+    "request": {
+      "location": "Location of form data [query|body]",
+      "auth": {
+        "type": "Type of authentication [bearer|basic|none]"
+      },
+      "fields": [
+        {
+          "display": "Field display name",
+          "name": "Name used when adding to query or body",
+          "type": "Field type [text,password,select]",
+          "disabled": "Weather field is disabled [true,false]"
+        }
+      ],
+      "submitButton": "Name of submit button"
+    },
+    "response": {
+      "root": "json root to get data from",
+      "type": "Response type [array|object]",
+      "fields": "Response fields to show, * for all that were retrieved, or array of fields to show"
+    }
+  }
+}
+```

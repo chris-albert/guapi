@@ -1,17 +1,21 @@
-<a href="{{link}}" >
-  <span class="glyphicon glyphicon-link pull-right" aria-hidden="true"></span>
-</a>
+<div class="row">
+  <div class="col-md-12">
+    <a href="{{link}}" >
+      <span class="glyphicon glyphicon-link pull-right" aria-hidden="true"></span>
+    </a>
+  </div>
+</div>
+<form class="form-horizontal">
 {{#form-input
-  fields=model.fields
-  submitName=submitDisplay
-  showOauth2=showOauth2Select
-  authSelector=authSelector
+  fields=model.request.fields
+  submit=model.request.submit
+  layout="default"
   onSubmit=(action "submit")
   onActionClick=(action "actionClick")
   onFormChange=(action "formChange")
-  formActions=model.additionalActions
 }}
 {{/form-input}}
+</form>
 
 {{#request-details
   request=request.current
@@ -23,7 +27,7 @@
   response=response
   fields=model.fields
   config=model.response
-  route=model.route
+  route=route
   request=request.lastObj
   formConfig=model
 }}

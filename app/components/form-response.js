@@ -33,13 +33,14 @@ export default Ember.Component.extend({
     }
     return 'hidden';
   }),
+  successful: onChange(function() {
+    return this.isSuccess(this.get('response.xhr.status'));
+  }),
   responseIsObject: onChange(function () {
-    return !this.get('responseIsArray');
+    return this.get('config.type') === 'object' || !this.get('successful');
   }),
   responseIsArray : onChange(function () {
-    return this.getJson(function (json) {
-      return _.isArray(json);
-    });
+    return this.get('config.type') === 'array';
   }),
   status          : onChange(function () {
     if (_.isUndefined(this.get('response.xhr')) || _.isNull(this.get('response.xhr'))) {
@@ -56,7 +57,7 @@ export default Ember.Component.extend({
     return this.get('response.xhr.status');
   }),
   hash            : onChange(function () {
-    return this.getJson(function (json) {
+    return this.getGoodJson(function (json) {
       return _.object(_.map(json, item => {
         return [item.id, item];
       }));
@@ -76,43 +77,40 @@ export default Ember.Component.extend({
     return null;
   }),
   objectData      : onChange(function () {
-    return this.getJson(json => {
-      var j = json;
-      if (_.isObject(j.error)) {
-        j = j.error;
-      }
-      return _.map(j, (v, k) => {
-        return {
-          key  : k,
-          value: v
-        };
-      });
+    var json = {};
+    if(this.get('successful')) {
+      json = this.getGoodJson(json => json);
+    } else {
+      json = this.getBadJson(json => json);
+    }
+    return _.map(json, (v, k) => {
+      return {
+        key  : k,
+        value: v
+      };
     });
   }),
   objectActions: onChange(function() {
-    return this.getJson(json => {
+    return this.getGoodJson(json => {
       return this.getActions(json);
     });
-  }),
-  isRest          : Ember.computed('model.type', function () {
-    return false;
   }),
   hasActions: onChange(function() {
     return !_.isUndefined(this.get('config.actions'));
   }),
   responseHeaders : onChange(function () {
-    var columns = this.get('config.columns');
+    var columns = this.get('config.fields');
     if (_.isArray(columns)) {
       return columns;
     } else if(columns === '*') {
-      return this.getJson(json => {
+      return this.getGoodJson(json => {
         return _.keys(_.first(json));
       });
     }
     return [];
   }),
   responseValues  : onChange(function () {
-    return this.getJson(json => {
+    return this.getGoodJson(json => {
       return _.map(json, item => {
         return {
           id     : item[this.get('formConfig.restId')],
@@ -123,29 +121,29 @@ export default Ember.Component.extend({
     });
   }),
   getActions(item) {
-    var actions = [];
+    const actions = [];
     if(this.get('config.actions')) {
       _.map(this.get('config.actions'), action => {
-        console.log(action);
-        action.link = Handlebars.compile(action.link)(this);
-        action.queryParams = {};
-        if(_.has(action,'autoSubmit') && _.get(action, 'autoSubmit') === true) {
-          action.queryParams.as = true;
+        const a = _.clone(action);
+        a.link = Handlebars.compile(a.link)(this);
+        a.queryParams = {};
+        if(_.has(a,'autoSubmit') && _.get(a, 'autoSubmit') === true) {
+          a.queryParams.as = true;
         }
-        _.map(action.params, param => {
+        _.map(a.params, param => {
           if(_.isUndefined(item[param])) {
-            action.queryParams[param] = this.get('request.data.' + param);
+            a.queryParams[param] = this.get('request.data.' + param);
           } else {
-            action.queryParams[param] = item[param];
+            a.queryParams[param] = item[param];
           }
         });
-        actions.push(action);
+        actions.push(a);
       });
     }
     return actions;
   },
   getColumns(item) {
-    const columns = this.get('config.columns');
+    const columns = this.get('config.fields');
     if(_.isArray(columns)) {
       return _.map(columns, column => {
         if (item[column]) {
@@ -162,19 +160,31 @@ export default Ember.Component.extend({
       });
     }
   },
-  getJson(func) {
+  getBadJson(func) {
+    var json = this.get('response.xhr.responseJSON');
+    if(_.isObject(_.get(json,'error'))) {
+      if(_.isObject(_.get(json,'error.fields'))) {
+        const fields = _.get(json,'error.fields');
+        const msg = [];
+        _.each(fields, (errorArr, fieldKey) => {
+          msg.push('(' + fieldKey + ': ' + errorArr.join(',') + ')');
+        })
+        json.error.fields = msg.join(', ');
+        return func(json.error);
+      } else {
+        return func(json.error);
+      }
+    } else {
+      return func(json);
+    }
+  },
+  getGoodJson(func) {
     var json   = this.get('response.xhr.responseJSON'),
-        config = this.get('config');
+        root = this.get('config.root');
     if (json && _.isObject(json)) {
-      var j = null;
-      if (_.get(config,'jsonRoot') && !_.isUndefined(json[_.get(config,'jsonRoot')])) {
-        j = _.get(json, _.get(config, 'jsonRoot'));
-      }
-      if(_.isNull(j) && _.get(config,'pluralJsonRoot') && !_.isUndefined(json[_.get(config,'pluralJsonRoot')])) {
-        j = _.get(json, _.get(config, 'pluralJsonRoot'));
-      }
-      if(_.isNull(j)) {
-        j = json;
+      var j = json;
+      if (root) {
+        j = _.get(json, root);
       }
       return func(j);
     }

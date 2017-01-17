@@ -7,11 +7,11 @@ export default {
   name       : 'load-dynamic-routes',
   restActions: ['list', 'create', 'edit', 'view'],
   initialize(application) {
-    application.deferReadiness();
-    apiConfig.getConfig('/config.json').then(api => {
-      this.handleApi(api,application);
-      application.advanceReadiness();
-    });
+    //application.deferReadiness();
+    //apiConfig.getConfig('/config.json').then(api => {
+    //  this.handleApi(api,application);
+    //  application.advanceReadiness();
+    //});
   },
   handleApi(api, application) {
     _.map(api.get('projectDefs'), projectDef => {
@@ -19,7 +19,7 @@ export default {
       _.map(projectDef.endpoints, (endpointDef, endpoint) => {
         var route = projectDef.name + '.' + endpoint;
         tabs[route] = endpointDef;
-        this.registerComponents(endpointDef, route, application);
+        this.registerContent(endpointDef, route, application);
       });
       this.registerProject(projectDef, tabs, application);
       this.setUpInjections(application,api);

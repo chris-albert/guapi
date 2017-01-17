@@ -1,14 +1,10 @@
-<form class="form-horizontal">
-  {{#each fields as |field|}}
-    {{form-element
-      field=field
-      onInputChange=(action "formChange")
-    }}
-  {{/each}}
-    <div>
-        <button class="btn btn-primary" {{action "submit"}}>{{submitName}}</button>
-      {{#each formActions as |actionItem|}}
-        {{#link-to actionItem.link tagName="button" classNames="btn btn-default pull-right"}}{{actionItem.display}}{{/link-to}}
-      {{/each}}
-    </div>
-</form>
+{{#each fields as |field|}}
+  {{form-element
+    field=field
+    formLayout=layout
+    onInputChange=(action "formChange")
+  }}
+{{/each}}
+<div>
+    <button class="form-input-submit btn {{submitClass}}" {{action "submit"}}>{{submitText}}</button>
+</div>

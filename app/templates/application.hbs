@@ -1,6 +1,6 @@
-{{#nav-bar model=model}}{{/nav-bar}}
+{{#nav-bar nav=model.nav}}{{/nav-bar}}
 <div class="container application-container">
-  {{#tab-component model=tabs}}
-    {{outlet}}
-  {{/tab-component}}
+  {{#content-element content=model.content}}
+
+  {{/content-element}}
 </div>
