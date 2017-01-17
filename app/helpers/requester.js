@@ -94,8 +94,8 @@ export default Ember.Mixin.create({
       };
     }
     if(this.get('model.request.auth.type') === 'basic') {
-      const user = _.get(data,this.get('model.request.auth.user'));
-      const pass = _.get(data,this.get('model.request.auth.pass'));
+      const user = _.get(d,this.get('model.request.auth.user'));
+      const pass = _.get(d,this.get('model.request.auth.pass'));
       return {
         "Authorization": "Basic " + btoa(user + ':' + pass)
       };

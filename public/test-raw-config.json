@@ -77,6 +77,122 @@
     "type": "tabs",
     "tabs": [
       {
+        "display": "Account",
+        "name": "account",
+        "content": {
+          "type": "tabs",
+          "tabs": [
+            {
+              "display": "Get Token",
+              "name": "getToken",
+              "content": {
+                "type": "form",
+                "request": {
+                  "url": "https://{{settings.env}}.ticketfly.com",
+                  "path": "/account/oauth2/token",
+                  "method": "POST",
+                  "location": "form",
+                  "auth": {
+                    "type": "basic",
+                    "user": "settings.clientId",
+                    "pass": "settings.clientSecret"
+                  },
+                  "submit": {
+                    "display": "Submit",
+                    "type": "primary",
+                    "size": "sm"
+                  },
+                  "fields": [
+                    {
+                      "name": "username",
+                      "display": "Username",
+                      "type": "text"
+                    },
+                    {
+                      "name": "password",
+                      "display": "Password",
+                      "type": "password"
+                    },
+                    {
+                      "name": "grant_type",
+                      "type": "hidden",
+                      "value": "password"
+                    }
+                  ]
+                },
+                "response": {
+                  "root": "",
+                  "type": "object",
+                  "fields": "*"
+                }
+              }
+            },
+            {
+              "display": "Check Token",
+              "name": "checkToken",
+              "content": {
+                "type": "form",
+                "request": {
+                  "url": "https://{{settings.env}}.ticketfly.com",
+                  "path": "/account/oauth2/check_token",
+                  "method": "POST",
+                  "location": "query",
+                  "auth": {
+                    "type": "basic",
+                    "user": "settings.clientId",
+                    "pass": "settings.clientSecret"
+                  },
+                  "submit": {
+                    "display": "Check",
+                    "type": "primary",
+                    "size": "sm"
+                  },
+                  "fields": [
+                    {
+                      "name": "token",
+                      "display": "Token",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "response": {
+                  "root": "",
+                  "type": "object",
+                  "fields": "*"
+                }
+              }
+            },
+            {
+              "display": "Me",
+              "name": "me",
+              "content": {
+                "type": "form",
+                "request": {
+                  "url": "https://{{settings.env}}.ticketfly.com",
+                  "path": "/account/v2/users/me",
+                  "method": "GET",
+                  "location": "query",
+                  "auth": {
+                    "type": "bearer"
+                  },
+                  "submit": {
+                    "display": "Me",
+                    "type": "primary",
+                    "size": "sm"
+                  },
+                  "fields": []
+                },
+                "response": {
+                  "root": "user",
+                  "type": "object",
+                  "fields": "*"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
         "display": "Permissions",
         "name": "permissions",
         "content": {
