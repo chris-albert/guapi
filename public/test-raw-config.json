@@ -431,11 +431,111 @@
         }
       },
       {
-        "display": "Tab 2",
+        "display": "Test",
         "name": "tab2",
         "content": {
           "type": "tabs",
           "tabs": [
+            {
+              "display": "Test Form",
+              "name": "testForm",
+              "content": {
+                "type": "form",
+                "request": {
+                  "url": "https://{{settings.env}}.google.com/{{settings.env}}",
+                  "path": "/test/path",
+                  "method": "POST",
+                  "location": "query",
+                  "auth": {
+                    "type": "bearer",
+                    "value": "settings.token"
+                  },
+                  "submit": {
+                    "display": "Submit Text",
+                    "type": "primary",
+                    "size": "sm"
+                  },
+                  "fields": [
+                    {
+                      "display": "Test Text",
+                      "name": "testText",
+                      "type": "text"
+                    },
+                    {
+                      "display": "Test Password",
+                      "name": "testPassword",
+                      "type": "password"
+                    },
+                    {
+                      "display": "Test Disabled",
+                      "name": "testDisabled",
+                      "type": "text",
+                      "disabled": true
+                    },
+                    {
+                      "display": "Test Select",
+                      "name": "testSelect",
+                      "type": "select",
+                      "value": "option1",
+                      "values": [
+                        {
+                          "display": "Option 1",
+                          "name": "option1"
+                        },
+                        {
+                          "display": "Option 2",
+                          "name": "option2"
+                        }
+                      ]
+                    },
+                    {
+                      "display": "Test Multi Select",
+                      "name": "testMultiSelect",
+                      "type": "select",
+                      "multi": true,
+                      "value": ["multiSelectOption2", "multiSelectOption3"],
+                      "values": [
+                        {
+                          "display": "Multi Select Option 1",
+                          "name": "multiSelectOption1"
+                        },
+                        {
+                          "display": "Multi Select Option 2",
+                          "name": "multiSelectOption2"
+                        },
+                        {
+                          "display": "Multi Select Option 3",
+                          "name": "multiSelectOption3"
+                        }
+                      ]
+                    },
+                    {
+                      "display": "Test Addable Multi Select",
+                      "name": "testAddableMultiSelect",
+                      "type": "select",
+                      "multi": true,
+                      "addable": true,
+                      "value": ["addableMultiSelectOption1"],
+                      "values": [
+                        {
+                          "display": "Addable Multi Option 1",
+                          "name": "addableMultiSelectOption1"
+                        },
+                        {
+                          "display": "Addable Multi Option 2",
+                          "name": "addableMultiSelectOption2"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "response": {
+                  "root": "employees",
+                  "type": "array",
+                  "fields": "*"
+                }
+              }
+            },
             {
               "display": "Nest Tab 1",
               "name": "nestTab1",
