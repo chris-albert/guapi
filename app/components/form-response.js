@@ -121,22 +121,23 @@ export default Ember.Component.extend({
     });
   }),
   getActions(item) {
-    var actions = [];
+    const actions = [];
     if(this.get('config.actions')) {
       _.map(this.get('config.actions'), action => {
-        action.link = Handlebars.compile(action.link)(this);
-        action.queryParams = {};
-        if(_.has(action,'autoSubmit') && _.get(action, 'autoSubmit') === true) {
-          action.queryParams.as = true;
+        const a = _.clone(action);
+        a.link = Handlebars.compile(a.link)(this);
+        a.queryParams = {};
+        if(_.has(a,'autoSubmit') && _.get(a, 'autoSubmit') === true) {
+          a.queryParams.as = true;
         }
-        _.map(action.params, param => {
+        _.map(a.params, param => {
           if(_.isUndefined(item[param])) {
-            action.queryParams[param] = this.get('request.data.' + param);
+            a.queryParams[param] = this.get('request.data.' + param);
           } else {
-            action.queryParams[param] = item[param];
+            a.queryParams[param] = item[param];
           }
         });
-        actions.push(action);
+        actions.push(a);
       });
     }
     return actions;

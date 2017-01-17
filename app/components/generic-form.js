@@ -61,7 +61,7 @@ export default Ember.Component.extend(Requester, {
     _.map(this.get('model.request.fields'), field => {
       var q = this.get('queryParams.' + field.name);
       if (q) {
-        field.value = q;
+        Ember.set(field,'value',q);
       }
     });
   }

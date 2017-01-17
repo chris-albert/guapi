@@ -1,3 +1,4 @@
+
 import Ember from 'ember';
 import _ from 'lodash/lodash';
 import GenericForm from '../controllers/generic-form';
@@ -52,7 +53,6 @@ export default {
       templateName: 'components/content-wrapper',
       model() {
         return {
-          //route: tab.get('name'),
           route: {
             full: route,
             base: _.initial(route.split('.')).join('.'),

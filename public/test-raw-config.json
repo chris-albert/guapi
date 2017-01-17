@@ -335,6 +335,91 @@
                       "response": {
                         "root": "role",
                         "type": "object",
+                        "fields": "*",
+                        "actions": [
+                          {
+                            "type": "button",
+                            "display": "Delete",
+                            "link": "{{route.base}}.delete",
+                            "params": ["id"]
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "display": "Create",
+                    "name": "create",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "url": "https://authorization-{{settings.env}}.ticketfly.com",
+                        "path": "/v2/roles",
+                        "method": "POST",
+                        "location": "json",
+                        "root": "role",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submit": {
+                          "display": "Create",
+                          "type": "primary",
+                          "size": "sm"
+                        },
+                        "fields": [
+                          {
+                            "display": "Id",
+                            "name": "id",
+                            "type": "text"
+                          },
+                          {
+                            "display": "Name",
+                            "name": "name",
+                            "type": "text"
+                          },
+                          {
+                            "display": "Owner Org Id",
+                            "name": "ownerOrgId",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      "response": {
+                        "root": "role",
+                        "type": "object",
+                        "fields": "*"
+                      }
+                    }
+                  },
+                  {
+                    "display": "Delete",
+                    "name": "delete",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "url": "https://authorization-{{settings.env}}.ticketfly.com",
+                        "path": "/v2/roles/{{id}}",
+                        "method": "DELETE",
+                        "location": "query",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submit": {
+                          "display": "Delete",
+                          "type": "primary",
+                          "size": "sm"
+                        },
+                        "fields": [
+                          {
+                            "display": "Id",
+                            "name": "id",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      "response": {
+                        "root": "role",
+                        "type": "object",
                         "fields": "*"
                       }
                     }
