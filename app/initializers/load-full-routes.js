@@ -52,7 +52,12 @@ export default {
       templateName: 'components/content-wrapper',
       model() {
         return {
-          route: tab.get('name'),
+          //route: tab.get('name'),
+          route: {
+            full: route,
+            base: _.initial(route.split('.')).join('.'),
+            end : tab.get('name')
+          },
           content: content
         };
       },
