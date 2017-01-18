@@ -746,12 +746,13 @@
                         "url": "https://authorization-{{settings.env}}.ticketfly.com",
                         "path": "/v2/roles/{{id}}",
                         "method": "PUT",
-                        "location": "query",
+                        "location": "json",
                         "auth": {
                           "type": "bearer"
                         },
+                        "root": "role",
                         "submit": {
-                          "display": "List",
+                          "display": "Update",
                           "type": "primary",
                           "size": "sm"
                         },
