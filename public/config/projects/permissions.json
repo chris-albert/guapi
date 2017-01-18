@@ -1,0 +1,65 @@
+{
+  "name": "::permissions",
+  "baseUrl": "https://authorization-{{settings.env}}.ticketfly.com",
+  "tabs": [
+    {
+      "name": "::roles",
+      "type": "rest",
+      "path": "/v2/roles",
+      "root": "role",
+      "fields": [
+        "::id",
+        "::name",
+        "::ownerOrgId"
+      ]
+    },
+    {
+      "name": "::permissions",
+      "type": "rest",
+      "path": "/v2/permissions",
+      "root": "permission",
+      "fields": [
+        "::id",
+        "::name",
+        "::displayName",
+        "::description"
+      ]
+    },
+    {
+      "name": "::employees",
+      "type": "rest",
+      "path": "/aggregator/v1/employees",
+      "root": "employee",
+      "fields": [
+        "::domainOrgId",
+        "::clientOrgId",
+        "::id",
+        "::firstName",
+        "::lastName",
+        "::email",
+        "::role",
+        "::allEvents",
+        "::events"
+      ],
+      "overrides": {
+        "list": ["id","domainOrgId","clientOrgId"],
+        "view": ["id","domainOrgId","clientOrgId"],
+        "create": {
+          "request": {
+            "root": {
+              "employee": [
+                "id",
+                "firstName",
+                "lastName",
+                "email",
+                "role",
+                "allEvents",
+                "events"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

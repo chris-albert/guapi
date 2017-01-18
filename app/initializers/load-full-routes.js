@@ -10,7 +10,7 @@ export default {
   },
   initialize(application) {
     application.deferReadiness();
-    fullConfig.getConfig('/test-raw-config.json')
+    fullConfig.getConfig()
       .then(config => {
         this.registerRoot(config, application);
         this.setUpInjections(application);
@@ -21,8 +21,7 @@ export default {
     application.inject('component','router','router:main');
   },
   registerRoot(config, application) {
-    console.debug('Registering route: [application]');
-    application.register('route:application', Ember.Route.extend({
+    const model = {
       model() {
         return {
           nav    : config,
@@ -33,7 +32,8 @@ export default {
         console.debug('Entering route [application]');
         this._super();
       }
-    }));
+    }
+    this.registerRoute('application', 'application', model, application);
     this.registerContent(config.get('content'), application);
   },
   registerContent(content, application) {
@@ -46,9 +46,7 @@ export default {
   registerTab(tab, application) {
     const route = tab.invoke('genRoute');
     const content = tab.get('content');
-    console.debug('Registering route: [' + tab.get('name') + '] at route [' + route + ']');
-    this.addRoute(route);
-    application.register('route:' + route, Ember.Route.extend({
+    const routeDef = {
       templateName: 'components/content-wrapper',
       model() {
         return {
@@ -59,12 +57,9 @@ export default {
           },
           content: content
         };
-      },
-      activate() {
-        console.debug('Entering route [' + route + ']');
-        this._super();
       }
-    }));
+    };
+    this.registerRoute(tab.get('name'), route, routeDef, application);
     this.registerContent(content, application);
   },
   registerForm(form, application) {
@@ -82,5 +77,17 @@ export default {
         return obj;
       })
     }));
+  },
+  registerRoute(name, route, routeDef, application) {
+    console.debug('Registering route: [' + name + '] at route [' + route + ']');
+    if(route !== 'application') {
+      this.addRoute(route);
+    }
+    application.register('route:' + route, Ember.Route.extend(_.assignIn(routeDef,{
+      activate() {
+        console.debug('Entering route [' + route + ']');
+        this._super();
+      }
+    })));
   }
 };

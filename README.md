@@ -169,3 +169,66 @@ The `action` type
   "params": ["id","name","ownerOrgId"]
 }
 ```
+
+
+
+Condensed Config
+
+
+Expander
+
+`name` and `display` expander
+This will expand a string to a object with `name` and `display`
+
+```
+"Display Name::nameName"
+```
+Becomes 
+```
+{
+  "display": "Display Name",
+  "name": "nameName"
+}
+```
+Or you could
+```
+{
+  "name": "Display Name::nameName"
+}
+Which would also become
+```
+{
+  "display": "Display Name",
+  "name": "nameName"
+}
+```
+
+Also
+```
+"::someName"
+```
+Will auto format to
+```
+"Some Name::someName"
+```
+Which then follows the name display expander
+
+
+
+The `rest` expander
+If your endpont is really "REST",
+then there is minimal config
+```
+{
+  "name": "Roles::roles",
+  "type": "rest",
+  "path": "/v2/roles",
+  "auth": "bearer",
+  "root": "role",
+  "fields": [
+    "::id",
+    "::name",
+    "::ownerOrgId"
+  ]
+}
+```

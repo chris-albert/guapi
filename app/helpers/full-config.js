@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import _ from 'lodash';
+import CondensedConfig from './load-condensed-config';
 
 const Root = Ember.EddyObject.extend({
   configType: 'Root',
@@ -137,7 +138,7 @@ const Response = Ember.EddyObject.extend({
   type: null,
   fields: null,
   init() {
-    this.validate('Response',['root','type','fields']);
+    this.validate('Response',['type','fields']);
   }
 });
 
@@ -163,13 +164,12 @@ const Submit = Ember.EddyObject.extend({
 
 const FullConfig = Ember.Object.extend({
   init() {
-    console.log('FullConfig.init Starting');
     this.set('root',new Root(this));
-    console.log('FullConfig.init Done');
   }
 });
 
 export default Ember.Object.extend({
+  rawConfigJson: '/test-raw-config.json',
   cache: {},
   routes: [],
   nestedRoutes() {
@@ -184,35 +184,39 @@ export default Ember.Object.extend({
     return obj;
   },
   getConfig(url) {
+    const u = url || this.get('rawConfigJson');
     var self = this;
     return new Promise(function (resolve, reject) {
-      var cache = self.getCache(url);
+      var cache = self.getCache(u);
       if (cache) {
-        console.log('Api Config cache hit for [' + url + ']');
+        console.log('Api Config cache hit for [' + u + ']');
         resolve(cache);
       } else {
         $.ajax({
-          url     : url,
+          url     : u,
           dataType: 'json'
         }).then(json => {
           return self.buildApiDef(json);
         }).then(api => {
-          self.putCache(url, api);
+          self.putCache(u, api);
           resolve(api);
         }).catch(reject);
       }
     });
   },
   defaultConfig() {
-    var cache = this.getCache('/test-raw-config.json');
+    var cache = this.getCache(this.get('rawConfigJson'));
     if(cache) {
       return cache;
     }
     throw new Error('Cant get cache since its empty');
   },
   buildApiDef(json) {
-    const fullConfig = FullConfig.create(json);
-    return fullConfig.get('root');
+    return CondensedConfig.getConfig().then(condensed => {
+      console.log(condensed);
+      const fullConfig = FullConfig.create(json);
+      return fullConfig.get('root');
+    });
   },
   putCache(url, config) {
     this.set('cache.' + this.keyifyUrl(url), config);
