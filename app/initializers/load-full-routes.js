@@ -1,7 +1,6 @@
 
 import Ember from 'ember';
 import _ from 'lodash';
-import GenericForm from '../controllers/generic-form';
 import fullConfig from '../helpers/full-config';
 
 export default {
