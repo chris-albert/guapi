@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 import Requester from '../helpers/requester';
 
 export default Ember.Component.extend(Requester, {
@@ -18,7 +18,7 @@ export default Ember.Component.extend(Requester, {
     if(queryString != '') {
       queryString = '?' + queryString;
     }
-    return window.location.origin + window.location.pathname + queryString;
+    return window.location.origin + window.location.pathname + window.location.hash + queryString;
   }),
   actions     : {
     submit() {

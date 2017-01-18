@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 
 export default Ember.Mixin.create({
   settings    : Ember.inject.service('settings-store'),
@@ -39,7 +39,7 @@ export default Ember.Mixin.create({
   handleJsonRoot(data) {
     var d = {};
     var jsonRoot = this.get('model.request.root');
-    if(!_.isUndefined(jsonRoot)) {
+    if(!_.isNil(jsonRoot)) {
       if(_.isString(jsonRoot)) {
         d[jsonRoot] = data;
       } else if(_.isObject(jsonRoot)) {
@@ -102,7 +102,7 @@ export default Ember.Mixin.create({
     }
   },
   allFields() {
-    return _.object(_.map(this.get('model.request.fields'), function (field) {
+    return _.fromPairs(_.map(this.get('model.request.fields'), function (field) {
       return [field.name, field];
     }));
   },

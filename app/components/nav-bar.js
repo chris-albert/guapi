@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 import Requester from '../helpers/requester';
 
 export default Ember.Component.extend(Requester, {
@@ -99,7 +99,7 @@ export default Ember.Component.extend(Requester, {
     this.get('settings').setStoreObj(data);
   },
   flattenFields(fields) {
-    return _.object(_.map(fields, field => {
+    return _.fromPairs(_.map(fields, field => {
       return [field.name, field.value];
     }));
   }

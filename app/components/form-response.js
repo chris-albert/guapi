@@ -1,5 +1,5 @@
 import Ember from "ember";
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 
 function onChange(func) {
   return Ember.computed('response.xhr', func);
@@ -58,14 +58,19 @@ export default Ember.Component.extend({
   }),
   hash            : onChange(function () {
     return this.getGoodJson(function (json) {
-      return _.object(_.map(json, item => {
+      return _.fromPairs(_.map(json, item => {
         return [item.id, item];
       }));
     });
   }),
   message         : onChange(function () {
-    if(this.get('response.xhr.status') === 0) {
-      return 'No Response, base url is probably unreachable';
+    switch(this.get('response.xhr.status')) {
+      case 0:
+        return 'No Response, base url is probably unreachable';
+        break;
+      case 405:
+        return "Status Text: [" + this.get('response.xhr.statusText') + ']';
+      break;
     }
     return null;
   }),
