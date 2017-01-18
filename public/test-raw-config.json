@@ -188,6 +188,197 @@
                   "fields": "*"
                 }
               }
+            },
+            {
+              "display": "Client Details",
+              "name": "clientDetails",
+              "content": {
+                "type": "tabs",
+                "tabs": [
+                  {
+                    "display": "List",
+                    "name": "list",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "url": "https://{{settings.env}}.ticketfly.com",
+                        "path": "/account/v1/clients",
+                        "method": "GET",
+                        "location": "query",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submit": {
+                          "display": "List",
+                          "type": "primary",
+                          "size": "sm"
+                        },
+                        "fields": []
+                      },
+                      "response": {
+                        "root": "clients",
+                        "type": "array",
+                        "fields": ["appName", "clientId", "clientSecret", "authorities","grantTypes", "scopes"],
+                        "actions": [
+                          {
+                            "type": "icon",
+                            "link": "{{route.base}}.view",
+                            "params": ["clientId"],
+                            "autoSubmit": true,
+                            "icon": "info-sign"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "display": "View",
+                    "name": "view",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "url": "https://{{settings.env}}.ticketfly.com",
+                        "path": "/account/v1/clients/{{clientId}}",
+                        "method": "GET",
+                        "location": "query",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submit": {
+                          "display": "List",
+                          "type": "primary",
+                          "size": "sm"
+                        },
+                        "fields": [
+                          {
+                            "display": "Client Id",
+                            "name": "clientId",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      "response": {
+                        "root": "",
+                        "type": "object",
+                        "fields": "*"
+                      }
+                    }
+                  },
+                  {
+                    "display": "Create",
+                    "name": "create",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "url": "https://{{settings.env}}.ticketfly.com",
+                        "path": "/account/v1/clients",
+                        "method": "POST",
+                        "location": "json",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submit": {
+                          "display": "Create",
+                          "type": "primary",
+                          "size": "sm"
+                        },
+                        "fields": [
+                          {
+                            "display": "AppName",
+                            "name": "appName",
+                            "type": "text"
+                          },
+                          {
+                            "display": "Client Id",
+                            "name": "clientId",
+                            "type": "text",
+                            "disabled": true,
+                            "value": "Generated On Server"
+                          },
+                          {
+                            "display": "Client Secret",
+                            "name": "clientSecret",
+                            "type": "text",
+                            "disabled": true,
+                            "value": "Generated On Server"
+                          },
+                          {
+                            "display": "Authorities",
+                            "name": "authorities",
+                            "type": "select",
+                            "multi": true,
+                            "value": ["ROLE_TFLY_CLIENT"],
+                            "values": [
+                              {
+                                "display": "ROLE_TFLY_CLIENT",
+                                "name": "ROLE_TFLY_CLIENT"
+                              }
+                            ]
+                          },
+                          {
+                            "display": "Grant Types",
+                            "name": "grantTypes",
+                            "type": "select",
+                            "multi": true,
+                            "value": [
+                              "authorization_code",
+                              "refresh_token"
+                            ],
+                            "values": [
+                              {
+                                "display": "authorization_code Code",
+                                "name": "authorization_code"
+                              },
+                              {
+                                "display": "refresh_token Token",
+                                "name": "refresh_token"
+                              },
+                              {
+                                "display": "client_credentials",
+                                "name": "client_credentials"
+                              },
+                              {
+                                "display": "password",
+                                "name": "password"
+                              },
+                              {
+                                "display": "implicit",
+                                "name": "implicit"
+                              },
+                              {
+                                "display": "assertion",
+                                "name": "assertion"
+                              }
+                            ]
+                          },
+                          {
+                            "display": "Scopes",
+                            "name": "scopes",
+                            "type": "select",
+                            "multi": true,
+                            "addable": true,
+                            "values": [
+                              {
+                                "display": "profile:read",
+                                "name": "profile:read"
+                              },
+                              {
+                                "display": "account:read",
+                                "name": "account:read"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "response": {
+                        "root": "clients",
+                        "type": "object",
+                        "fields": "*"
+                      }
+                    }
+                  }
+                ]
+              }
             }
           ]
         }
@@ -455,6 +646,12 @@
                         "actions": [
                           {
                             "type": "button",
+                            "display": "Update",
+                            "link": "{{route.base}}.update",
+                            "params": ["id","name","ownerOrgId"]
+                          },
+                          {
+                            "type": "button",
                             "display": "Delete",
                             "link": "{{route.base}}.delete",
                             "params": ["id"]
@@ -504,6 +701,57 @@
                         "root": "role",
                         "type": "object",
                         "fields": "*"
+                      }
+                    }
+                  },
+                  {
+                    "display": "Update",
+                    "name": "update",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "url": "https://authorization-{{settings.env}}.ticketfly.com",
+                        "path": "/v2/roles/{{id}}",
+                        "method": "PUT",
+                        "location": "query",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submit": {
+                          "display": "List",
+                          "type": "primary",
+                          "size": "sm"
+                        },
+                        "fields": [
+                          {
+                            "display": "Id",
+                            "name": "id",
+                            "type": "text"
+                          },
+                          {
+                            "display": "Name",
+                            "name": "name",
+                            "type": "text"
+                          },
+                          {
+                            "display": "Owner Org Id",
+                            "name": "ownerOrgId",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      "response": {
+                        "root": "role",
+                        "type": "object",
+                        "fields": "*",
+                        "actions": [
+                          {
+                            "type": "button",
+                            "display": "View",
+                            "link": "{{route.base}}.view",
+                            "params": ["id"]
+                          }
+                        ]
                       }
                     }
                   },
