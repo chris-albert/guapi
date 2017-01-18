@@ -317,7 +317,7 @@
                           },
                           {
                             "display": "Grant Types",
-                            "name": "grantTypes",
+                            "name": "authorizedGrantTypes",
                             "type": "select",
                             "multi": true,
                             "value": [
@@ -371,7 +371,7 @@
                         ]
                       },
                       "response": {
-                        "root": "clients",
+                        "root": "",
                         "type": "object",
                         "fields": "*"
                       }

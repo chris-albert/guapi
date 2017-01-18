@@ -39,7 +39,7 @@ export default Ember.Mixin.create({
   handleJsonRoot(data) {
     var d = {};
     var jsonRoot = this.get('model.request.root');
-    if(!_.isUndefined(jsonRoot)) {
+    if(!_.isNil(jsonRoot)) {
       if(_.isString(jsonRoot)) {
         d[jsonRoot] = data;
       } else if(_.isObject(jsonRoot)) {
