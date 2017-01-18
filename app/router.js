@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import config from './config/environment';
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 import fullConfig from './helpers/full-config';
 
 var Router = Ember.Router.extend({

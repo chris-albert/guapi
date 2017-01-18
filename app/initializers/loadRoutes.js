@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 import GenericForm from '../controllers/generic-form';
 import apiConfig from '../helpers/api-config';
 

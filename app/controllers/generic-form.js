@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import _ from 'lodash/lodash';
+import _ from 'lodash';
 
 export default Ember.Controller.extend({
   init() {
@@ -8,7 +8,7 @@ export default Ember.Controller.extend({
   },
 });
 //import Ember from 'ember';
-//import _ from 'lodash/lodash';
+//import _ from 'lodash';
 //
 //export default Ember.Controller.extend({
 //  settings    : Ember.inject.service('settings-store'),
