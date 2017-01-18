@@ -64,8 +64,13 @@ export default Ember.Component.extend({
     });
   }),
   message         : onChange(function () {
-    if(this.get('response.xhr.status') === 0) {
-      return 'No Response, base url is probably unreachable';
+    switch(this.get('response.xhr.status')) {
+      case 0:
+        return 'No Response, base url is probably unreachable';
+        break;
+      case 405:
+        return "Status Text: [" + this.get('response.xhr.statusText') + ']';
+      break;
     }
     return null;
   }),

@@ -376,6 +376,39 @@
                         "fields": "*"
                       }
                     }
+                  },
+                  {
+                    "display": "Delete",
+                    "name": "delete",
+                    "content": {
+                      "type": "form",
+                      "request": {
+                        "url": "https://{{settings.env}}.ticketfly.com",
+                        "path": "/account/v1/clients/{{clientId}}",
+                        "method": "POST",
+                        "location": "path",
+                        "auth": {
+                          "type": "bearer"
+                        },
+                        "submit": {
+                          "display": "Delete",
+                          "type": "primary",
+                          "size": "sm"
+                        },
+                        "fields": [
+                          {
+                            "display": "Client Id",
+                            "name": "clientId",
+                            "type": "text"
+                          }
+                        ]
+                      },
+                      "response": {
+                        "root": "",
+                        "type": "object",
+                        "fields": "*"
+                      }
+                    }
                   }
                 ]
               }
