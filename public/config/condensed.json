@@ -47,6 +47,7 @@
   },
   "tabs": [
     "file://projects/permissions",
-    "file://projects/account"
+    "file://projects/account",
+    "file://projects/mod"
   ]
 }

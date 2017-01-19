@@ -1,0 +1,21 @@
+{
+  "name": "MOD::mod",
+  "baseUrl": "http://10.30.8.77:9000",
+  "tabs": [
+    {
+      "name": "::methodOfDelivery",
+      "type": "rest",
+      "path": "/v2/method-of-delivery",
+      "root": "methodOfDelivery",
+      "list": ["orgId","eventId","deliveryType"],
+      "fields": [
+        "::id",
+        "::orgId",
+        "::eventId",
+        "::deliveryType",
+        "::defaultText",
+        "::customText"
+      ]
+    }
+  ]
+}
