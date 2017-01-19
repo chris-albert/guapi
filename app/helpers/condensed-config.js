@@ -67,8 +67,9 @@ const RestExpander = Ember.Object.extend({
   },
   expandResources(json, baseUrl) {
     replace(json,'fields',f => NameDisplayExpander.expand(f));
-    const forms = _.map(_.get(json,'resources', this.get('resourceTypes')), resource => {
-      const form = this.expandResource(json, resource);
+    const resources = _.get(json,'resources', this.get('resourceTypes'));
+    const forms = _.map(resources, resource => {
+      const form = this.expandResource(json, resource, resources);
       const expanded = FormExpander.expand(form, baseUrl);
       _.set(expanded,'type','form');
       return {
@@ -77,16 +78,17 @@ const RestExpander = Ember.Object.extend({
         content: expanded
       };
     });
+    const tabsAndActions = this.handleActions(forms);
     return {
       display: _.get(json, 'display'),
       name: _.get(json, 'name'),
       content: {
         type: 'tabs',
-        tabs: forms
+        tabs: tabsAndActions
       }
     };
   },
-  expandResource(json, resourceType) {
+  expandResource(json, resourceType, resources) {
     const form = {};
     _.defaults(form,_.pick(json,['path','auth']));
     _.set(form, 'method', this.get('defaultMethods.' + resourceType));
@@ -103,36 +105,49 @@ const RestExpander = Ember.Object.extend({
     if(_.isUndefined(_.get(form,'response.root'))) {
       _.set(form, 'response.root', this.getResponseRoot(json, resourceType));
     }
-    _.set(form,'response.actions',this.getActions(json, resourceType));
     return form;
   },
-  getActions(json, resourceType) {
+  handleActions(forms) {
+    const keys = _.keyBy(forms,'name');
+    return _.map(keys,(form, resourceType) => {
+      const actions = this.getActions(resourceType,keys);
+      _.set(form,'content.response.actions',actions);
+      return form;
+    });
+  },
+  getActions(resourceType, forms) {
     const actions = [];
     switch(resourceType) {
       case 'update':
       case 'create':
       case 'list':
-        actions.push({
-          "type": "icon",
-          "link": "{{route.base}}.view",
-          "params": [_.get(json,'idField','id')],
-          "autoSubmit": true,
-          "icon": "info-sign"
-        });
+        if(_.get(forms,'view')) {
+          actions.push({
+            "type"      : "icon",
+            "link"      : "{{route.base}}.view",
+            "params"    : _.map(_.get(forms,'view.content.request.fields'),'name'),
+            "autoSubmit": true,
+            "icon"      : "info-sign"
+          });
+        }
         break;
       case 'view':
-        actions.push({
-          "type": "button",
-          "display": "Update",
-          "link": "{{route.base}}.update",
-          "params": "*"
-        });
-        actions.push({
-          "type": "button",
-          "display": "Delete",
-          "link": "{{route.base}}.delete",
-          "params": [_.get(json,'idField','id')]
-        });
+        if(_.get(forms,'update')) {
+          actions.push({
+            "type"   : "button",
+            "display": "Update",
+            "link"   : "{{route.base}}.update",
+            "params" : _.map(_.get(forms,'update.content.request.fields'),'name')
+          });
+        }
+        if(_.get(forms,'delete')) {
+          actions.push({
+            "type"   : "button",
+            "display": "Delete",
+            "link"   : "{{route.base}}.delete",
+            "params" : _.map(_.get(forms,'delete.content.request.fields'),'name')
+          });
+        }
         break;
     }
     return actions;
