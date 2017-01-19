@@ -94,6 +94,9 @@ const RestExpander = Ember.Object.extend({
     _.set(form, 'location', this.getLocation(resourceType));
     _.set(form, 'submit', _.capitalize(resourceType));
     this.handleOverrides(json, form,resourceType);
+    if(_.isUndefined(_.get(form,'root'))) {
+      _.set(form, 'root', _.get(json, 'root'))
+    };
     if(_.isNil(_.get(form,'response.type'))) {
       _.set(form, 'response.type', this.getResponseType(resourceType));
     }
@@ -118,7 +121,7 @@ const RestExpander = Ember.Object.extend({
     const keyedFields = _.keyBy(_.get(json, 'fields'), 'name');
     _.each(override, field => {
       if (_.get(keyedFields, field)) {
-        fields.push(_.get(keyedFields, field));
+        fields.push(_.clone(_.get(keyedFields, field)));
       }
     });
     return fields;
@@ -184,7 +187,7 @@ const RestExpander = Ember.Object.extend({
 }).create();
 
 const FormExpander = Ember.Object.extend({
-  requestFields: ['url','path','method','location','auth','submit','fields'],
+  requestFields: ['url','path','method','location','auth','submit','fields', 'root'],
   responseFields: ['root','type','fields'],
   expand(json, baseUrl) {
     const newJson = _.clone(json);

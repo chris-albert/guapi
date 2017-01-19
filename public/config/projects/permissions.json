@@ -41,21 +41,19 @@
         "::allEvents",
         "::events"
       ],
-      "list": ["id","domainOrgId","clientOrgId"],
+      "list": ["domainOrgId","clientOrgId"],
       "view": ["id","domainOrgId","clientOrgId"],
       "create": {
-        "request": {
-          "root": {
-            "employee": [
-              "id",
-              "firstName",
-              "lastName",
-              "email",
-              "role",
-              "allEvents",
-              "events"
-            ]
-          }
+        "root": {
+          "employee": [
+            "id",
+            "firstName",
+            "lastName",
+            "email",
+            "role",
+            "allEvents",
+            "events"
+          ]
         }
       }
     }
