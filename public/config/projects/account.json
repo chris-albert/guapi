@@ -56,7 +56,12 @@
       "idField": "clientId",
       "resources": ["list","view","create"],
       "create": ["appName","clientIdGen","clientSecretGen","authorities","authorizedGrantTypes","scopes"],
-      "list": [],
+      "list": {
+        "fields": [],
+        "response": {
+          "fields": ["appName", "clientId", "clientSecret", "authorities","grantTypes", "scopes"]
+        }
+      },
       "view": {
         "response": {
           "root": null

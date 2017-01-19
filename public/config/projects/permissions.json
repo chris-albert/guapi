@@ -43,6 +43,7 @@
       ],
       "list": ["domainOrgId","clientOrgId"],
       "view": ["id","domainOrgId","clientOrgId"],
+      "resources": ["list","view","create","update"],
       "create": {
         "root": {
           "employee": [

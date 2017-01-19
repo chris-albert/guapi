@@ -95,7 +95,7 @@ const RestExpander = Ember.Object.extend({
     _.set(form, 'submit', _.capitalize(resourceType));
     this.handleOverrides(json, form,resourceType);
     if(_.isUndefined(_.get(form,'root'))) {
-      _.set(form, 'root', _.get(json, 'root'))
+      _.set(form, 'root', _.get(json, 'root'));
     };
     if(_.isNil(_.get(form,'response.type'))) {
       _.set(form, 'response.type', this.getResponseType(resourceType));
@@ -103,7 +103,39 @@ const RestExpander = Ember.Object.extend({
     if(_.isUndefined(_.get(form,'response.root'))) {
       _.set(form, 'response.root', this.getResponseRoot(json, resourceType));
     }
+    _.set(form,'response.actions',this.getActions(json, resourceType));
     return form;
+  },
+  getActions(json, resourceType) {
+    const actions = [];
+    switch(resourceType) {
+      case 'update':
+      case 'create':
+      case 'list':
+        actions.push({
+          "type": "icon",
+          "link": "{{route.base}}.view",
+          "params": [_.get(json,'idField','id')],
+          "autoSubmit": true,
+          "icon": "info-sign"
+        });
+        break;
+      case 'view':
+        actions.push({
+          "type": "button",
+          "display": "Update",
+          "link": "{{route.base}}.update",
+          "params": "*"
+        });
+        actions.push({
+          "type": "button",
+          "display": "Delete",
+          "link": "{{route.base}}.delete",
+          "params": [_.get(json,'idField','id')]
+        });
+        break;
+    }
+    return actions;
   },
   handleOverrides(json, form, resourceType) {
     const override = _.get(json,resourceType, this.fieldFilter(json, resourceType));
