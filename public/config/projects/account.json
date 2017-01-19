@@ -13,8 +13,11 @@
         "pass": "settings.clientSecret"
       },
       "fields": [
-        "::userName",
-        "::password",
+        "::username",
+        {
+          "name": "::password",
+          "type": "password"
+        },
         {
           "name": "grant_type",
           "type": "hidden",
@@ -52,16 +55,27 @@
       "root": "client",
       "idField": "clientId",
       "resources": ["list","view","create"],
+      "create": ["appName","clientIdGen","clientSecretGen","authorities","authorizedGrantTypes","scopes"],
+      "list": [],
+      "view": {
+        "response": {
+          "root": null
+        }
+      },
       "fields": [
         "::appName",
+        "::clientId",
+        "::clientSecret",
         {
-          "name": "::clientId",
+          "name": "Client Id::clientIdGen",
           "disabled": true,
+          "outName": "clientId",
           "value": "Generated On Server"
         },
         {
-          "name": "::clientSecret",
+          "name": "::clientSecretGen",
           "disabled": true,
+          "outName": "clientSecret",
           "value": "Generated On Server"
         },
         {
@@ -69,7 +83,7 @@
           "type": "select",
           "multi": true,
           "value": ["ROLE_TFLY_CLIENT"],
-          "values": ["ROLE_TFLY_CLIENT"]
+          "values": ["ROLE_TFLY_CLIENT::"]
         },
         {
           "name": "Grant Types::authorizedGrantTypes",
@@ -80,12 +94,12 @@
             "refresh_token"
           ],
           "values": [
-            "authorization_code",
-            "refresh_token",
-            "client_credentials",
-            "password",
-            "implicit",
-            "assertion"
+            "authorization_code::",
+            "refresh_token::",
+            "client_credentials::",
+            "password::",
+            "implicit::",
+            "assertion::"
           ]
         },
         {
@@ -94,8 +108,8 @@
           "multi": true,
           "addable": true,
           "values": [
-            "profile:read",
-            "account:read"
+            "profile:read::",
+            "account:read::"
           ]
         }
       ]

@@ -45,8 +45,11 @@ const ProjectExpander = Ember.Object.extend({
 
 const FieldExpander = Ember.Object.extend({
   expand(json) {
-
-    return json;
+    if(_.get(json,'type') === 'select') {
+      const values = NameDisplayExpander.expand(_.get(json,'values'));
+      _.set(json,'values', values);
+    }
+    return NameDisplayExpander.expand(json);
   }
 }).create();
 
@@ -65,8 +68,8 @@ const RestExpander = Ember.Object.extend({
   expandResources(json, baseUrl) {
     replace(json,'fields',f => NameDisplayExpander.expand(f));
     const forms = _.map(_.get(json,'resources', this.get('resourceTypes')), resource => {
-      const form = this.expandResource(json, resource, baseUrl);
-      const expanded = FormExpander.expand(form);
+      const form = this.expandResource(json, resource);
+      const expanded = FormExpander.expand(form, baseUrl);
       _.set(expanded,'type','form');
       return {
         display: _.capitalize(resource),
@@ -83,30 +86,65 @@ const RestExpander = Ember.Object.extend({
       }
     };
   },
-  expandResource(json, resourceType, baseUrl) {
+  expandResource(json, resourceType) {
     const form = {};
-    _.merge(form,_.pick(json,['path','auth']));
-    _.set(form, 'url', baseUrl);
+    _.defaults(form,_.pick(json,['path','auth']));
     _.set(form, 'method', this.get('defaultMethods.' + resourceType));
     _.set(form, 'path', this.expandPath(json, resourceType));
-    _.set(form, 'location', 'query');
+    _.set(form, 'location', this.getLocation(resourceType));
     _.set(form, 'submit', _.capitalize(resourceType));
-    const override = _.get(json,resourceType);
-    if(_.isNil(override)) {
-      _.set(form,'fields', _.get(json,'fields'));
-    } else if(_.isArray(override)) {
-      const fields = [];
-      const keyedFields = _.keyBy(_.get(json,'fields'),'name');
-      _.each(override, field => {
-        if(_.get(keyedFields,field)) {
-          fields.push(_.get(keyedFields,field));
-        }
-      });
-      _.set(form, 'fields', fields);
-    } else if(_.isObject(override)) {
-      _.merge(form, override);
+    this.handleOverrides(json, form,resourceType);
+    if(_.isNil(_.get(form,'response.type'))) {
+      _.set(form, 'response.type', this.getResponseType(resourceType));
+    }
+    if(_.isUndefined(_.get(form,'response.root'))) {
+      _.set(form, 'response.root', this.getResponseRoot(json, resourceType));
     }
     return form;
+  },
+  handleOverrides(json, form, resourceType) {
+    const override = _.get(json,resourceType, this.fieldFilter(json, resourceType));
+    if(_.isArray(override)) {
+      _.set(form, 'fields', this.getFields(json, override));
+    } else if(_.isObject(override)) {
+      if(_.isNil(_.get(override,'fields'))) {
+        _.set(form, 'fields', this.getFields(json,this.fieldFilter(json, resourceType)));
+      }
+      _.defaultsDeep(form, override);
+    }
+  },
+  getFields(json, override) {
+    const fields      = [];
+    const keyedFields = _.keyBy(_.get(json, 'fields'), 'name');
+    _.each(override, field => {
+      if (_.get(keyedFields, field)) {
+        fields.push(_.get(keyedFields, field));
+      }
+    });
+    return fields;
+  },
+  fieldFilter(json, resourceType) {
+    switch(resourceType) {
+      case 'list':
+      case 'update':
+      case 'create':
+        return _.map(_.get(json,'fields'),r => _.get(r,'name'));
+      case 'delete':
+      case 'view':
+        return [_.get(json,'idField','id')];
+    }
+  },
+  getLocation(resourceType) {
+    switch(resourceType) {
+      case 'list':
+      case 'view':
+        return 'query';
+      case 'update':
+      case 'create':
+      case 'delete':
+        return 'json';
+
+    }
   },
   expandPath(json, resourceType) {
     const id = _.get(json,'idField','id');
@@ -119,6 +157,28 @@ const RestExpander = Ember.Object.extend({
       case 'list':
       case 'create':
         return path;
+    }
+  },
+  getResponseRoot(json, resourceType) {
+    switch(resourceType) {
+      case 'list':
+        return _.get(json,'root') + 's';
+      case 'update':
+      case 'delete':
+      case 'view':
+      case 'create':
+        return _.get(json,'root');
+    }
+  },
+  getResponseType(resourceType) {
+    switch(resourceType) {
+      case 'list':
+        return 'array';
+      case 'update':
+      case 'delete':
+      case 'view':
+      case 'create':
+        return 'object';
     }
   }
 }).create();
@@ -155,7 +215,7 @@ const FormExpander = Ember.Object.extend({
   },
   expandResponse(json) {
     replace(json, 'response', r => {
-      return _.merge(r,this.defaultResponse);
+      return _.defaults(r,this.defaultResponse);
     });
   },
   expandAuth(auth) {
@@ -180,9 +240,9 @@ const FormExpander = Ember.Object.extend({
     if(_.isNil(submit)) {
       return this.defaultSubmit;
     } else if(_.isString(submit)) {
-      return _.merge({"display": submit}, this.defaultSubmit);
+      return _.defaults({"display": submit}, this.defaultSubmit);
     } else if(_.isObject(submit)) {
-      return _.merge(submit, this.defaultSubmit);
+      return _.defaults(submit, this.defaultSubmit);
     }
   },
   defaultFields: {
@@ -190,8 +250,9 @@ const FormExpander = Ember.Object.extend({
     "disabled": false
   },
   expandFields(fields) {
-    const expanded = NameDisplayExpander.expand(fields);
-    return _.map(expanded,e => _.merge(e, this.defaultFields));
+    //const expanded = NameDisplayExpander.expand(fields);
+    const expanded = _.map(fields, f => FieldExpander.expand(f))
+    return _.map(expanded,e => _.defaults(e, this.defaultFields));
   }
 }).create();
 

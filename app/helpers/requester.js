@@ -113,8 +113,8 @@ export default Ember.Mixin.create({
     _.map(fields, function (field) {
       if (_.isUndefined(field.send) || field.send) {
         var key = field.name;
-        if(field.outName) {
-          key = field.outName;
+        if(_.get(field,'outName')) {
+          key = _.get(field,'outName');
         }
         data[key] = self.buildFieldValue(field);
       }
