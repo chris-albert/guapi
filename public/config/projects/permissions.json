@@ -57,6 +57,20 @@
           ]
         }
       }
+    },
+    {
+      "name": "::Check",
+      "path": "/v2/authorizations",
+      "method": "GET",
+      "location": "query",
+      "fields": [
+        "::permissionId",
+        "::permissionName",
+        "::userId",
+        "::domainOrgId",
+        "::clientOrgId",
+        "::eventId"
+      ]
     }
   ]
 }
