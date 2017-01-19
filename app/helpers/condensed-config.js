@@ -11,7 +11,7 @@ const ProjectExpander = Ember.Object.extend({
   expand(json) {
     const project = NameDisplayExpander.expand(json);
     if(_.get(project,'tabs')) {
-      const tabs = this.expandTabs(_.get(project,'tabs'));
+      const tabs = this.expandTabs(_.get(project,'tabs'), _.get(project,'baseUrl'));
       delete project['tabs'];
       _.set(project,'content', {
         type: 'tabs',
@@ -20,21 +20,24 @@ const ProjectExpander = Ember.Object.extend({
     }
     return project;
   },
-  expandTabs(tabs) {
+  expandTabs(tabs, baseUrl) {
     const newTabs = _.map(tabs, tab => {
       NameDisplayExpander.expand(tab);
-      console.log(tab);
-      console.log(this.expandTab(tab));
-      return tab;
+      return this.expandTab(tab, baseUrl);
     });
     return newTabs;
   },
-  expandTab(tab) {
+  expandTab(tab, baseUrl) {
     if(_.isNil(_.get(tab,'tabs'))) {
       if(_.get(tab, 'type') === 'rest') {
-        return RestExpander.expand(tab);
+        return RestExpander.expand(tab, baseUrl);
       }
-      return FormExpander.expand(tab);
+      const form = FormExpander.expand(tab, baseUrl);
+      return {
+        name: _.get(form,'name'),
+        display: _.get(form,'display'),
+        content: form
+      };
     }
     return tab;
   }
@@ -48,24 +51,91 @@ const FieldExpander = Ember.Object.extend({
 }).create();
 
 const RestExpander = Ember.Object.extend({
-  expand(json) {
-
-    return {};
+  defaultMethods: {
+    'view': 'GET',
+    'list': 'GET',
+    'create': 'POST',
+    'update': 'PUT',
+    'delete': "DELETE"
+  },
+  resourceTypes: ['list','view','create','update','delete'],
+  expand(json, baseUrl) {
+    return this.expandResources(json, baseUrl);
+  },
+  expandResources(json, baseUrl) {
+    replace(json,'fields',f => NameDisplayExpander.expand(f));
+    const forms = _.map(_.get(json,'resources', this.get('resourceTypes')), resource => {
+      const form = this.expandResource(json, resource, baseUrl);
+      const expanded = FormExpander.expand(form);
+      _.set(expanded,'type','form');
+      return {
+        display: _.capitalize(resource),
+        name: resource,
+        content: expanded
+      };
+    });
+    return {
+      display: _.get(json, 'display'),
+      name: _.get(json, 'name'),
+      content: {
+        type: 'tabs',
+        tabs: forms
+      }
+    };
+  },
+  expandResource(json, resourceType, baseUrl) {
+    const form = {};
+    _.merge(form,_.pick(json,['path','auth']));
+    _.set(form, 'url', baseUrl);
+    _.set(form, 'method', this.get('defaultMethods.' + resourceType));
+    _.set(form, 'path', this.expandPath(json, resourceType));
+    _.set(form, 'location', 'query');
+    _.set(form, 'submit', _.capitalize(resourceType));
+    const override = _.get(json,resourceType);
+    if(_.isNil(override)) {
+      _.set(form,'fields', _.get(json,'fields'));
+    } else if(_.isArray(override)) {
+      const fields = [];
+      const keyedFields = _.keyBy(_.get(json,'fields'),'name');
+      _.each(override, field => {
+        if(_.get(keyedFields,field)) {
+          fields.push(_.get(keyedFields,field));
+        }
+      });
+      _.set(form, 'fields', fields);
+    } else if(_.isObject(override)) {
+      _.merge(form, override);
+    }
+    return form;
+  },
+  expandPath(json, resourceType) {
+    const id = _.get(json,'idField','id');
+    const path = _.get(json,'path');
+    switch(resourceType) {
+      case 'update':
+      case 'delete':
+      case 'view':
+        return path + '/{{' + id + '}}';
+      case 'list':
+      case 'create':
+        return path;
+    }
   }
 }).create();
 
 const FormExpander = Ember.Object.extend({
   requestFields: ['url','path','method','location','auth','submit','fields'],
   responseFields: ['root','type','fields'],
-  expand(json) {
+  expand(json, baseUrl) {
     const newJson = _.clone(json);
-    this.expandRequest(newJson);
+    this.expandRequest(newJson, baseUrl);
     this.expandResponse(newJson);
     _.set(newJson,'type','form');
     return newJson;
   },
-  expandRequest(json) {
+  expandRequest(json, baseUrl) {
     this.moveToRequest(json);
+    _.set(json,'request.url', baseUrl);
     replace(json, 'request.auth', d => this.expandAuth(d));
     replace(json, 'request.submit', d => this.expandSubmit(d));
     replace(json, 'request.fields', d => this.expandFields(d));

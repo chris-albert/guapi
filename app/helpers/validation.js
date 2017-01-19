@@ -10,7 +10,7 @@ export default Ember.Mixin.create({
       }
     });
     if(!_.isEmpty(errors)) {
-      throw new Error('Error validating [' + name + ']: missing properties [' + errors + ']');
+      throw new Error('Error validating [' + name + '][' + this.get('name') + ']: missing properties [' + errors + ']');
     }
   }
 });

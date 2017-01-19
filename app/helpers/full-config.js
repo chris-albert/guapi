@@ -185,24 +185,33 @@ export default Ember.Object.extend({
   },
   getConfig(url) {
     const u = url || this.get('rawConfigJson');
-    var self = this;
-    return new Promise(function (resolve, reject) {
-      var cache = self.getCache(u);
-      if (cache) {
-        console.log('Api Config cache hit for [' + u + ']');
-        resolve(cache);
-      } else {
-        $.ajax({
-          url     : u,
-          dataType: 'json'
-        }).then(json => {
-          return self.buildApiDef(json);
-        }).then(api => {
-          self.putCache(u, api);
-          resolve(api);
-        }).catch(reject);
-      }
-    });
+    const cache = this.getCache(u);
+    if (cache) {
+      console.log('Api Config cache hit for [' + u + ']');
+      return Promise.resolve(cache);
+    } else {
+      return this.fetchConfig(u);
+    }
+  },
+  fetchConfig(url) {
+    //return $.ajax({
+    //  url: url,
+    //  dataType: 'json'
+    //}).then(j => {
+    //  const api = this.buildApiDef(j);
+    //  this.putCache(url, api);
+    //  return api;
+    //});
+    return this.fetchCondensedConfig()
+      .then(c => {
+        const api = this.buildApiDef(c);
+        console.log(api);
+        this.putCache(this.get('rawConfigJson'),api);
+        return api;
+      });
+  },
+  fetchCondensedConfig() {
+    return CondensedConfig.getConfig();
   },
   defaultConfig() {
     var cache = this.getCache(this.get('rawConfigJson'));
@@ -212,11 +221,7 @@ export default Ember.Object.extend({
     throw new Error('Cant get cache since its empty');
   },
   buildApiDef(json) {
-    return CondensedConfig.getConfig().then(condensed => {
-      console.log(condensed);
-      const fullConfig = FullConfig.create(json);
-      return fullConfig.get('root');
-    });
+    return FullConfig.create(json).get('root');
   },
   putCache(url, config) {
     this.set('cache.' + this.keyifyUrl(url), config);

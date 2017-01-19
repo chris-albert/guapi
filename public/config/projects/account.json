@@ -50,6 +50,7 @@
       "type": "rest",
       "path": "/account/v1/clients",
       "root": "client",
+      "idField": "clientId",
       "resources": ["list","view","create"],
       "fields": [
         "::appName",

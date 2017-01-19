@@ -5,8 +5,6 @@ export default Ember.Mixin.create({
   invoke(key,...args) {
     const func  = this.get(key);
 
-    //var scope = this.get(_.initial(key.split('.')).join('.'));
-
     var scope = this;
     const split = _.initial(key.split('.')).join('.');
     if(!_.isEmpty(split)) {
