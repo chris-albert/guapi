@@ -34,6 +34,8 @@ export default Ember.Mixin.create({
     }
   },
   handleQueryRoot(data) {
+    const a = this.handleJsonRoot(data);
+    //console.log(a);
     return data;
   },
   handleJsonRoot(data) {

@@ -245,7 +245,9 @@ const FormExpander = Ember.Object.extend({
   },
   expandRequest(json, baseUrl) {
     this.moveToRequest(json);
-    _.set(json,'request.url', baseUrl);
+    if(_.isNil(_.get(json,'request.url'))) {
+      _.set(json, 'request.url', baseUrl);
+    }
     replace(json, 'request.auth', d => this.expandAuth(d));
     replace(json, 'request.submit', d => this.expandSubmit(d));
     replace(json, 'request.fields', d => this.expandFields(d));
@@ -254,7 +256,9 @@ const FormExpander = Ember.Object.extend({
     _.each(this.requestFields, (field) => {
       const value = _.get(json,field);
       delete json[field];
-      _.set(json, 'request.' + field, value);
+      if(_.isNil(_.get(json, 'request.' + field))) {
+        _.set(json, 'request.' + field, value);
+      }
     });
     return json;
   },

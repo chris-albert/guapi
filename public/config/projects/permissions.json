@@ -67,10 +67,15 @@
         "::permissionId",
         "::permissionName",
         "::userId",
-        "::domainOrgId",
-        "::clientOrgId",
-        "::eventId"
-      ]
+        "Domain Org Id::scope.domainOrgId",
+        "Client Org Id::scope.clientOrgId",
+        "Event Id::scope.eventId"
+      ],
+      "request": {
+        "root": {
+          "scope": ["domainOrgId","clientOrgId","eventId"]
+        }
+      }
     }
   ]
 }
