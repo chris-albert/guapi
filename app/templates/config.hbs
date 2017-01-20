@@ -1,3 +1,11 @@
 <div class="panel-body">
-  <pre class="prettyprint">{{model.prettyJson}}</pre>
+  {{#form-input
+  fields=form
+  submit=button
+  layout="stacked"
+  onSubmit=(action "submit")
+  onActionClick=(action "actionClick")
+  onFormChange=(action "formChange")
+  }}
+    {{/form-input}}
 </div>

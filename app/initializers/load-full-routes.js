@@ -23,6 +23,7 @@ export default {
   registerRoot(config, application) {
     const model = {
       model() {
+        console.log(this);
         return {
           nav    : config,
           content: config.get('content'),

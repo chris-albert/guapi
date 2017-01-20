@@ -166,7 +166,6 @@ export default Ember.Object.extend({
     return this.fetchCondensedConfig()
       .then(c => {
         const api = this.buildApiDef(c);
-        console.log(api);
         this.putCache(this.get('rawConfigJson'),api);
         return api;
       });
