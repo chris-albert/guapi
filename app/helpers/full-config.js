@@ -10,7 +10,7 @@ const Root = Ember.EddyObject.extend({
   auth: null,
   init() {
     this.validate('Root', ['display','settings','content']);
-    this.set('content', new Content(this.get('content')));
+    this.set('content', Content.create(this.get('content')));
     this.set('auth', Form.create(this.get('auth')));
   }
 });
@@ -32,6 +32,9 @@ const Content = Ember.EddyObject.extend({
         const form = Form.create(this);
         this.set('form', form);
         return;
+      case 'text' :
+        this.set('text', Text.create(this));
+        return;
       default:
         throw new Error('Tab type [' + this.get('type') + '] not valid');
     }
@@ -42,12 +45,23 @@ const Content = Ember.EddyObject.extend({
   isForm() {
     return this.get('type') === 'form';
   },
+  isText() {
+    return this.get('type') === 'text';
+  },
   each(f) {
     if(this.isTabs()) {
       _.each(this.get('tabs'),f);
     } else if(this.isForm()) {
       f(this.get('form'));
     }
+  }
+});
+
+const Text = Ember.EddyObject.extend({
+  configType: 'Text',
+  text: null,
+  init() {
+    this.validate('Text', ['text']);
   }
 });
 
@@ -123,9 +137,23 @@ const Submit = Ember.EddyObject.extend({
   }
 });
 
+const NoConfig = Ember.EddyObject.extend({
+  configType: 'NoConfig',
+  init() {
+    this.set('content', Content.create({
+      type: 'text',
+      text: 'Error in parsing config.'
+    }));
+  }
+});
+
 const FullConfig = Ember.Object.extend({
   init() {
-    this.set('root',Root.create(this));
+    try {
+      this.set('root', Root.create(this));
+    } catch(err) {
+      this.set('root', NoConfig.create());
+    }
   }
 });
 
@@ -155,14 +183,6 @@ export default Ember.Object.extend({
     }
   },
   fetchConfig(url) {
-    //return $.ajax({
-    //  url: url,
-    //  dataType: 'json'
-    //}).then(j => {
-    //  const api = this.buildApiDef(j);
-    //  this.putCache(url, api);
-    //  return api;
-    //});
     return this.fetchCondensedConfig()
       .then(c => {
         const api = this.buildApiDef(c);

@@ -8,4 +8,6 @@
     queryParams=queryParams
     route=route
   }}{{/generic-form}}
+{{else if isText}}
+  {{#text-component model=content}}{{/text-component}}
 {{/if}}
