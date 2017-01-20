@@ -10,7 +10,7 @@ export default {
   },
   initialize(application) {
     application.deferReadiness();
-    fullConfig.getConfig('/test-raw-config.json')
+    fullConfig.getConfig()
       .then(config => {
         this.registerRoot(config, application);
         this.setUpInjections(application);
@@ -21,34 +21,38 @@ export default {
     application.inject('component','router','router:main');
   },
   registerRoot(config, application) {
-    console.debug('Registering route: [application]');
-    application.register('route:application', Ember.Route.extend({
+    const model = {
       model() {
         return {
           nav    : config,
-          content: config.get('content')
+          content: config.get('content'),
+          route: {
+            full: '',
+            base: '',
+            end: ''
+          }
         };
       },
       activate() {
         console.debug('Entering route [application]');
         this._super();
       }
-    }));
-    this.registerContent(config.get('content'), application);
+    }
+    this.registerRoute('application', model, application);
+    this.registerContent(config.get('content'), application, []);
   },
-  registerContent(content, application) {
+  registerContent(content, application, stack) {
     if(content.invoke('isTabs')) {
-      content.invoke('each', t => this.registerTab(t, application));
+      content.invoke('each', t => this.registerTab(t, application, stack));
     } else if(content.invoke('isForm')) {
-      content.invoke('each', f => this.registerForm(f, application));
+      content.invoke('each', f => this.registerForm(f, application, stack));
     }
   },
-  registerTab(tab, application) {
-    const route = tab.invoke('genRoute');
+  registerTab(tab, application, stack) {
+    const tabStack = _.concat(stack, _.get(tab,'name'));
+    const route = tabStack.join('.');
     const content = tab.get('content');
-    console.debug('Registering route: [' + tab.get('name') + '] at route [' + route + ']');
-    this.addRoute(route);
-    application.register('route:' + route, Ember.Route.extend({
+    const routeDef = {
       templateName: 'components/content-wrapper',
       model() {
         return {
@@ -59,17 +63,14 @@ export default {
           },
           content: content
         };
-      },
-      activate() {
-        console.debug('Entering route [' + route + ']');
-        this._super();
       }
-    }));
-    this.registerContent(content, application);
+    };
+    this.registerRoute(route, routeDef, application);
+    this.registerContent(content, application, tabStack);
   },
-  registerForm(form, application) {
-    const route = form.invoke('genRoute');
-    console.debug('Registering controller at route [' + route + ']');
+  registerForm(form, application, stack) {
+    const route = stack.join('.');
+    this.log('Registering controller at route [' + route + ']');
     const queryParamKeys = form.invoke('fieldValues');
     queryParamKeys.push('as');
     application.register('controller:' + route, Ember.Object.extend({
@@ -82,5 +83,23 @@ export default {
         return obj;
       })
     }));
+  },
+  registerRoute(route, routeDef, application) {
+    const self = this;
+    this.log('Registering route: [' + route + ']');
+    if(route !== 'application') {
+      this.addRoute(route);
+    }
+    application.register('route:' + route, Ember.Route.extend(_.assignIn(routeDef,{
+      activate() {
+        self.log('Entering route [' + route + ']');
+        this._super();
+      }
+    })));
+  },
+  log(message)  {
+    if(false) {
+      console.debug(message);
+    }
   }
 };

@@ -135,13 +135,19 @@ export default Ember.Component.extend({
         if(_.has(a,'autoSubmit') && _.get(a, 'autoSubmit') === true) {
           a.queryParams.as = true;
         }
-        _.map(a.params, param => {
-          if(_.isUndefined(item[param])) {
-            a.queryParams[param] = this.get('request.data.' + param);
-          } else {
-            a.queryParams[param] = item[param];
-          }
-        });
+        if(_.get(a,'params') === '*') {
+          _.each(item, (value,key) => {
+            _.set(a,'queryParams.' + key, value);
+          });
+        } else {
+          _.map(a.params, param => {
+            if (_.isUndefined(item[param])) {
+              a.queryParams[param] = this.get('request.data.' + param);
+            } else {
+              a.queryParams[param] = item[param];
+            }
+          });
+        }
         actions.push(a);
       });
     }

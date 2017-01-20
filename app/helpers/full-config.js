@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import _ from 'lodash';
+import CondensedConfig from './load-condensed-config';
 
 const Root = Ember.EddyObject.extend({
   configType: 'Root',
@@ -23,14 +24,12 @@ const Content = Ember.EddyObject.extend({
       case 'tabs':
         this.validate('Content', ['tabs']);
         var tabs = _.map(this.get('tabs'), tab => {
-          tab.parent = this;
-          return new Tab(tab);
+          return Tab.create(tab);
         });
         this.set('tabs', tabs);
         return;
       case 'form':
-        const form = new Form(this);
-        form.parent = this;
+        const form = Form.create(this);
         this.set('form', form);
         return;
       default:
@@ -49,17 +48,6 @@ const Content = Ember.EddyObject.extend({
     } else if(this.isForm()) {
       f(this.get('form'));
     }
-  },
-  genRoute() {
-    var routeStack = [this.get('name')];
-    function recurse(tab) {
-      if(tab.get('parent')) {
-        routeStack.push(tab.get('parent.name'));
-        recurse(tab.get('parent'));
-      }
-    }
-    recurse(this);
-    return routeStack.reverse().join('.');
   }
 });
 
@@ -68,25 +56,10 @@ const Tab = Ember.EddyObject.extend({
   name: null,
   display: null,
   content: null,
-  route: null,
-  parent: null,
   init() {
     this.validate('Tab', ['name', 'display', 'content']);
     const content = this.get('content');
-    content.parent = this;
-    this.set('content', new Content(content));
-    this.set('route', this.genRoute());
-  },
-  genRoute() {
-    var routeStack = [this.get('name')];
-    function recurse(tab) {
-      if(tab.get('parent')) {
-        routeStack.push(tab.get('parent.name'));
-        recurse(tab.get('parent'));
-      }
-    }
-    recurse(this);
-    return _.compact(routeStack.reverse()).join('.');
+    this.set('content', Content.create(content));
   }
 });
 
@@ -96,19 +69,8 @@ const Form = Ember.EddyObject.extend({
   response: null,
   init() {
     this.validate('Form', ['request', 'response']);
-    this.set('request', new Request(this.get('request')));
-    this.set('response', new Response(this.get('response')));
-  },
-  genRoute() {
-    var routeStack = [];
-    function recurse(tab) {
-      if(tab.get('parent')) {
-        routeStack.push(tab.get('parent.name'));
-        recurse(tab.get('parent'));
-      }
-    }
-    recurse(this);
-    return _.compact(routeStack.reverse()).join('.');
+    this.set('request', Request.create(this.get('request')));
+    this.set('response', Response.create(this.get('response')));
   },
   fieldValues() {
     return _.map(this.get('request.fields'),field => {
@@ -137,7 +99,7 @@ const Response = Ember.EddyObject.extend({
   type: null,
   fields: null,
   init() {
-    this.validate('Response',['root','type','fields']);
+    this.validate('Response',['type','fields']);
   }
 });
 
@@ -163,13 +125,12 @@ const Submit = Ember.EddyObject.extend({
 
 const FullConfig = Ember.Object.extend({
   init() {
-    console.log('FullConfig.init Starting');
-    this.set('root',new Root(this));
-    console.log('FullConfig.init Done');
+    this.set('root',Root.create(this));
   }
 });
 
 export default Ember.Object.extend({
+  rawConfigJson: '/test-raw-config.json',
   cache: {},
   routes: [],
   nestedRoutes() {
@@ -184,35 +145,44 @@ export default Ember.Object.extend({
     return obj;
   },
   getConfig(url) {
-    var self = this;
-    return new Promise(function (resolve, reject) {
-      var cache = self.getCache(url);
-      if (cache) {
-        console.log('Api Config cache hit for [' + url + ']');
-        resolve(cache);
-      } else {
-        $.ajax({
-          url     : url,
-          dataType: 'json'
-        }).then(json => {
-          return self.buildApiDef(json);
-        }).then(api => {
-          self.putCache(url, api);
-          resolve(api);
-        }).catch(reject);
-      }
-    });
+    const u = url || this.get('rawConfigJson');
+    const cache = this.getCache(u);
+    if (cache) {
+      console.log('Api Config cache hit for [' + u + ']');
+      return Promise.resolve(cache);
+    } else {
+      return this.fetchConfig(u);
+    }
+  },
+  fetchConfig(url) {
+    //return $.ajax({
+    //  url: url,
+    //  dataType: 'json'
+    //}).then(j => {
+    //  const api = this.buildApiDef(j);
+    //  this.putCache(url, api);
+    //  return api;
+    //});
+    return this.fetchCondensedConfig()
+      .then(c => {
+        const api = this.buildApiDef(c);
+        console.log(api);
+        this.putCache(this.get('rawConfigJson'),api);
+        return api;
+      });
+  },
+  fetchCondensedConfig() {
+    return CondensedConfig.getConfig();
   },
   defaultConfig() {
-    var cache = this.getCache('/test-raw-config.json');
+    var cache = this.getCache(this.get('rawConfigJson'));
     if(cache) {
       return cache;
     }
     throw new Error('Cant get cache since its empty');
   },
   buildApiDef(json) {
-    const fullConfig = FullConfig.create(json);
-    return fullConfig.get('root');
+    return FullConfig.create(json).get('root');
   },
   putCache(url, config) {
     this.set('cache.' + this.keyifyUrl(url), config);

@@ -8,7 +8,7 @@ var Router = Ember.Router.extend({
 });
 
 function nestedRegisterRoute(router, route, nest) {
-  console.debug('Creating router entry for route [' + route + ']');
+  //console.debug('Creating router entry for route [' + route + ']');
   router.route(route, function() {
     if(nest) {
       _.each(nest, (n, rn) => nestedRegisterRoute(this, rn, n));

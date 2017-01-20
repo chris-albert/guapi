@@ -34,7 +34,26 @@ export default Ember.Mixin.create({
     }
   },
   handleQueryRoot(data) {
-    return data;
+    const json = this.handleJsonRoot(data);
+    return _.fromPairs(_.flatten(_.map(json, (field,name) => {
+      if(_.isObject(field)) {
+        return this.flattenObj(field,[name]);
+      }
+      return [[name,field]];
+    })));
+  },
+  flattenObj(o, a) {
+    function loop(obj,accu) {
+      if(_.isObject(obj)) {
+        return _.map(obj, (value, key) => {
+          return loop(value, _.concat(accu, key));
+        });
+      }
+      return _.concat(accu,obj);
+    }
+    return _.map(loop(o,a),flattened => {
+      return [_.initial(flattened).join('.'), _.last(flattened)];
+    });
   },
   handleJsonRoot(data) {
     var d = {};
@@ -109,12 +128,11 @@ export default Ember.Mixin.create({
   filterOutFields(fields) {
     var self = this,
         data = {};
-    //console.log(fields);
     _.map(fields, function (field) {
       if (_.isUndefined(field.send) || field.send) {
         var key = field.name;
-        if(field.outName) {
-          key = field.outName;
+        if(_.get(field,'outName')) {
+          key = _.get(field,'outName');
         }
         data[key] = self.buildFieldValue(field);
       }
@@ -122,9 +140,11 @@ export default Ember.Mixin.create({
     return data;
   },
   buildFieldValue(field) {
-    //console.log(field.name + ": " + field.value);
     if ((field.type === 'select' || field.type === 'array') && _.isString(field.value)) {
       return field.value.split(",");
+    }
+    if(_.get(field,'type') === 'number') {
+      return _.toNumber(_.get(field,'value'));
     }
     return field.value;
   },

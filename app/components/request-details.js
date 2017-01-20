@@ -13,7 +13,7 @@ export default Ember.Component.extend({
   }),
   requestBody: Ember.computed('request', 'form', 'showSettings', function() {
     if(this.get('showSettings')) {
-      return JSON.stringify(this.get('settings'),null,2);
+      return JSON.stringify(_.omit(this.get('settings'),'parent'),null,2);
     }
     return this.get('request');
   }),

@@ -22,7 +22,7 @@ export default Ember.Service.extend({
     var obj = {};
     _.map(fullConfig.defaultConfig().get('settings'), setting => {
       obj[setting.name] = this.getStore(setting.name);
-    })
+    });
     return obj;
   },
   removeStore(key) {

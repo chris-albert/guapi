@@ -22,6 +22,7 @@ export default Ember.Component.extend({
   isText: Ember.computed('field.type',function() {
     return this.get('field.type') === 'text' ||
       this.get('field.type') === 'password' ||
+      this.get('field.type') === 'number' ||
       this.get('field.type') === 'hidden' ||
       this.get('field.type') === 'array' ||
       this.get('field.type') === 'uuid' ||

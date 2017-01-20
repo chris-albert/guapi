@@ -1,6 +1,5 @@
 import Ember from 'ember';
 import _ from 'lodash';
-import apiConfig from '../helpers/api-config';
 
 export default Ember.Component.extend(Ember.Mixins.ExtendedObject, {
   isTabs: Ember.computed('', function() {

@@ -1,5 +1,5 @@
 {
-  "display": "Test Root",
+  "display": "TicketFly",
   "settings": [
     {
       "name": "env",
@@ -67,11 +67,7 @@
       "root": "",
       "type": "none",
       "fields": []
-    },
-    "dataFilter": [
-      "clientId",
-      "clientSecret"
-    ]
+    }
   },
   "content": {
     "type": "tabs",
