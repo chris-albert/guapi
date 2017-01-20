@@ -1,12 +1,13 @@
 import Ember from 'ember';
 import _ from 'lodash';
 import CondensedConfig from './condensed-config';
+import localStorage from './local-storage';
 
 export default Ember.Object.extend({
   condensedConfigJson: '/config/condensed.json',
   cache: {},
   getConfig(url) {
-    const u = url || this.get('condensedConfigJson');
+    const u = this.getConfigFileUrl(url);
     var self = this;
     return new Promise(function (resolve, reject) {
       var cache = self.getCache(u);
@@ -14,6 +15,7 @@ export default Ember.Object.extend({
         console.log('Api Config cache hit for [' + u + ']');
         resolve(cache);
       } else {
+        console.debug('Trying to load config from [' + u + ']');
         $.ajax({
           url     : u,
           dataType: 'json'
@@ -25,6 +27,16 @@ export default Ember.Object.extend({
         }).catch(reject);
       }
     });
+  },
+  getConfigFileUrl(url) {
+    if(_.isUndefined(url)) {
+      const storeConfig = localStorage.getStore('configFile');
+      if(_.isUndefined(storeConfig)) {
+        return this.get('condensedConfigJson');
+      }
+      return storeConfig;
+    }
+    return url;
   },
   defaultConfig() {
     var cache = this.getCache(this.get('condensedConfigJson'));
