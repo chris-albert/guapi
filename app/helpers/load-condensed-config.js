@@ -24,7 +24,11 @@ export default Ember.Object.extend({
         }).then(api => {
           self.putCache(u, api);
           resolve(api);
-        }).catch(reject);
+        }).catch(e => {
+          console.error('Error in loading config from [' + u + ']');
+          resolve({});
+          //reject(e);
+        });
       }
     });
   },

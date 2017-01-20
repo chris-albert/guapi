@@ -7,5 +7,8 @@ export default Ember.Component.extend(Ember.Mixins.ExtendedObject, {
   }),
   isForm: Ember.computed('', function() {
     return this.invoke('content.isForm');
+  }),
+  isText: Ember.computed('', function() {
+    return this.invoke('content.isText');
   })
 });
