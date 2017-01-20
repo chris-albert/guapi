@@ -2,7 +2,7 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'api-explorer',
+    modulePrefix: 'eddy',
     environment: environment,
     rootURL: '/',
     locationType: 'hash',
