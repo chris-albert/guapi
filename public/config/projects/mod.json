@@ -1,0 +1,31 @@
+{
+  "name": "MOD::mod",
+  "baseUrl": "http://10.30.8.77:9000",
+  "tabs": [
+    {
+      "name": "::methodOfDelivery",
+      "type": "rest",
+      "path": "/v2/method-of-delivery",
+      "root": "methodOfDelivery",
+      "view": {
+        "path": "/v2/method-of-delivery",
+        "fields": ["orgId","eventId","deliveryType"]
+      },
+      "resources": ["view","create","update"],
+      "fields": [
+        "::id",
+        {
+          "name": "::orgId",
+          "type": "number"
+        },
+        {
+          "name": "::eventId",
+          "type": "number"
+        },
+        "::deliveryType",
+        "::defaultText",
+        "::customText"
+      ]
+    }
+  ]
+}
