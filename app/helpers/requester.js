@@ -34,9 +34,26 @@ export default Ember.Mixin.create({
     }
   },
   handleQueryRoot(data) {
-    const a = this.handleJsonRoot(data);
-    //console.log(a);
-    return data;
+    const json = this.handleJsonRoot(data);
+    return _.fromPairs(_.flatten(_.map(json, (field,name) => {
+      if(_.isObject(field)) {
+        return this.flattenObj(field,[name]);
+      }
+      return [[name,field]];
+    })));
+  },
+  flattenObj(o, a) {
+    function loop(obj,accu) {
+      if(_.isObject(obj)) {
+        return _.map(obj, (value, key) => {
+          return loop(value, _.concat(accu, key));
+        });
+      }
+      return _.concat(accu,obj);
+    }
+    return _.map(loop(o,a),flattened => {
+      return [_.initial(flattened).join('.'), _.last(flattened)];
+    });
   },
   handleJsonRoot(data) {
     var d = {};

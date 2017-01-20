@@ -18,6 +18,8 @@
       "type": "rest",
       "path": "/v2/permissions",
       "root": "permission",
+      "list": ["name"],
+      "resources": ["list","view","create","delete"],
       "fields": [
         "::id",
         "::name",
