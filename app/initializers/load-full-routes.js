@@ -25,7 +25,12 @@ export default {
       model() {
         return {
           nav    : config,
-          content: config.get('content')
+          content: config.get('content'),
+          route: {
+            full: '',
+            base: '',
+            end: ''
+          }
         };
       },
       activate() {
@@ -33,18 +38,19 @@ export default {
         this._super();
       }
     }
-    this.registerRoute('application', 'application', model, application);
-    this.registerContent(config.get('content'), application);
+    this.registerRoute('application', model, application);
+    this.registerContent(config.get('content'), application, []);
   },
-  registerContent(content, application) {
+  registerContent(content, application, stack) {
     if(content.invoke('isTabs')) {
-      content.invoke('each', t => this.registerTab(t, application));
+      content.invoke('each', t => this.registerTab(t, application, stack));
     } else if(content.invoke('isForm')) {
-      content.invoke('each', f => this.registerForm(f, application));
+      content.invoke('each', f => this.registerForm(f, application, stack));
     }
   },
-  registerTab(tab, application) {
-    const route = tab.invoke('genRoute');
+  registerTab(tab, application, stack) {
+    const tabStack = _.concat(stack, _.get(tab,'name'));
+    const route = tabStack.join('.');
     const content = tab.get('content');
     const routeDef = {
       templateName: 'components/content-wrapper',
@@ -59,12 +65,12 @@ export default {
         };
       }
     };
-    this.registerRoute(tab.get('name'), route, routeDef, application);
-    this.registerContent(content, application);
+    this.registerRoute(route, routeDef, application);
+    this.registerContent(content, application, tabStack);
   },
-  registerForm(form, application) {
-    const route = form.invoke('genRoute');
-    console.debug('Registering controller at route [' + route + ']');
+  registerForm(form, application, stack) {
+    const route = stack.join('.');
+    this.log('Registering controller at route [' + route + ']');
     const queryParamKeys = form.invoke('fieldValues');
     queryParamKeys.push('as');
     application.register('controller:' + route, Ember.Object.extend({
@@ -78,16 +84,22 @@ export default {
       })
     }));
   },
-  registerRoute(name, route, routeDef, application) {
-    console.debug('Registering route: [' + name + '] at route [' + route + ']');
+  registerRoute(route, routeDef, application) {
+    const self = this;
+    this.log('Registering route: [' + route + ']');
     if(route !== 'application') {
       this.addRoute(route);
     }
     application.register('route:' + route, Ember.Route.extend(_.assignIn(routeDef,{
       activate() {
-        console.debug('Entering route [' + route + ']');
+        self.log('Entering route [' + route + ']');
         this._super();
       }
     })));
+  },
+  log(message)  {
+    if(false) {
+      console.debug(message);
+    }
   }
 };

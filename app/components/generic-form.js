@@ -58,6 +58,7 @@ export default Ember.Component.extend(Requester, {
     this.setRequest(this.getRequestOptions());
   },
   bindQueryParams() {
+    console.log(this.get('queryParams'));
     _.map(this.get('model.request.fields'), field => {
       var q = this.get('queryParams.' + field.name);
       if (q) {

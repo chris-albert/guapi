@@ -111,7 +111,6 @@ export default Ember.Mixin.create({
   filterOutFields(fields) {
     var self = this,
         data = {};
-    //console.log(fields);
     _.map(fields, function (field) {
       if (_.isUndefined(field.send) || field.send) {
         var key = field.name;

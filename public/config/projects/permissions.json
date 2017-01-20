@@ -59,7 +59,7 @@
       }
     },
     {
-      "name": "::Check",
+      "name": "::check",
       "path": "/v2/authorizations",
       "method": "GET",
       "location": "query",
@@ -67,9 +67,9 @@
         "::permissionId",
         "::permissionName",
         "::userId",
-        "Domain Org Id::scope.domainOrgId",
-        "Client Org Id::scope.clientOrgId",
-        "Event Id::scope.eventId"
+        "::domainOrgId",
+        "::clientOrgId",
+        "::eventId"
       ],
       "request": {
         "root": {

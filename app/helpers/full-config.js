@@ -24,14 +24,12 @@ const Content = Ember.EddyObject.extend({
       case 'tabs':
         this.validate('Content', ['tabs']);
         var tabs = _.map(this.get('tabs'), tab => {
-          tab.parent = this;
-          return new Tab(tab);
+          return Tab.create(tab);
         });
         this.set('tabs', tabs);
         return;
       case 'form':
-        const form = new Form(this);
-        form.parent = this;
+        const form = Form.create(this);
         this.set('form', form);
         return;
       default:
@@ -50,17 +48,6 @@ const Content = Ember.EddyObject.extend({
     } else if(this.isForm()) {
       f(this.get('form'));
     }
-  },
-  genRoute() {
-    var routeStack = [this.get('name')];
-    function recurse(tab) {
-      if(tab.get('parent')) {
-        routeStack.push(tab.get('parent.name'));
-        recurse(tab.get('parent'));
-      }
-    }
-    recurse(this);
-    return routeStack.reverse().join('.');
   }
 });
 
@@ -69,25 +56,10 @@ const Tab = Ember.EddyObject.extend({
   name: null,
   display: null,
   content: null,
-  route: null,
-  parent: null,
   init() {
     this.validate('Tab', ['name', 'display', 'content']);
     const content = this.get('content');
-    content.parent = this;
-    this.set('content', new Content(content));
-    this.set('route', this.genRoute());
-  },
-  genRoute() {
-    var routeStack = [this.get('name')];
-    function recurse(tab) {
-      if(tab.get('parent')) {
-        routeStack.push(tab.get('parent.name'));
-        recurse(tab.get('parent'));
-      }
-    }
-    recurse(this);
-    return _.compact(routeStack.reverse()).join('.');
+    this.set('content', Content.create(content));
   }
 });
 
@@ -97,19 +69,8 @@ const Form = Ember.EddyObject.extend({
   response: null,
   init() {
     this.validate('Form', ['request', 'response']);
-    this.set('request', new Request(this.get('request')));
-    this.set('response', new Response(this.get('response')));
-  },
-  genRoute() {
-    var routeStack = [];
-    function recurse(tab) {
-      if(tab.get('parent')) {
-        routeStack.push(tab.get('parent.name'));
-        recurse(tab.get('parent'));
-      }
-    }
-    recurse(this);
-    return _.compact(routeStack.reverse()).join('.');
+    this.set('request', Request.create(this.get('request')));
+    this.set('response', Response.create(this.get('response')));
   },
   fieldValues() {
     return _.map(this.get('request.fields'),field => {
@@ -164,7 +125,7 @@ const Submit = Ember.EddyObject.extend({
 
 const FullConfig = Ember.Object.extend({
   init() {
-    this.set('root',new Root(this));
+    this.set('root',Root.create(this));
   }
 });
 
