@@ -7,7 +7,11 @@
       "type": "rest",
       "path": "/v2/method-of-delivery",
       "root": "methodOfDelivery",
-      "list": ["orgId","eventId","deliveryType"],
+      "view": {
+        "path": "/v2/method-of-delivery",
+        "fields": ["orgId","eventId","deliveryType"]
+      },
+      "resources": ["view","create","update"],
       "fields": [
         "::id",
         {

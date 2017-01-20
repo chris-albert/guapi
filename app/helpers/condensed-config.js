@@ -88,24 +88,37 @@ const RestExpander = Ember.Object.extend({
       }
     };
   },
-  expandResource(json, resourceType, resources) {
+  expandResource(json, resourceType) {
     const form = {};
-    _.defaults(form,_.pick(json,['path','auth']));
-    _.set(form, 'method', this.get('defaultMethods.' + resourceType));
-    _.set(form, 'path', this.expandPath(json, resourceType));
-    _.set(form, 'location', this.getLocation(resourceType));
-    _.set(form, 'submit', _.capitalize(resourceType));
     this.handleOverrides(json, form,resourceType);
-    if(_.isUndefined(_.get(form,'root'))) {
-      _.set(form, 'root', _.get(json, 'root'));
-    };
-    if(_.isNil(_.get(form,'response.type'))) {
-      _.set(form, 'response.type', this.getResponseType(resourceType));
-    }
-    if(_.isUndefined(_.get(form,'response.root'))) {
-      _.set(form, 'response.root', this.getResponseRoot(json, resourceType));
-    }
+    this.setIfUndefined(form,'auth', _.get(json,'auth'));
+    this.setIfUndefined(form,'method', this.get('defaultMethods.' + resourceType));
+    this.setIfUndefined(form,'path', this.expandPath(json, resourceType));
+    this.setIfUndefined(form,'location',this.getLocation(resourceType));
+    this.setIfUndefined(form,'submit',_.capitalize(resourceType));
+    this.setIfUndefined(form,'root',_.get(json, 'root'));
+    this.setIfUndefined(form,'response.type',this.getResponseType(resourceType));
+    this.setIfUndefined(form,'response.root',this.getResponseRoot(json, resourceType));
     return form;
+  },
+  setIfUndefined(obj, key, value) {
+    if(_.isUndefined(_.get(obj,key))) {
+      _.set(obj,key,value);
+    }
+  },
+  handleOverrides(json, form, resourceType) {
+    const override = _.get(json,resourceType, this.fieldFilter(json, resourceType));
+    if(_.isArray(override)) {
+      _.set(form, 'fields', this.getFields(json, override));
+    } else if(_.isObject(override)) {
+      if(_.isNil(_.get(override,'fields'))) {
+        _.set(form, 'fields', this.getFields(json,this.fieldFilter(json, resourceType)));
+      }
+      if(_.isArray(_.get(override,'fields'))) {
+        _.set(form, 'fields', this.getFields(json, _.get(override,'fields')));
+      }
+      _.defaultsDeep(form, override);
+    }
   },
   handleActions(forms) {
     const keys = _.keyBy(forms,'name');
@@ -151,17 +164,6 @@ const RestExpander = Ember.Object.extend({
         break;
     }
     return actions;
-  },
-  handleOverrides(json, form, resourceType) {
-    const override = _.get(json,resourceType, this.fieldFilter(json, resourceType));
-    if(_.isArray(override)) {
-      _.set(form, 'fields', this.getFields(json, override));
-    } else if(_.isObject(override)) {
-      if(_.isNil(_.get(override,'fields'))) {
-        _.set(form, 'fields', this.getFields(json,this.fieldFilter(json, resourceType)));
-      }
-      _.defaultsDeep(form, override);
-    }
   },
   getFields(json, override) {
     const fields      = [];

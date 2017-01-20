@@ -124,7 +124,6 @@ export default Ember.Mixin.create({
     return data;
   },
   buildFieldValue(field) {
-    //console.log(field.name + ": " + field.value);
     if ((field.type === 'select' || field.type === 'array') && _.isString(field.value)) {
       return field.value.split(",");
     }
