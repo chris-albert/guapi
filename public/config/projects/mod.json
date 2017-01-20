@@ -10,8 +10,14 @@
       "list": ["orgId","eventId","deliveryType"],
       "fields": [
         "::id",
-        "::orgId",
-        "::eventId",
+        {
+          "name": "::orgId",
+          "type": "number"
+        },
+        {
+          "name": "::eventId",
+          "type": "number"
+        },
         "::deliveryType",
         "::defaultText",
         "::customText"

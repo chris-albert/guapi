@@ -128,6 +128,9 @@ export default Ember.Mixin.create({
     if ((field.type === 'select' || field.type === 'array') && _.isString(field.value)) {
       return field.value.split(",");
     }
+    if(_.get(field,'type') === 'number') {
+      return _.toNumber(_.get(field,'value'));
+    }
     return field.value;
   },
   allFilteredFields() {
