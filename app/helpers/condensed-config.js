@@ -327,9 +327,9 @@ const RootExpander = Ember.Object.extend({
   },
   expandTabs(json) {
     const ps = Promise.all(_.map(_.get(json,'tabs'),tab => {
-      if(_.startsWith(tab, 'file://')) {
+      if(_.isString(tab)) {
         return $.ajax({
-          url     : '/config/' + _.replace(tab,'file://','' ) + '.json',
+          url     : tab,
           dataType: 'json'
         });
       } else {

@@ -46,8 +46,8 @@
     }
   },
   "tabs": [
-    "file://projects/permissions",
-    "file://projects/account",
-    "file://projects/mod"
+    "/config/projects/permissions.json",
+    "/config/projects/account.json",
+    "/config/projects/mod.json"
   ]
 }
