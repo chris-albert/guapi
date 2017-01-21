@@ -357,8 +357,6 @@ const Expander = Ember.Object.extend({
 export default Ember.Object.extend({
   process(json) {
     NameDisplayExpanderTest.test();
-    return new Promise(function (resolve, reject) {
-      resolve(Expander.expand(json));
-    });
+    return Promise.resolve(Expander.expand(json));
   }
 }).create();

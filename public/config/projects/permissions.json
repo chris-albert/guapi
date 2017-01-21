@@ -10,7 +10,9 @@
       "fields": [
         "::id",
         "::name",
-        "::ownerOrgId"
+        "::ownerOrgId",
+        "::displayName",
+        "::description"
       ]
     },
     {
