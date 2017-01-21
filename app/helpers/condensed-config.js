@@ -329,7 +329,7 @@ const RootExpander = Ember.Object.extend({
     const ps = Promise.all(_.map(_.get(json,'tabs'),tab => {
       if(_.isString(tab)) {
         return $.ajax({
-          url     : tab,
+          url     : window.location.origin + window.location.pathname + tab,
           dataType: 'json'
         });
       } else {
