@@ -4,7 +4,7 @@ import CondensedConfig from './condensed-config';
 import localStorage from './local-storage';
 
 export default Ember.Object.extend({
-  condensedConfigJson: '/config/condensed.json',
+  condensedConfigJson: window.location.origin + window.location.pathname + '/config/condensed.json',
   cache: {},
   getConfig(url) {
     const u = this.getConfigFileUrl(url);
