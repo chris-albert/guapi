@@ -1,4 +1,6 @@
 /* jshint node: true */
+const condensed = require('./condensed.json');
+const _ = require('lodash');
 
 module.exports = function(environment) {
   var ENV = {
@@ -22,6 +24,19 @@ module.exports = function(environment) {
       // when it is created
     }
   };
+
+  //Load the eddy config
+  // var a = require('./projects/permissions.json');
+  // console.log(a);
+  ENV.eddyConfig = condensed;
+  const tabs = _.filter(_.map(condensed.tabs,tab => {
+    if(_.isString(tab)) {
+      return require(tab);
+    }
+  }),i => !_.isNil(i));
+  if(!_.isEmpty(tabs)) {
+    _.set(condensed, 'tabs', tabs);
+  }
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;

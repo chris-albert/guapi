@@ -2,35 +2,44 @@ import Ember from 'ember';
 import _ from 'lodash';
 import CondensedConfig from './condensed-config';
 import localStorage from './local-storage';
+import config from '../config/environment';
+// import condensedConfigFile from '../../config/condensed';
 
 export default Ember.Object.extend({
   condensedConfigJson: window.location.origin + window.location.pathname + '/config/condensed.json',
   cache: {},
   getConfig(url) {
-    const u = this.getConfigFileUrl(url);
-    var self = this;
-    return new Promise(function (resolve, reject) {
-      var cache = self.getCache(u);
-      if (cache) {
-        console.log('Api Config cache hit for [' + u + ']');
-        resolve(cache);
-      } else {
-        console.debug('Trying to load config from [' + u + ']');
-        $.ajax({
-          url     : u,
-          dataType: 'json'
-        }).then(json => {
-          return CondensedConfig.process(json);
-        }).then(api => {
-          self.putCache(u, api);
-          resolve(api);
-        }).catch(e => {
-          console.error('Error in loading config from [' + u + ']');
-          resolve({});
-          //reject(e);
-        });
-      }
-    });
+    // const u = this.getConfigFileUrl(url);
+    // var self = this;
+    // return new Promise(function (resolve, reject) {
+    //   var cache = self.getCache(u);
+    //   if (cache) {
+    //     console.log('Api Config cache hit for [' + u + ']');
+    //     resolve(cache);
+    //   } else {
+    //     console.debug('Trying to load config from [' + u + ']');
+    //     $.ajax({
+    //       url     : u,
+    //       dataType: 'json'
+    //     }).then(json => {
+    //       return CondensedConfig.process(json);
+    //     }).then(api => {
+    //       self.putCache(u, api);
+    //       resolve(api);
+    //     }).catch(e => {
+    //       console.error('Error in loading config from [' + u + ']');
+    //       resolve({});
+    //       //reject(e);
+    //     });
+    //   }
+    // });
+    //
+    return CondensedConfig.process(config.eddyConfig)
+      .then(processed => {
+        this.putCache('local',processed);
+        localStorage.setStore('configFile','local');
+        return processed;
+      });
   },
   getConfigFileUrl(url) {
     if(_.isUndefined(url)) {
@@ -43,7 +52,7 @@ export default Ember.Object.extend({
     return url;
   },
   defaultConfig() {
-    var cache = this.getCache(this.get('condensedConfigJson'));
+    const cache = this.getCache('local');
     if(cache) {
       return cache;
     }
