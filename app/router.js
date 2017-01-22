@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import config from './config/environment';
 import _ from 'lodash';
-import EddyConfig from './helpers/eddy-config';
 import AppStorage from './helpers/app-storage';
 
 var Router = Ember.Router.extend({

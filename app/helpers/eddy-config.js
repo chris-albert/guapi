@@ -15,6 +15,7 @@ export default Ember.Object.extend({
         .then(this.processConfig)
         .then(finalConfig => {
           this.set('config', finalConfig);
+          this.initSettings(finalConfig.get('settings'));
           console.log('Eddy Config', finalConfig);
           return finalConfig;
         });
@@ -26,5 +27,8 @@ export default Ember.Object.extend({
   },
   processConfig(config) {
     return FullConfig.create(config).get('root');
+  },
+  initSettings(settings) {
+    localStorage.setStoreJson('settings', _.map(settings,'name'));
   }
 }).create();
