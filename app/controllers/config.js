@@ -4,8 +4,8 @@ import LocalStorage from '../helpers/local-storage';
 
 export default Ember.Controller.extend({
   config: {
-    full: JSON.stringify(LocalStorage.getStoreJson('fullConfig'),null,2),
-    condensed: JSON.stringify(LocalStorage.getStoreJson('fullConfig'),null,2)
+    full: LocalStorage.getStoreJson('fullConfig'),
+    condensed: LocalStorage.getStoreJson('condensedConfig')
   },
   actions: {
     validateJson() {
@@ -17,8 +17,9 @@ export default Ember.Controller.extend({
         this.set('validateMessage', 'Invalid Json');
       }
     },
-    defaultConfig() {
-
+    jsonError(e) {
+      console.error(e);
+      throw new Error(e);
     }
   },
   project: Ember.computed(function() {

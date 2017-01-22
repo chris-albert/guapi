@@ -1,4 +1,5 @@
-<div class="panel-body row">
+<div class="panel-body">
+  {{!--
   <div class="row">
     <div class="col-md-12">
       <div class="form-group">
@@ -14,6 +15,14 @@
       <button class="form-input-submit btn btn-default btn-sm" {{action "defaultConfig"}}>Default Config</button>
     </div>
   </div>
+  --}}
+  {{json-editor
+    json=config.condensed
+    disabled=false
+    mode='code'
+    name='root'
+    onError=(action 'jsonError')
+  }}
 
   {{!--
   <p>Condensed Config</p>
