@@ -2,17 +2,27 @@
   <div class="panel panel-default">
     <div class="panel-heading">Eddy condensed config</div>
     <div class="panel-body">
-      {{json-editor
-        json=config.condensed
-        disabled=false
-        mode='code'
-        name='root'
-        onError=(action 'jsonError')
-        onEditable=(action 'editable')
-        onChange=(action 'change')
-      }}
-      <input class="btn btn-default btn-sm" value="Load Default" {{action 'loadDefault'}}>
-      <input class="btn btn-default btn-sm" value="Load" {{action 'load'}}>
+      <div class="row form-group">
+        <div class="col-md-12">
+          {{json-editor
+          json=config.condensed
+          disabled=false
+          mode='code'
+          name='root'
+          onError=(action 'jsonError')
+          onEditable=(action 'editable')
+          onChange=(action 'change')
+          }}
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-md-6">
+          <button class="btn btn-default btn-sm" {{action 'loadDefault'}}>Load Default</button>
+        </div>
+        <div class="col-md-6 text-right">
+          <button class="btn btn-primary btn-sm text" {{action 'load'}}>Submit</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
