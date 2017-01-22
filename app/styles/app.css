@@ -73,3 +73,7 @@
   white-space: nowrap;
 }
 
+.ember-cli-jsoneditor .jsoneditor{
+  height: 800px;
+}
+

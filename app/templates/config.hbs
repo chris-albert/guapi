@@ -1,33 +1,16 @@
 <div class="panel-body">
-  {{!--
-  <div class="row">
-    <div class="col-md-12">
-      <div class="form-group">
-        {{textarea value=project cols="80" rows="50" class="form-control"}}
-      </div>
-      <button class="form-input-submit btn btn-default btn-sm" {{action "validateJson"}}>Validate JSON
-      </button>
-      {{validateMessage}}
+  <div class="panel panel-default">
+    <div class="panel-heading">Eddy condensed config</div>
+    <div class="panel-body" >
+      {{json-editor
+        json=config.condensed
+        disabled=false
+        mode='code'
+        name='root'
+        onError=(action 'jsonError')
+        onEditable=(action 'editable')
+        onChange=(action 'change')
+      }}
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <button class="form-input-submit btn btn-default btn-sm" {{action "defaultConfig"}}>Default Config</button>
-    </div>
-  </div>
-  --}}
-  {{json-editor
-    json=config.condensed
-    disabled=false
-    mode='code'
-    name='root'
-    onError=(action 'jsonError')
-  }}
-
-  {{!--
-  <p>Condensed Config</p>
-  <pre class="prettyprint">{{config.condensed}}</pre>
-  <p>Full Config</p>
-  <pre class="prettyprint">{{config.full}}</pre>
-  --}}
 </div>

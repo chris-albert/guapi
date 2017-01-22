@@ -18,8 +18,13 @@ export default Ember.Controller.extend({
       }
     },
     jsonError(e) {
-      console.error(e);
-      throw new Error(e);
+      console.error('jsonError', e);
+    },
+    editable(e) {
+      return e;
+    },
+    change(e) {
+      console.log('change', e);
     }
   },
   project: Ember.computed(function() {
