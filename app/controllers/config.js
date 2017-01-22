@@ -1,39 +1,30 @@
 import Ember from 'ember';
 import _ from 'lodash';
-import localStorage from '../helpers/local-storage';
+import LocalStorage from '../helpers/local-storage';
 
 export default Ember.Controller.extend({
-  settings: localStorage,
+  config: {
+    full: JSON.stringify(LocalStorage.getStoreJson('fullConfig'),null,2),
+    condensed: JSON.stringify(LocalStorage.getStoreJson('fullConfig'),null,2)
+  },
   actions: {
-    submit() {
-      console.log(this.get('fields'));
-      this.get('settings').setStore('configFile',this.get('fields.value'));
+    validateJson() {
+      try {
+        JSON.parse(this.get('project'));
+        this.set('validateMessage', 'Valid Json');
+      } catch(err) {
+        console.log(err);
+        this.set('validateMessage', 'Invalid Json');
+      }
     },
-    actionClick(){
-
-    },
-    formChange(){
+    defaultConfig() {
 
     }
   },
-  fields: {
-    "name": "configFile",
-    "display": "Config File",
-    "type": "text"
-  },
-  configFile: Ember.computed('', function() {
-    return this.get('settings').getStore('configFile');
+  project: Ember.computed(function() {
+    return this.get('config.full');
   }),
-  button: Ember.computed('', function() {
-    return {
-      "display": "Submit",
-      "type": "default",
-      "size": "xs"
-    };
-  }),
-  form: Ember.computed('', function() {
-    this.set('fields.value',this.get('settings').getStore('configFile'));
-    const fields = this.get('fields');
-    return [fields];
+  validateMessage: Ember.computed('', function() {
+
   })
 });

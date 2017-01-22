@@ -1,11 +1,24 @@
-<div class="panel-body">
-  {{#form-input
-  fields=form
-  submit=button
-  layout="stacked"
-  onSubmit=(action "submit")
-  onActionClick=(action "actionClick")
-  onFormChange=(action "formChange")
-  }}
-    {{/form-input}}
+<div class="panel-body row">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        {{textarea value=project cols="80" rows="50" class="form-control"}}
+      </div>
+      <button class="form-input-submit btn btn-default btn-sm" {{action "validateJson"}}>Validate JSON
+      </button>
+      {{validateMessage}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <button class="form-input-submit btn btn-default btn-sm" {{action "defaultConfig"}}>Default Config</button>
+    </div>
+  </div>
+
+  {{!--
+  <p>Condensed Config</p>
+  <pre class="prettyprint">{{config.condensed}}</pre>
+  <p>Full Config</p>
+  <pre class="prettyprint">{{config.full}}</pre>
+  --}}
 </div>
