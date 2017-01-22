@@ -1,11 +1,12 @@
 import Ember from 'ember';
 import _ from 'lodash';
 import EddyConfig from '../helpers/eddy-config';
+import AppStorage from '../helpers/app-storage';
 
 export default {
   name: 'load-full-routes',
   addRoute(route) {
-    EddyConfig.routes.push(route);
+    AppStorage.setStore('routes', _.concat(AppStorage.getStore('routes'),route));
   },
   initialize(application) {
     application.deferReadiness();

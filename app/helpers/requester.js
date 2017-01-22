@@ -103,7 +103,6 @@ export default Ember.Mixin.create({
     const url = this.get('model.request.url');
     const path = this.get('model.request.path');
     d.settings = this.get('settings').getStoreObj();
-    console.log(this.get('settings').getStoreObj());
     return Handlebars.compile(url + path)(d);
   },
   getAuth(data) {
