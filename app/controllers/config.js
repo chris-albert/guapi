@@ -8,14 +8,12 @@ export default Ember.Controller.extend({
     condensed: LocalStorage.getStoreJson('condensedConfig')
   },
   actions: {
-    validateJson() {
-      try {
-        JSON.parse(this.get('project'));
-        this.set('validateMessage', 'Valid Json');
-      } catch(err) {
-        console.log(err);
-        this.set('validateMessage', 'Invalid Json');
-      }
+    loadDefault() {
+      LocalStorage.removeStore('condensedConfig');
+      window.location.reload(true);
+    },
+    load() {
+      window.location.reload(true);
     },
     jsonError(e) {
       console.error('jsonError', e);
@@ -25,11 +23,9 @@ export default Ember.Controller.extend({
     },
     change(e) {
       console.log('change', e);
+      LocalStorage.setStoreJson('condensedConfig', e);
     }
   },
-  project: Ember.computed(function() {
-    return this.get('config.full');
-  }),
   validateMessage: Ember.computed('', function() {
 
   })

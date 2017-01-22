@@ -7,11 +7,13 @@ import config from '../config/environment';
 
 export default Ember.Object.extend({
   getConfig() {
-    LocalStorage.setStoreJson('condensedConfig', config.eddyConfig);
-    return this.expandCondensed(config.eddyConfig)
+    this.handleCondensedConfig();
+    return this.process();
+  },
+  process() {
+    return this.expandCondensed(LocalStorage.getStoreJson('condensedConfig'))
       .then(this.processConfig)
       .then(finalConfig => {
-        this.set('config', finalConfig);
         this.initSettings(finalConfig.get('settings'));
         console.log('Eddy Config', finalConfig);
         return finalConfig;
@@ -29,5 +31,10 @@ export default Ember.Object.extend({
   },
   initSettings(settings) {
     LocalStorage.setStoreJson('settings', _.map(settings,'name'));
+  },
+  handleCondensedConfig() {
+    if(_.isUndefined(LocalStorage.getStoreJson('condensedConfig'))) {
+      LocalStorage.setStoreJson('condensedConfig', config.eddyConfig);
+    }
   }
 }).create();

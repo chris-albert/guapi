@@ -22,7 +22,12 @@ export default Ember.Object.extend({
   },
   getStoreJson(key, def) {
     try {
-      return JSON.parse(this.getStore(key,def));
+      const f = this.getStore(key);
+      if(_.isString(f)) {
+        return JSON.parse(f);
+      } else {
+        return def;
+      }
     } catch(err) {
       console.error('Error in getting json store ',err);
       return undefined;

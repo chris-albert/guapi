@@ -1,7 +1,7 @@
 <div class="panel-body">
   <div class="panel panel-default">
     <div class="panel-heading">Eddy condensed config</div>
-    <div class="panel-body" >
+    <div class="panel-body">
       {{json-editor
         json=config.condensed
         disabled=false
@@ -11,6 +11,8 @@
         onEditable=(action 'editable')
         onChange=(action 'change')
       }}
+      <input class="btn btn-default btn-sm" value="Load Default" {{action 'loadDefault'}}>
+      <input class="btn btn-default btn-sm" value="Load" {{action 'load'}}>
     </div>
   </div>
 </div>
