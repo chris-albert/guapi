@@ -1,4 +1,27 @@
 
+# Eddy 2.0
+
+Eddy is a GUI for an API or an GUAPI... it makes interacting with API's easier. 
+Instead of having to do a `curl` or use Postman to play with and API, Eddy 
+allows you to define a simple json config for your API and gives you user
+friendly forms to fill out. 
+ 
+
+### To install 
+1. Clone this repo
+1. Install `node.js`
+1. install dependencies
+```
+npm install
+bower install
+```
+### To run
+1. Run ember
+```
+node node_modules/ember-cli/bin/ember s
+```
+
+### Config definitions
 Content is a renderable object
 
 Content Types

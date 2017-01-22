@@ -13,7 +13,7 @@ function nestedRegisterRoute(router, route, nest) {
       _.each(nest, (n, rn) => nestedRegisterRoute(this, rn, n));
     }
   });
-};
+}
 
 Router.map(function () {
   this.route('config');

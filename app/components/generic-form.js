@@ -15,7 +15,7 @@ export default Ember.Component.extend(Requester, {
         return null;
       }
     }),i => !_.isNull(i)).join('&');
-    if(queryString != '') {
+    if(queryString !== '') {
       queryString = '?' + queryString;
     }
     return window.location.origin + window.location.pathname + window.location.hash + queryString;
