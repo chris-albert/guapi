@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import config from './config/environment';
 import _ from 'lodash';
-import fullConfig from './helpers/full-config';
+import EddyConfig from './helpers/eddy-config';
 
 var Router = Ember.Router.extend({
   location: config.locationType,
@@ -17,7 +17,7 @@ function nestedRegisterRoute(router, route, nest) {
 
 Router.map(function () {
   this.route('config');
-  const routes = fullConfig.nestedRoutes();
+  const routes = EddyConfig.nestedRoutes();
   _.each(routes, (nest, routeName) => nestedRegisterRoute(this,routeName, nest));
 });
 

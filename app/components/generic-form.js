@@ -3,7 +3,6 @@ import _ from 'lodash';
 import Requester from '../helpers/requester';
 
 export default Ember.Component.extend(Requester, {
-  settings    : Ember.inject.service('settings-store'),
   request     : {},
   formChanged: true,
   link: Ember.computed('formChanged', function() {

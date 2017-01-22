@@ -3,7 +3,6 @@ import _ from 'lodash';
 import CondensedConfig from './condensed-config';
 import localStorage from './local-storage';
 import config from '../config/environment';
-// import condensedConfigFile from '../../config/condensed';
 
 export default Ember.Object.extend({
   condensedConfigJson: window.location.origin + window.location.pathname + '/config/condensed.json',

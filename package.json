@@ -1,9 +1,9 @@
 {
   "name": "eddy",
   "version": "0.0.0",
-  "description": "Small description for api-explorer goes here",
+  "description": "Eddy is a GUAPI (Graphical User Application Programmers Interface",
   "license": "MIT",
-  "author": "",
+  "author": "chris.albert",
   "directories": {
     "doc": "doc",
     "test": "tests"

@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import _ from 'lodash';
+import localStorage from '../helpers/local-storage';
 
 export default Ember.Controller.extend({
-  settings: Ember.inject.service('settings-store'),
+  settings: localStorage,
   actions: {
     submit() {
       console.log(this.get('fields'));

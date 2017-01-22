@@ -1,16 +1,15 @@
-
 import Ember from 'ember';
 import _ from 'lodash';
-import fullConfig from '../helpers/full-config';
+import EddyConfig from '../helpers/eddy-config';
 
 export default {
   name: 'load-full-routes',
   addRoute(route) {
-    fullConfig.routes.push(route);
+    EddyConfig.routes.push(route);
   },
   initialize(application) {
     application.deferReadiness();
-    fullConfig.getConfig()
+    EddyConfig.getConfig()
       .then(config => {
         this.registerRoot(config, application);
         this.setUpInjections(application);

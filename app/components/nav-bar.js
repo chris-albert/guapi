@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import _ from 'lodash';
 import Requester from '../helpers/requester';
+import localStorage from '../helpers/local-storage';
 
 export default Ember.Component.extend(Requester, {
-  settings    : Ember.inject.service('settings-store'),
+  settings    : localStorage,
   fields      : Ember.computed('nav.settings', function () {
     return _.map(this.get('editableSettings'), setting => {
       setting.value = this.get('settings').getStore(setting.name);

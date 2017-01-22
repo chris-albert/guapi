@@ -147,7 +147,7 @@ const NoConfig = Ember.EddyObject.extend({
   }
 });
 
-const FullConfig = Ember.Object.extend({
+export default Ember.Object.extend({
   init() {
     try {
       this.set('root', Root.create(this));
@@ -157,59 +157,59 @@ const FullConfig = Ember.Object.extend({
   }
 });
 
-export default Ember.Object.extend({
-  rawConfigJson: '/test-raw-config.json',
-  cache: {},
-  routes: [],
-  nestedRoutes() {
-    const obj = {};
-    function setNest(route) {
-      const r = _.get(obj,route);
-      if(!r) {
-        _.set(obj,route);
-      }
-    };
-    _.each(this.get('routes'),setNest);
-    return obj;
-  },
-  getConfig(url) {
-    const u = url || this.get('rawConfigJson');
-    const cache = this.getCache(u);
-    if (cache) {
-      console.log('Api Config cache hit for [' + u + ']');
-      return Promise.resolve(cache);
-    } else {
-      return this.fetchConfig(u);
-    }
-  },
-  fetchConfig(url) {
-    return this.fetchCondensedConfig()
-      .then(c => {
-        const api = this.buildApiDef(c);
-        this.putCache(this.get('rawConfigJson'),api);
-        return api;
-      });
-  },
-  fetchCondensedConfig() {
-    return CondensedConfig.getConfig();
-  },
-  defaultConfig() {
-    var cache = this.getCache(this.get('rawConfigJson'));
-    if(cache) {
-      return cache;
-    }
-    throw new Error('Cant get cache since its empty');
-  },
-  buildApiDef(json) {
-    return FullConfig.create(json).get('root');
-  },
-  putCache(url, config) {
-    this.set('cache.' + this.keyifyUrl(url), config);
-  },
-  getCache(url) {
-    return this.get('cache.' + this.keyifyUrl(url));
-  },
-  keyifyUrl(url) {
-    return url.replace('.','_');
-  }
-}).create();
+// export default Ember.Object.extend({
+//   rawConfigJson: '/test-raw-config.json',
+//   cache: {},
+//   routes: [],
+//   nestedRoutes() {
+//     const obj = {};
+//     function setNest(route) {
+//       const r = _.get(obj,route);
+//       if(!r) {
+//         _.set(obj,route);
+//       }
+//     };
+//     _.each(this.get('routes'),setNest);
+//     return obj;
+//   },
+//   getConfig(url) {
+//     const u = url || this.get('rawConfigJson');
+//     const cache = this.getCache(u);
+//     if (cache) {
+//       console.log('Api Config cache hit for [' + u + ']');
+//       return Promise.resolve(cache);
+//     } else {
+//       return this.fetchConfig(u);
+//     }
+//   },
+//   fetchConfig(url) {
+//     return this.fetchCondensedConfig()
+//       .then(c => {
+//         const api = this.buildApiDef(c);
+//         this.putCache(this.get('rawConfigJson'),api);
+//         return api;
+//       });
+//   },
+//   fetchCondensedConfig() {
+//     return CondensedConfig.getConfig();
+//   },
+//   defaultConfig() {
+//     var cache = this.getCache(this.get('rawConfigJson'));
+//     if(cache) {
+//       return cache;
+//     }
+//     throw new Error('Cant get cache since its empty');
+//   },
+//   buildApiDef(json) {
+//     return FullConfig.create(json).get('root');
+//   },
+//   putCache(url, config) {
+//     this.set('cache.' + this.keyifyUrl(url), config);
+//   },
+//   getCache(url) {
+//     return this.get('cache.' + this.keyifyUrl(url));
+//   },
+//   keyifyUrl(url) {
+//     return url.replace('.','_');
+//   }
+// }).create();

@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import _ from 'lodash';
+import localStorage from '../helpers/local-storage';
 
 export default Ember.Mixin.create({
-  settings    : Ember.inject.service('settings-store'),
+  settings    : localStorage,
   request     : {},
   api() {
     var options = this.getRequestOptions();
@@ -102,6 +103,7 @@ export default Ember.Mixin.create({
     const url = this.get('model.request.url');
     const path = this.get('model.request.path');
     d.settings = this.get('settings').getStoreObj();
+    console.log(this.get('settings').getStoreObj());
     return Handlebars.compile(url + path)(d);
   },
   getAuth(data) {

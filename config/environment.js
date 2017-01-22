@@ -26,8 +26,6 @@ module.exports = function(environment) {
   };
 
   //Load the eddy config
-  // var a = require('./projects/permissions.json');
-  // console.log(a);
   ENV.eddyConfig = condensed;
   const tabs = _.filter(_.map(condensed.tabs,tab => {
     if(_.isString(tab)) {
