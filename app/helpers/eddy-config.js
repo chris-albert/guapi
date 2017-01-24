@@ -33,7 +33,7 @@ export default Ember.Object.extend({
     LocalStorage.setStoreJson('settings', _.map(settings,'name'));
   },
   handleCondensedConfig() {
-    if(_.isUndefined(LocalStorage.getStoreJson('condensedConfig'))) {
+    if(_.isUndefined(LocalStorage.getStoreJson('condensedConfig')) || _.get(config,'loadFromLocalStorage')) {
       LocalStorage.setStoreJson('condensedConfig', config.eddyConfig);
     }
   }

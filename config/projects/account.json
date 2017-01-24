@@ -55,7 +55,13 @@
       "root": "client",
       "idField": "clientId",
       "resources": ["list","view","create"],
-      "create": ["appName","clientIdGen","clientSecretGen","authorities","authorizedGrantTypes","scopes"],
+      "create": {
+        "root": null,
+        "fields": ["appName", "clientIdGen", "clientSecretGen", "authorities", "authorizedGrantTypes", "scopes"],
+        "response": {
+          "root": null
+        }
+      },
       "list": {
         "fields": [],
         "response": {

@@ -3,18 +3,23 @@
   "settings": [
     {
       "name": "Environment::env",
-      "editable": true
+      "editable": true,
+      "label": true
     },
     {
-      "name": "clientId",
+      "name": "::clientId",
       "editable": false
     },
     {
-      "name": "clientSecret",
+      "name": "::clientSecret",
       "editable": false
     }
   ],
   "auth": {
+    "oauth2": {
+      "redirect": "#/auth?a=b",
+      "clientId": "{{settings.clientId}}"
+    },
     "url": "https://{{settings.env}}.ticketfly.com",
     "path": "/account/oauth2/token",
     "method": "POST",

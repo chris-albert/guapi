@@ -50,6 +50,18 @@ export default Ember.Component.extend(Requester, {
     }
     return '';
   }),
+  oauth2Link: Ember.computed('', function() {
+    const queryParams = {
+      response_type: 'token',
+      client_id    : 'dOD4Fw7gnflXP4fHobcF6r',
+      state        : this.get('router.currentPath'),
+      redirect_uri : encodeURIComponent('http://localhost:4200/#/auth?a=b')
+    };
+    const query = _.map(queryParams, (v,k) => {
+      return k + '=' + v;
+    }).join('&');
+    return 'https://dev16.ticketfly.com/account/oauth2/authorize?' + query;
+  }),
   actions     : {
     logout() {
       this.get('settings').removeStore('token');

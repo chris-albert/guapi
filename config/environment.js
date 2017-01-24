@@ -25,6 +25,7 @@ module.exports = function(environment) {
     }
   };
 
+  ENV.loadFromLocalStorage = false;
   //Load the eddy config
   ENV.eddyConfig = condensed;
   const tabs = _.filter(_.map(condensed.tabs,tab => {
@@ -56,7 +57,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.loadFromLocalStorage = true;
   }
 
   return ENV;

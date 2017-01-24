@@ -29,7 +29,11 @@ function nestedRegisterRoute(router, route, nest) {
 
 Router.map(function () {
   this.route('config');
+  this.route('auth');
   const routes = nestedRoutes(AppStorage.getStore('routes'));
+  if(_.isEmpty(routes)) {
+    console.log('empty routes');
+  }
   _.each(routes, (nest, routeName) => nestedRegisterRoute(this,routeName, nest));
 });
 

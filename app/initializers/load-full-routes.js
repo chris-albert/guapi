@@ -15,10 +15,15 @@ export default {
         this.registerRoot(config, application);
         this.setUpInjections(application);
         application.advanceReadiness();
+      })
+      .catch(err => {
+        console.error(err);
+        application.advanceReadiness();
       });
   },
   setUpInjections(application) {
     application.inject('component','router','router:main');
+    application.inject('controller','router','router:main');
   },
   registerRoot(config, application) {
     const model = {
@@ -37,7 +42,7 @@ export default {
         console.debug('Entering route [application]');
         this._super();
       }
-    }
+    };
     this.registerRoute('application', model, application);
     this.registerContent(config.get('content'), application, []);
   },
