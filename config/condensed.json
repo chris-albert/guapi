@@ -33,7 +33,7 @@
         },
         {
           "name": "redirect_uri",
-          "value": "{{location.origin}}/#/auth?a=b"
+          "value": "{{location.origin}}/{{location.pathname}}/#/auth?a=b"
         }
       ]
     }
