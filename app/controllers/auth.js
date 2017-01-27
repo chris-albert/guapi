@@ -6,7 +6,6 @@ export default Ember.Controller.extend({
   init() {
     const hash = _.fromPairs(_.map(window.location.hash.split('&'),s => s.split('=')));
     const token = _.get(hash,'access_token');
-    console.log(hash);
     if(!_.isNil(token)) {
       LocalStorage.setStore('token', token);
     }

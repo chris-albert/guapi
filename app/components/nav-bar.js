@@ -25,7 +25,9 @@ export default Ember.Component.extend(Requester, {
   settingsQuickView: Ember.computed('formChanged', function() {
     var view = '';
     _.map(this.get('fields'), field => {
-      view = view + field.display + ' [' + field.value + '] ';
+      if(_.get(field,'label')) {
+        view = view + field.display + ' [' + field.value + '] ';
+      }
     });
     return view;
   }),
@@ -51,16 +53,14 @@ export default Ember.Component.extend(Requester, {
     return '';
   }),
   oauth2Link: Ember.computed('', function() {
-    const queryParams = {
-      response_type: 'token',
-      client_id    : 'dOD4Fw7gnflXP4fHobcF6r',
-      state        : this.get('router.currentPath'),
-      redirect_uri : encodeURIComponent('http://localhost:4200/#/auth?a=b')
-    };
+    const r = Ember.Object.extend(Requester).create();
+    r.set('model', this.get('nav.auth'));
+    let data = r.allFilteredFields();
+    const queryParams = r.replaceValues(data, {router: this.get('router')});
     const query = _.map(queryParams, (v,k) => {
-      return k + '=' + v;
+      return k + '=' + encodeURIComponent(v);
     }).join('&');
-    return 'https://dev16.ticketfly.com/account/oauth2/authorize?' + query;
+    return r.getUrl(data) + '?' + query;
   }),
   actions     : {
     logout() {

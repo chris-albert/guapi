@@ -8,46 +8,34 @@
     },
     {
       "name": "::clientId",
-      "editable": false
-    },
-    {
-      "name": "::clientSecret",
-      "editable": false
+      "editable": true
     }
   ],
   "auth": {
-    "oauth2": {
-      "redirect": "#/auth?a=b",
-      "clientId": "{{settings.clientId}}"
-    },
-    "url": "https://{{settings.env}}.ticketfly.com",
-    "path": "/account/oauth2/token",
-    "method": "POST",
-    "location": "form",
-    "auth": {
-      "type": "basic",
-      "user": "clientId",
-      "pass": "clientSecret"
-    },
-    "submit": "Login",
-    "fields": [
-      "::username",
-      {
-        "name": "::password",
-        "type": "password"
-      },
-      "::clientId",
-      "::clientSecret",
-      {
-        "name": "grant_type",
-        "type": "hidden",
-        "value": "password"
-      }
-    ],
-    "response": {
-      "settings": {
-        "access_token": "token"
-      }
+    "request": {
+      "url": "https://{{settings.env}}.ticketfly.com",
+      "path": "/account/oauth2/authorize",
+      "method": "GET",
+      "location": "query",
+      "type": "link",
+      "fields": [
+        {
+          "name": "response_type",
+          "value": "token"
+        },
+        {
+          "name": "client_id",
+          "value": "{{settings.clientId}}"
+        },
+        {
+          "name": "state",
+          "value": "{{router.currentPath}}"
+        },
+        {
+          "name": "redirect_uri",
+          "value": "{{location.origin}}/#/auth?a=b"
+        }
+      ]
     }
   },
   "tabs": [

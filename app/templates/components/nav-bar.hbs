@@ -43,19 +43,13 @@
                                 </button>
                             </div>
                             <div class="{{loginHidden}}">
-                              {{#form-input
-                                fields=nav.auth.request.fields
-                                submit=nav.auth.request.submit
-                                layout="stacked"
-                                onSubmit=(action "submit")
-                              }}
-                              {{/form-input}}
+                              <a href="{{oauth2Link}}">Login With TicketFly</a>
                             </div>
                         </form>
                         <div class="bg-danger login-error">
                           {{loginError}}
                         </div>
-                      <a href="{{oauth2Link}}">OAuth2</a>
+
                     </li>
                 {{/bs-dropdown-menu}}
               {{/bs-dropdown}}

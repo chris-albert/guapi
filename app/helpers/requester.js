@@ -151,5 +151,14 @@ export default Ember.Mixin.create({
   },
   allFilteredFields() {
     return this.filterOutFields(this.allFields());
+  },
+  replaceValues(data, extra) {
+    const r = _.merge({
+      settings: this.get('settings').getStoreObj(),
+      location: window.location
+    },extra);
+    return _.fromPairs(_.map(data, (v,k) => {
+      return [k,Handlebars.compile(v)(r)];
+    }));
   }
 });

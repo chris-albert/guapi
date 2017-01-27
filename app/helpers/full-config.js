@@ -151,6 +151,7 @@ export default Ember.Object.extend({
     try {
       this.set('root', Root.create(this));
     } catch(err) {
+      console.error(err);
       this.set('root', NoConfig.create());
     }
   }
