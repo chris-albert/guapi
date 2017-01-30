@@ -7,41 +7,7 @@ function replace(obj, key, func) {
   return _.set(obj,key,func(_.get(obj,key)));
 }
 
-const ProjectExpander = Ember.Object.extend({
-  expand(json) {
-    const project = NameDisplayExpander.expand(json);
-    if(_.get(project,'tabs')) {
-      const tabs = this.expandTabs(_.get(project,'tabs'), _.get(project,'baseUrl'));
-      delete project['tabs'];
-      _.set(project,'content', {
-        type: 'tabs',
-        tabs: tabs
-      });
-    }
-    return project;
-  },
-  expandTabs(tabs, baseUrl) {
-    const newTabs = _.map(tabs, tab => {
-      NameDisplayExpander.expand(tab);
-      return this.expandTab(tab, baseUrl);
-    });
-    return newTabs;
-  },
-  expandTab(tab, baseUrl) {
-    if(_.isNil(_.get(tab,'tabs'))) {
-      if(_.get(tab, 'type') === 'rest') {
-        return RestExpander.expand(tab, baseUrl);
-      }
-      const form = FormExpander.expand(tab, baseUrl);
-      return {
-        name: _.get(form,'name'),
-        display: _.get(form,'display'),
-        content: form
-      };
-    }
-    return tab;
-  }
-}).create();
+
 
 const FieldExpander = Ember.Object.extend({
   expand(json) {
@@ -212,14 +178,23 @@ const RestExpander = Ember.Object.extend({
     }
   },
   getResponseRoot(json, resourceType) {
+    const root = _.get(json,'root');
     switch(resourceType) {
       case 'list':
-        return _.get(json,'root') + 's';
+        if(_.isString(root)) {
+          return root + 's';
+        } else if(_.isObject(root)) {
+          return _.head(_.keys(root)) + 's';
+        }
+        return root;
       case 'update':
       case 'delete':
       case 'view':
       case 'create':
-        return _.get(json,'root');
+        if(_.isObject(root)) {
+          return _.head(_.keys(root));
+        }
+        return root;
     }
   },
   getResponseType(resourceType) {
@@ -309,6 +284,42 @@ const FormExpander = Ember.Object.extend({
     //const expanded = NameDisplayExpander.expand(fields);
     const expanded = _.map(fields, f => FieldExpander.expand(f))
     return _.map(expanded,e => _.defaults(e, this.defaultFields));
+  }
+}).create();
+
+const ProjectExpander = Ember.Object.extend({
+  expand(json) {
+    const project = NameDisplayExpander.expand(json);
+    if(_.get(project,'tabs')) {
+      const tabs = this.expandTabs(_.get(project,'tabs'), _.get(project,'baseUrl'));
+      delete project['tabs'];
+      _.set(project,'content', {
+        type: 'tabs',
+        tabs: tabs
+      });
+    }
+    return project;
+  },
+  expandTabs(tabs, baseUrl) {
+    const newTabs = _.map(tabs, tab => {
+      NameDisplayExpander.expand(tab);
+      return this.expandTab(tab, baseUrl);
+    });
+    return newTabs;
+  },
+  expandTab(tab, baseUrl) {
+    if(_.isNil(_.get(tab,'tabs'))) {
+      if(_.get(tab, 'type') === 'rest') {
+        return RestExpander.expand(tab, baseUrl);
+      }
+      const form = FormExpander.expand(tab, baseUrl);
+      return {
+        name: _.get(form,'name'),
+        display: _.get(form,'display'),
+        content: form
+      };
+    }
+    return tab;
   }
 }).create();
 

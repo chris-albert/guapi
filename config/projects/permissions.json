@@ -58,8 +58,7 @@
       "list": {
         "fields": ["domainOrgId","clientOrgId"],
         "response": {
-          "root": "employees",
-          "type": "object"
+          "root": "employees"
         }
       },
       "view": ["id","domainOrgId","clientOrgId"],
