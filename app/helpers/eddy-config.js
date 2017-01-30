@@ -7,15 +7,14 @@ import config from '../config/environment';
 
 export default Ember.Object.extend({
   getConfig() {
-    this.handleCondensedConfig();
     return this.process();
   },
   process() {
-    return this.expandCondensed(LocalStorage.getStoreJson('condensedConfig'))
+    return this.expandCondensed(this.getCondensedConfig())
       .then(this.processConfig)
       .then(finalConfig => {
         this.initSettings(finalConfig.get('settings'));
-        console.log('Eddy Config', finalConfig);
+        console.debug('Eddy Config', finalConfig);
         return finalConfig;
       })
       .catch(e => {
@@ -35,9 +34,16 @@ export default Ember.Object.extend({
   initSettings(settings) {
     LocalStorage.setStoreJson('settings', _.map(settings,'name'));
   },
-  handleCondensedConfig() {
-    if(_.isUndefined(LocalStorage.getStoreJson('condensedConfig')) || !_.get(config,'loadFromLocalStorage')) {
-      LocalStorage.setStoreJson('condensedConfig', config.eddyConfig);
+  getCondensedConfig() {
+    if(!_.get(config,'loadFromLocalStorage')) {
+      console.debug('Loaded eddy config from eddy');
+      return config.eddyConfig;
+    } else {
+      if(_.isUndefined(LocalStorage.getStoreJson('condensedConfig'))) {
+        LocalStorage.setStoreJson('condensedConfig', config.eddyConfig);
+      }
+      console.debug('Loaded eddy config from local storage');
+      return LocalStorage.getStoreJson('condensedConfig');
     }
   }
 }).create();
