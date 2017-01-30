@@ -20,8 +20,13 @@
                             }}
                           {{/each}}
                           <button type="button"
-                                  class="btn btn-default btn-xs" {{action "settingsSave"}}>Save
+                                  class="btn btn-primary btn-xs" {{action "settingsSave"}}>Save
                           </button>
+                          {{#link-to "config"}}
+                          <button type="button"
+                                  class="btn btn-default btn-xs pull-right" {{action "settingsSave"}}>Go To Config
+                          </button>
+                          {{/link-to}}
                         </form>
                     </li>
                 {{/bs-dropdown-menu}}

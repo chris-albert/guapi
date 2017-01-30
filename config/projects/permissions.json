@@ -33,7 +33,17 @@
       "name": "::employees",
       "type": "rest",
       "path": "/aggregator/v1/employees",
-      "root": "employee",
+      "root": {
+        "employee": [
+          "id",
+          "firstName",
+          "lastName",
+          "email",
+          "role",
+          "allEvents",
+          "events"
+        ]
+      },
       "fields": [
         "::domainOrgId",
         "::clientOrgId",
@@ -45,22 +55,15 @@
         "::allEvents",
         "::events"
       ],
-      "list": ["domainOrgId","clientOrgId"],
-      "view": ["id","domainOrgId","clientOrgId"],
-      "resources": ["list","view","create","update"],
-      "create": {
-        "root": {
-          "employee": [
-            "id",
-            "firstName",
-            "lastName",
-            "email",
-            "role",
-            "allEvents",
-            "events"
-          ]
+      "list": {
+        "fields": ["domainOrgId","clientOrgId"],
+        "response": {
+          "root": "employees",
+          "type": "object"
         }
-      }
+      },
+      "view": ["id","domainOrgId","clientOrgId"],
+      "resources": ["list","view","create","update"]
     },
     {
       "name": "::check",
