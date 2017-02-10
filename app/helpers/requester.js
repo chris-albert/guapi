@@ -77,9 +77,6 @@ export default Ember.Mixin.create({
           if(_.isUndefined(hashLookup)) {
             _.set(d,key,value);
           } else {
-            if(_.isUndefined(_.get(d,hashLookup))) {
-              _.set(d,hashLookup, {});
-            }
             _.set(d, hashLookup + '.' + key, value);
           }
         });
@@ -135,7 +132,10 @@ export default Ember.Mixin.create({
         if(_.get(field,'outName')) {
           key = _.get(field,'outName');
         }
-        data[key] = self.buildFieldValue(field);
+        const value = self.buildFieldValue(field);
+        if(!_.isUndefined(value) && !_.isEmpty(value)) {
+          data[key] = value;
+        }
       }
     });
     return data;

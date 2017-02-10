@@ -1,18 +1,47 @@
 {
   "name": "::permissions",
-    "baseUrl": "https://authorization-{{settings.env}}.ticketfly.com",
+  "baseUrl": "https://authorization-{{settings.env}}.ticketfly.com",
   "tabs": [
     {
       "name": "::roles",
       "type": "rest",
       "path": "/v2/roles",
       "root": "role",
+      "list": {
+        "fields": [
+          "id",
+          "name",
+          "domainOrgId",
+          "clientOrgId"
+        ],
+        "root": {
+          "scope": [
+            "domainOrgId",
+            "clientOrgId"
+          ]
+        }
+      },
+      "create": {
+        "root": {
+          "role": [
+            "id",
+            "name",
+            "displayName",
+            "description"
+          ],
+          "role.scope": [
+            "domainOrgId",
+            "clientOrgId"
+          ]
+        }
+      },
       "fields": [
         "::id",
         "::name",
-        "::ownerOrgId",
         "::displayName",
-        "::description"
+        "::description",
+        "::domainOrgId",
+        "::clientOrgId"
       ]
     },
     {
@@ -20,8 +49,15 @@
       "type": "rest",
       "path": "/v2/permissions",
       "root": "permission",
-      "list": ["name"],
-      "resources": ["list","view","create","delete"],
+      "list": [
+        "name"
+      ],
+      "resources": [
+        "list",
+        "view",
+        "create",
+        "delete"
+      ],
       "fields": [
         "::id",
         "::name",
@@ -56,13 +92,25 @@
         "::events"
       ],
       "list": {
-        "fields": ["domainOrgId","clientOrgId"],
+        "fields": [
+          "domainOrgId",
+          "clientOrgId"
+        ],
         "response": {
           "root": "employees"
         }
       },
-      "view": ["id","domainOrgId","clientOrgId"],
-      "resources": ["list","view","create","update"]
+      "view": [
+        "id",
+        "domainOrgId",
+        "clientOrgId"
+      ],
+      "resources": [
+        "list",
+        "view",
+        "create",
+        "update"
+      ]
     },
     {
       "name": "::check",
@@ -79,7 +127,11 @@
       ],
       "request": {
         "root": {
-          "scope": ["domainOrgId","clientOrgId","eventId"]
+          "scope": [
+            "domainOrgId",
+            "clientOrgId",
+            "eventId"
+          ]
         }
       }
     }
