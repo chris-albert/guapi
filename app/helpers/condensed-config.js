@@ -177,6 +177,9 @@ const RestExpander = Ember.Object.extend({
         return path;
     }
   },
+  getRequestRoot(json, resourceType) {
+
+  },
   getResponseRoot(json, resourceType) {
     const root = _.get(json,'root');
     switch(resourceType) {

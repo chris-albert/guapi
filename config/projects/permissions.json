@@ -6,34 +6,25 @@
       "name": "::roles",
       "type": "rest",
       "path": "/v2/roles",
-      "root": "role",
+      "root": {
+        "role": [
+          "id",
+          "name",
+          "displayName",
+          "description"
+        ],
+        "role.scope": [
+          "domainOrgId",
+          "clientOrgId"
+        ]
+      },
       "list": {
         "fields": [
           "id",
           "name",
           "domainOrgId",
           "clientOrgId"
-        ],
-        "root": {
-          "scope": [
-            "domainOrgId",
-            "clientOrgId"
-          ]
-        }
-      },
-      "create": {
-        "root": {
-          "role": [
-            "id",
-            "name",
-            "displayName",
-            "description"
-          ],
-          "role.scope": [
-            "domainOrgId",
-            "clientOrgId"
-          ]
-        }
+        ]
       },
       "fields": [
         "::id",
