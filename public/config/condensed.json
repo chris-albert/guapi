@@ -1,5 +1,6 @@
 {
   "display": "TicketFly",
+  "name": "ticketfly",
   "settings": [
     {
       "name": "Environment::env",
@@ -39,8 +40,8 @@
     }
   },
   "tabs": [
-    "./projects/permissions.json",
-    "./projects/account.json",
-    "./projects/mod.json"
+    "./config/projects/permissions.json",
+    "./config/projects/account.json",
+    "./config/projects/mod.json"
   ]
 }

@@ -33,6 +33,7 @@
               {{/bs-dropdown}}
                 <p class="navbar-text">{{settingsQuickView}}</p>
             </ul>
+            {{#if showAuth}}
             <ul class="nav navbar-nav navbar-right">
               {{#bs-dropdown tagName="li" closeOnMenuClick=false}}
                 {{#bs-dropdown-toggle}}
@@ -59,6 +60,7 @@
                 {{/bs-dropdown-menu}}
               {{/bs-dropdown}}
             </ul>
+            {{/if}}
         </div>
     </div>
 </nav>

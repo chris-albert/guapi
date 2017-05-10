@@ -1,3 +1,20 @@
+
+<div class="panel-body">
+  <div class="panel panel-default">
+    <div class="panel-heading">Eddy config URL</div>
+    <div class="panel-body">
+      {{#form-input
+        fields=configFields
+        submit=submit
+        layout=default
+        onSubmit=(action "saveConfigUrl")
+      }}
+      {{/form-input}}
+    </div>
+  </div>
+</div>
+
+{{!--
 <div class="panel-body">
   <div class="panel panel-default">
     <div class="panel-heading">Eddy condensed config</div>
@@ -26,3 +43,4 @@
     </div>
   </div>
 </div>
+--}}

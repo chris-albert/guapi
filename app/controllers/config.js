@@ -24,9 +24,28 @@ export default Ember.Controller.extend({
     change(e) {
       console.log('change', e);
       LocalStorage.setStoreJson('condensedConfig', e);
+    },
+    saveConfigUrl() {
+      const configUrl = this.get('configFields.0.value');
+      LocalStorage.setStore('configUrl',configUrl);
     }
+  },
+  configFields: [
+    {
+      name: 'configUrl',
+      display: "Config URL"
+    }
+  ],
+  submit: {
+    display: "Submit",
+    type: "primary",
+    size: "sm"
   },
   validateMessage: Ember.computed('', function() {
 
-  })
+  }),
+  init() {
+    this.set('configFields.0.value',LocalStorage.getStore('configUrl'));
+    this._super();
+  }
 });

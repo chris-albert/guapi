@@ -31,20 +31,36 @@ export default {
         return {
           nav    : config,
           content: config.get('content'),
+          hasConfig: !config.get('emptyConfig'),
           route: {
             full: '',
             base: '',
             end: ''
           }
         };
-      },
-      activate() {
-        console.debug('Entering route [application]');
-        this._super();
       }
     };
     this.registerRoute('application', model, application);
-    this.registerContent(config.get('content'), application, []);
+    if(!config.get('emptyConfig')) {
+      this.registerProjectRoot(config, application);
+      this.registerContent(config.get('content'), application, [config.get('name')]);
+    }
+  },
+  registerProjectRoot(config, application) {
+    const model = {
+      templateName: 'components/content-wrapper',
+      model() {
+        return {
+          content: config.get('content'),
+          route: {
+            full: config.get('name'),
+            base: config.get('name'),
+            end: config.get('name')
+          }
+        };
+      }
+    };
+    this.registerRoute(config.get('name'), model, application);
   },
   registerContent(content, application, stack) {
     if(content.invoke('isTabs')) {
@@ -103,7 +119,7 @@ export default {
     })));
   },
   log(message)  {
-    if(false) {
+    if(true) {
       console.debug(message);
     }
   }

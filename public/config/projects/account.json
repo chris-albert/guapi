@@ -22,7 +22,8 @@
           "name": "grant_type",
           "type": "hidden",
           "value": "password"
-        }
+        },
+        "::clientSecret"
       ]
     },
     {

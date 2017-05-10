@@ -1,5 +1,4 @@
 /* jshint node: true */
-const condensed = require('./condensed.json');
 const _ = require('lodash');
 
 module.exports = function(environment) {
@@ -24,18 +23,6 @@ module.exports = function(environment) {
       // when it is created
     }
   };
-
-  ENV.loadFromLocalStorage = false;
-  //Load the eddy config
-  ENV.eddyConfig = condensed;
-  const tabs = _.filter(_.map(condensed.tabs,tab => {
-    if(_.isString(tab)) {
-      return require(tab);
-    }
-  }),i => !_.isNil(i));
-  if(!_.isEmpty(tabs)) {
-    _.set(condensed, 'tabs', tabs);
-  }
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
