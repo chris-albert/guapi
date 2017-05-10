@@ -28,7 +28,6 @@ export default Ember.Object.extend({
         this.initSettings(finalConfig.get('settings'));
         console.debug('Eddy Config', finalConfig);
         this.set('config', finalConfig);
-        // this.set('hasConfig',true);
         return finalConfig;
       })
       .catch(e => {

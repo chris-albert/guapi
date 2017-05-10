@@ -28,6 +28,7 @@ export default Ember.Controller.extend({
     saveConfigUrl() {
       const configUrl = this.get('configFields.0.value');
       LocalStorage.setStore('configUrl',configUrl);
+      window.location.reload(true);
     }
   },
   configFields: [

@@ -10,7 +10,7 @@
       "auth": {
         "type": "basic",
         "user": "settings.clientId",
-        "pass": "settings.clientSecret"
+        "pass": "clientSecret"
       },
       "fields": [
         "::username",
@@ -34,9 +34,12 @@
       "auth": {
         "type": "basic",
         "user": "settings.clientId",
-        "pass": "settings.clientSecret"
+        "pass": "clientSecret"
       },
-      "fields": ["::token"]
+      "fields": [
+        "::token",
+        "::clientSecret"
+      ]
     },
     {
       "name": "::me",
@@ -55,10 +58,17 @@
       "path": "/account/v1/clients",
       "root": "client",
       "idField": "clientId",
-      "resources": ["list","view","create"],
+      "resources": ["list","view","create","update"],
       "create": {
         "root": null,
         "fields": ["appName", "clientIdGen", "clientSecretGen", "authorities", "authorizedGrantTypes", "scopes"],
+        "response": {
+          "root": null
+        }
+      },
+      "update": {
+        "root": null,
+        "fields": ["appName"],
         "response": {
           "root": null
         }
