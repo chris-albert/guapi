@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'eddy',
+    modulePrefix: 'guapi',
     environment: environment,
     rootURL: '/',
     locationType: 'hash',
