@@ -13,7 +13,10 @@ export default Ember.Object.extend({
       const configUrl = LocalStorage.getStore('configUrl');
       if(configUrl) {
         return this.loadConfig(configUrl)
-          .then(c => this.process(c));
+          .then(c => {
+            c.url = configUrl;
+            return this.process(c)
+          });
       } else {
         return Promise.resolve(Ember.Object.create({
           emptyConfig: true
