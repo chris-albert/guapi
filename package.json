@@ -1,9 +1,9 @@
 {
-  "name": "eddy",
+  "name": "guapi",
   "version": "0.0.0",
-  "description": "Eddy is a GUAPI (Graphical User Application Programmers Interface",
+  "description": "Guapi is a GUAPI (Graphical User Application Programmers Interface",
   "license": "MIT",
-  "author": "chris.albert",
+  "author": "creasetoph",
   "directories": {
     "doc": "doc",
     "test": "tests"

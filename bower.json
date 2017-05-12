@@ -1,12 +1,13 @@
 {
-  "name": "eddy",
+  "name": "guapi",
   "dependencies": {
     "ember": "~2.10.0",
     "ember-cli-shims": "0.1.3",
     "bootstrap": "~3.3.5",
     "bootstrap-switch": "^3.3.2",
     "select2": "^4.0.3",
-    "handlebars": "^4.0.5"
+    "handlebars": "^4.0.5",
+    "jquery": "^3.2.1"
   },
   "resolutions": {
     "jquery": "^3.2.1"

@@ -1,7 +1,7 @@
 
-# Eddy 2.0
+# Guapi
 
-Eddy is a GUI for an API or an GUAPI... it makes interacting with API's easier. 
+Guapi is a GUI for an API or an GUAPI... it makes interacting with API's easier. 
 Instead of having to do a `curl` or use Postman to play with and API, Eddy 
 allows you to define a simple json config for your API and gives you user
 friendly forms to fill out. 
@@ -218,6 +218,7 @@ Or you could
 {
   "name": "Display Name::nameName"
 }
+```
 Which would also become
 ```
 {
