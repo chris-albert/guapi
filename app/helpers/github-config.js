@@ -3,17 +3,17 @@ import _ from 'lodash';
 
 export default Ember.Object.extend({
   fetchConfig(data) {
-    return this.fetchGithubFile(data)
+    return this.fetchGitHubFile(data)
       .then(file => {
         console.debug('Got initial GitHub file', file);
         console.log(Ember);
-        const tabPromises = Promise.all(_.map(_.get(file,'tabs'),tab => {
+        const tabPromises = Ember.RSVP.Promise.all(_.map(_.get(file,'tabs'),tab => {
           if(_.isString(tab)) {
             const tabData = _.clone(data);
             tabData.path = tab;
-            return this.fetchGithubFile(tabData);
+            return this.fetchGitHubFile(tabData);
           } else {
-            return Promise.resolve(tab);
+            return Ember.RSVP.Promise.resolve(tab);
           }
         }));
         tabPromises.then(tabs => {
@@ -27,7 +27,7 @@ export default Ember.Object.extend({
         });
       });
   },
-  fetchGithubFile(data) {
+  fetchGitHubFile(data) {
     const url = [
       'https://api.github.com/repos',
       _.get(data,'owner'),
@@ -51,7 +51,7 @@ export default Ember.Object.extend({
             dataType: 'json'
           });
         } else {
-          return Promise.reject('Unable to fetch gihub content');
+          return Ember.RSVP.Promise.reject('Unable to fetch gihub content');
         }
       })
       .catch(error => {
