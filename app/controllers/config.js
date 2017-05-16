@@ -1,12 +1,7 @@
 import Ember from 'ember';
 import _ from 'lodash';
 import LocalStorage from '../helpers/local-storage';
-
-function make_base_auth(user, password) {
-  var tok = user + ':' + password;
-  var hash = btoa(tok);
-  return "Basic " + hash;
-}
+import GithubConfig from '../helpers/github-config';
 
 export default Ember.Controller.extend({
   config: {
@@ -40,28 +35,7 @@ export default Ember.Controller.extend({
       const data = _.fromPairs(_.map(this.get('gihubConfigFields'),field => {
         return [field.name,field.value]
       }));
-      const url = [
-        'https://api.github.com/repos',
-        data.owner,
-        data.repo,
-        'contents',
-        data.path
-      ].join('/');
-      const opts = {
-        url: url,
-        method: 'GET',
-        beforeSend: function (xhr){
-          xhr.setRequestHeader('Authorization', make_base_auth('creasetoph', data.accessKey));
-        }
-      };
-      $.ajax(opts)
-        .then(data => {
-          console.log(data);
-        })
-        .catch(e => {
-          console.error(e);
-        });
-      console.log(url);
+      GithubConfig.fetchConfig(data);
     }
   },
   configFields: [
@@ -94,7 +68,7 @@ export default Ember.Controller.extend({
     {
       name: 'accessKey',
       display: 'Access Key',
-      value: '1c9ea165727f95abfa68f058227494ef73d24477'
+      value: ''
     }
   ],
   submit: {
