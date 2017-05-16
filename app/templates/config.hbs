@@ -1,7 +1,7 @@
 
 <div class="panel-body">
   <div class="panel panel-default">
-    <div class="panel-heading">Eddy config URL</div>
+    <div class="panel-heading">HTTP Config</div>
     <div class="panel-body">
       {{#form-input
         fields=configFields
@@ -10,9 +10,26 @@
         onSubmit=(action "saveConfigUrl")
       }}
       {{/form-input}}
+
     </div>
   </div>
 </div>
+
+<div class="panel-body">
+  <div class="panel panel-default">
+    <div class="panel-heading">GitHub Config</div>
+    <div class="panel-body">
+      {{#form-input
+        fields=gihubConfigFields
+        submit=submit
+        layout=default
+        onSubmit=(action "saveGithubUrl")
+      }}
+      {{/form-input}}
+    </div>
+  </div>
+</div>
+
 
 {{!--
 <div class="panel-body">
