@@ -6,7 +6,6 @@ export default Ember.Object.extend({
     return this.fetchGitHubFile(data)
       .then(file => {
         console.debug('Got initial GitHub file', file);
-        console.log(Ember);
         const tabPromises = Ember.RSVP.Promise.all(_.map(_.get(file,'tabs'),tab => {
           if(_.isString(tab)) {
             const tabData = _.clone(data);
@@ -16,12 +15,8 @@ export default Ember.Object.extend({
             return Ember.RSVP.Promise.resolve(tab);
           }
         }));
-        tabPromises.then(tabs => {
-          delete file['tabs'];
-          _.set(file, 'content', {
-            'type': 'tabs',
-            'tabs': tabs
-          });
+        return tabPromises.then(tabs => {
+          _.set(file,'tabs',tabs);
           console.debug('Expanded GitHub tabs', file);
           return file;
         });

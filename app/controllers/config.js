@@ -2,6 +2,7 @@ import Ember from 'ember';
 import _ from 'lodash';
 import LocalStorage from '../helpers/local-storage';
 import GithubConfig from '../helpers/github-config';
+import GuapiConfig from '../helpers/guapi-config';
 
 export default Ember.Controller.extend({
   config: {
@@ -35,7 +36,8 @@ export default Ember.Controller.extend({
       const data = _.fromPairs(_.map(this.get('gihubConfigFields'),field => {
         return [field.name,field.value]
       }));
-      GithubConfig.fetchConfig(data);
+      GithubConfig.fetchConfig(data)
+        .then(c => GuapiConfig.process(c));
     }
   },
   configFields: [

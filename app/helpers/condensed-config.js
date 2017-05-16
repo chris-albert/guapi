@@ -341,8 +341,8 @@ const RootExpander = Ember.Object.extend({
   },
   expandTabs(json) {
     const ps = Promise.all(_.map(_.get(json,'tabs'),tab => {
-      const baseUrl = _.initial(json.url.split('/')).join('/') + '/';
       if(_.isString(tab)) {
+        const baseUrl = _.initial(json.url.split('/')).join('/') + '/';
         return $.ajax({
           url     : baseUrl + tab,
           dataType: 'json'
