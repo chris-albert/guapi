@@ -3,6 +3,7 @@ import _ from 'lodash';
 import LocalStorage from '../helpers/local-storage';
 import GithubConfig from '../helpers/github-config';
 import GuapiConfig from '../helpers/guapi-config';
+import HttpConfig from '../helpers/http-config';
 
 export default Ember.Controller.extend({
   config: {
@@ -29,15 +30,15 @@ export default Ember.Controller.extend({
     },
     saveConfigUrl() {
       const configUrl = this.get('configFields.0.value');
-      LocalStorage.setStore('configUrl',configUrl);
-      window.location.reload(true);
+      HttpConfig.fetchConfig(configUrl)
+        .then(c => GuapiConfig.processAndSave(c));
     },
     saveGithubUrl() {
       const data = _.fromPairs(_.map(this.get('gihubConfigFields'),field => {
         return [field.name,field.value]
       }));
       GithubConfig.fetchConfig(data)
-        .then(c => GuapiConfig.process(c));
+        .then(c => GuapiConfig.processAndSave(c));
     }
   },
   configFields: [

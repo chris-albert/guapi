@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import _ from 'lodash';
 import EddyConfig from '../helpers/eddy-config';
+import GuapiConfig from '../helpers/guapi-config';
 import AppStorage from '../helpers/app-storage';
 
 export default {
@@ -10,7 +11,8 @@ export default {
   },
   initialize(application) {
     application.deferReadiness();
-    EddyConfig.getConfig()
+    // EddyConfig.getConfig()
+    GuapiConfig.getConfig()
       .then(config => {
         this.registerRoot(config, application);
         this.setUpInjections(application);
