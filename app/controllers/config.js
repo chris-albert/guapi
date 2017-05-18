@@ -39,6 +39,12 @@ export default Ember.Controller.extend({
       }));
       GithubConfig.fetchConfig(data)
         .then(c => GuapiConfig.processAndSave(c));
+    },
+    clearConfig() {
+      LocalStorage.removeStore('config')
+    },
+    refresh() {
+      window.location.reload(true);
     }
   },
   configFields: [
@@ -49,19 +55,9 @@ export default Ember.Controller.extend({
   ],
   gihubConfigFields: [
     {
-      name: 'owner',
-      display: 'Owner',
-      value: 'ticketfly'
-    },
-    {
-      name: 'repo',
-      display: 'Repo',
-      value: 'guapi-config'
-    },
-    {
-      name: 'path',
-      display: 'Path',
-      value: 'ticketfly.json'
+      name: 'githubUrl',
+      display: 'GitHub URL',
+      value: 'https://github.com/Ticketfly/guapi-config/blob/master/ticketfly.json'
     },
     {
       name: 'username',

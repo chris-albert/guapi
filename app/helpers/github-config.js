@@ -3,12 +3,14 @@ import _ from 'lodash';
 
 export default Ember.Object.extend({
   fetchConfig(data) {
-    return this.fetchGitHubFile(data)
+    const github = this.parseGitHubUrl(_.get(data,'githubUrl'));
+    const merged = _.merge(github,data);
+    return this.fetchGitHubFile(merged)
       .then(file => {
         console.debug('Got initial GitHub file', file);
         const tabPromises = Ember.RSVP.Promise.all(_.map(_.get(file,'tabs'),tab => {
           if(_.isString(tab)) {
-            const tabData = _.clone(data);
+            const tabData = _.clone(merged);
             tabData.path = tab;
             return this.fetchGitHubFile(tabData);
           } else {
@@ -52,6 +54,15 @@ export default Ember.Object.extend({
       .catch(error => {
         console.error('Got error loading ajax config', error);
       });
+  },
+  parseGitHubUrl(url) {
+    const split = _.split(_.replace(url,'https://github.com/',''),'/');
+    return {
+      owner: _.get(split,0),
+      repo: _.get(split,1),
+      path: _.last(split),
+      ref: _.get(split,3)
+    }
   },
   loadAjax(opts) {
     return $.ajax(opts);
