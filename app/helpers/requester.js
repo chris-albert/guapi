@@ -6,7 +6,7 @@ export default Ember.Mixin.create({
   settings    : localStorage,
   request     : {},
   api() {
-    var options = this.getRequestOptions();
+    const options = this.getRequestOptions();
     if(this.get('model.request.location') === 'json') {
       options.data = JSON.stringify(options.data);
     }
@@ -16,7 +16,7 @@ export default Ember.Mixin.create({
     return $.ajax(options);
   },
   getRequestOptions() {
-    var data = this.allFilteredFields();
+    const data = this.allFilteredFields();
     return {
       url        : this.getUrl(data),
       method     : this.get('model.request.method'),
@@ -96,7 +96,7 @@ export default Ember.Mixin.create({
     }
   },
   getUrl(data) {
-    var d = _.clone(data);
+    const d = _.clone(data);
     const url = this.get('model.request.url');
     const path = this.get('model.request.path');
     d.settings = this.get('settings').getStoreObj();

@@ -28,7 +28,8 @@ export default Ember.Object.extend({
   processAndSave(json) {
     this.process(json)
       .then(config => {
-        LocalStorage.setStoreJson('config',_.get(config,'expandedConfig'));
+        LocalStorage.setStoreJson('config', _.get(config,'expandedConfig'));
+        LocalStorage.setStoreJson('settings', _.map(_.get(config,'expandedConfig.settings'),'name'));
       });
   },
   getConfig() {

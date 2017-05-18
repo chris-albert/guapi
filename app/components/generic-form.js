@@ -6,8 +6,8 @@ export default Ember.Component.extend(Requester, {
   request     : {},
   formChanged: true,
   link: Ember.computed('formChanged', function() {
-    var data = this.allFilteredFields();
-    var queryString = _.filter(_.map(data,(value,key) => {
+    const data = this.allFilteredFields();
+    let queryString = _.filter(_.map(data,(value,key) => {
       if(!_.isUndefined(value)) {
         return key + "=" + value;
       } else {
@@ -58,7 +58,7 @@ export default Ember.Component.extend(Requester, {
   },
   bindQueryParams() {
     _.map(this.get('model.request.fields'), field => {
-      var q = this.get('queryParams.' + field.name);
+      const q = this.get('queryParams.' + field.name);
       if (q) {
         Ember.set(field,'value',q);
       }
