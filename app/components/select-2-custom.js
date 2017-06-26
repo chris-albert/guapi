@@ -25,7 +25,6 @@ export default Ember.Component.extend({
   didInsertElement : function () {
     var self = this,
         el   = this.$();
-    console.log('heyou')
     el.select2({
       data                   : this.buildData(),
       multiple               : this.get('multiple'),

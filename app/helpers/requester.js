@@ -17,6 +17,7 @@ export default Ember.Mixin.create({
   },
   getRequestOptions() {
     const data = this.allFilteredFields();
+
     return {
       url        : this.getUrl(data),
       method     : this.get('model.request.method'),

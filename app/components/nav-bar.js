@@ -53,7 +53,8 @@ export default Ember.Component.extend(Requester, {
     return '';
   }),
   showAuth: Ember.computed('nav.auth', function() {
-    return !_.isUndefined(this.get('nav.auth'));
+    const auth = this.get('nav.auth');
+    return !_.isUndefined(auth) && _.isNull(auth);
   }),
   oauth2Link: Ember.computed('', function() {
     const r = Ember.Object.extend(Requester).create();

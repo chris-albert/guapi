@@ -70,6 +70,8 @@ export default Ember.Component.extend({
         break;
       case 405:
         return "Status Text: [" + this.get('response.xhr.statusText') + ']';
+      case 204:
+        return 'Got successful 204';
       break;
     }
     return null;

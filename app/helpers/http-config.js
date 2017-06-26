@@ -7,7 +7,6 @@ export default Ember.Object.extend({
       url: url,
       method: 'GET'
     }).then(file => {
-      console.debug('Got initial http response', file);
       const tabPromises = Ember.RSVP.Promise.all(_.map(_.get(file,'tabs'),tab => {
         if(_.isString(tab)) {
           const baseUrl = _.initial(url.split('/')).join('/') + '/';
@@ -18,7 +17,6 @@ export default Ember.Object.extend({
       }));
       return tabPromises.then(tabs => {
         _.set(file,'tabs',tabs);
-        console.debug('Expanded http tabs', file);
         return file;
       });
     });

@@ -10,7 +10,10 @@ const Root = Ember.EddyObject.extend({
   init() {
     this.validate('Root', ['display','settings','content']);
     this.set('content', Content.create(this.get('content')));
-    this.set('auth', Form.create(this.get('auth')));
+    const auth = this.get('auth');
+    if(!_.isEmpty(auth)) {
+      this.set('auth', Form.create(auth));
+    }
   }
 });
 
@@ -22,7 +25,7 @@ const Content = Ember.EddyObject.extend({
     switch(this.get('type')) {
       case 'tabs':
         this.validate('Content', ['tabs']);
-        var tabs = _.map(this.get('tabs'), tab => {
+        const tabs = _.map(this.get('tabs'), tab => {
           return Tab.create(tab);
         });
         this.set('tabs', tabs);
@@ -147,12 +150,15 @@ const NoConfig = Ember.EddyObject.extend({
 });
 
 export default Ember.Object.extend({
-  init() {
-    try {
-      this.set('root', Root.create(this));
-    } catch(err) {
-      console.error(err);
-      this.set('root', NoConfig.create());
-    }
+  process(config) {
+    return new Promise((resolve, reject) => {
+      try {
+        console.debug('Full Config start',config);
+        resolve(Root.create(config));
+      } catch(err) {
+        reject(err);
+      }
+    })
+
   }
-});
+}).create();

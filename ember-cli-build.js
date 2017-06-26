@@ -17,6 +17,8 @@ module.exports = function(defaults) {
   app.import('bower_components/select2/dist/js/select2.min.js');
   app.import('bower_components/handlebars/handlebars.js');
   //Adding bootstrap-switch
+  app.import('bower_components/bootstrap/js/tooltip.js');
+  app.import('bower_components/bootstrap/js/popover.js');
   app.import('bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js');
   app.import('bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css');
   //app.import('bower_components/ember/ember-template-compiler.js');

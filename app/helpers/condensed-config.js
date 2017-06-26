@@ -254,9 +254,7 @@ const FormExpander = Ember.Object.extend({
   },
   expandAuth(auth) {
     if(_.isNil(auth)) {
-      return {
-        "type": "bearer"
-      };
+      return false;
     } else if(_.isString(auth)) {
       return {
         "type": auth
@@ -337,7 +335,10 @@ const RootExpander = Ember.Object.extend({
     return NameDisplayExpander.expand(settings);
   },
   expandAuth(auth) {
-    return FormExpander.expand(auth);
+    if(!_.isEmpty(auth)) {
+      return FormExpander.expand(auth);
+    }
+    return {};
   },
   expandTabs(json) {
     const ps = Promise.all(_.map(_.get(json,'tabs'),tab => {

@@ -6,5 +6,13 @@
   }}
 {{/each}}
 <div>
-    <button class="form-input-submit btn {{submitClass}}" {{action "submit"}}>{{submitText}}</button>
+    <button class="form-input-submit btn {{submitClass}}" {{action "submit"}}>
+      {{#if showPopover}}
+        {{#bs-popover
+          html=true
+          triggerEvents=popover.trigger
+          visible=popover.visible}}{{{popover.body}}}
+        {{/bs-popover}}
+      {{/if}}
+      {{submitText}}</button>
 </div>

@@ -7,7 +7,7 @@ export default Ember.Object.extend({
     const merged = _.merge(github,data);
     return this.fetchGitHubFile(merged)
       .then(file => {
-        console.debug('Got initial GitHub file', file);
+        console.debug('Got initial GitHub file', _.cloneDeep(file));
         const tabPromises = Ember.RSVP.Promise.all(_.map(_.get(file,'tabs'),tab => {
           if(_.isString(tab)) {
             const tabData = _.clone(merged);
@@ -19,7 +19,8 @@ export default Ember.Object.extend({
         }));
         return tabPromises.then(tabs => {
           _.set(file,'tabs',tabs);
-          console.debug('Expanded GitHub tabs', file);
+          console.log('tabPromised', tabs)
+          console.debug('Expanded GitHub tabs',_.cloneDeep(file));
           return file;
         });
       });
@@ -32,12 +33,16 @@ export default Ember.Object.extend({
       'contents',
       _.get(data,'path')
     ].join('/');
+    let headers = {};
+    if(_.get(data,'private')) {
+      headers = {
+        'Authorization': this.make_base_auth(_.get(data,'username'), _.get(data,'accessKey'))
+      }
+    }
     const opts = {
       url    : url,
       method : 'GET',
-      headers: {
-        'Authorization': this.make_base_auth(_.get(data,'username'), _.get(data,'accessKey'))
-      }
+      headers: headers
     };
     return this.loadAjax(opts)
       .then(resp => {
