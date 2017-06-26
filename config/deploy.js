@@ -1,7 +1,7 @@
 /* jshint node: true */
 
 module.exports = function(deployTarget) {
-  console.log(process.env['S3_ACCESS_KEY'])
+  console.log(process.env['S3_ACCESS_KEY']);
   var ENV = {
     build: {
 
