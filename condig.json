@@ -1,0 +1,15 @@
+{
+  "display": "MLB Person",
+  "name": "person",
+  "url": "http://statsapi.mlb.com",
+  "path": "/api/v1/people/{id}",
+  "location": "query",
+  "method": "get",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "value": 457763
+    }
+  ]
+}

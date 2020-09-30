@@ -1,258 +1,46 @@
+# GUAPI
 
-# Guapi
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Guapi is a GUI for an API or an GUAPI... it makes interacting with API's easier. 
-Instead of having to do a `curl` or use Postman to play with and API, Eddy 
-allows you to define a simple json config for your API and gives you user
-friendly forms to fill out. 
- 
+## Available Scripts
 
-### To install 
-1. Clone this repo
-1. Install `node.js`
-1. install dependencies
-```
-npm install
-bower install
-```
-### To run
-1. Run ember
-```
-node node_modules/ember-cli/bin/ember s
-```
+In the project directory, you can run:
 
-### Config definitions
-Content is a renderable object
+### `npm start`
 
-Content Types
- - tabs
- - form
- 
-The `tabs` content type renders tabs to the page.
- ```
- {
-   "name": "The name used for routes, this should only be camel case",
-   "display": "The name displayed on the tab",
-   "content": {
-     "tabs|form": ... //Can be more nested tabs, or another type of content
-   }
- }
- ```
- 
- 
-The `form` content type renders a form to the page.
-```
-content": {
-  "form": {
-    "path": "Path to call",
-    "method": "HTTP method to use [GET|PUT|POST]",
-    "request": {
-      "location": "Location of form data [query|body]",
-      "auth": {
-        "type": "Type of authentication [bearer|basic|none]"
-      },
-      "fields": [
-        {
-          "display": "Field display name",
-          "name": "Name used when adding to query or body",
-          "type": "Field type [text,password,select]",
-          "disabled": "Weather field is disabled [true,false]"
-        }
-      ],
-      "submitButton": "Name of submit button"
-    },
-    "response": {
-      "root": "json root to get data from",
-      "type": "Response type [array|object]",
-      "fields": "Response fields to show, * for all that were retrieved, or array of fields to show"
-    }
-  }
-}
-```
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
- 
-## Config
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
 
-There are 2 different types of configs `condensed` and `full`, the `full` config has every field
-set and is very verbose, lots of duplicates. So there is also a `condensed` version that will get 
-processed to create the `full` version, the processing will make sure the `condensed` version was
-valid and generate any needed config content. This will also be where all the defaults are so
-when in the code we don't have to worry about them.
+### `npm test`
 
+Launches the test runner in the interactive watch mode.<br />
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+### `npm run build`
 
-### `full` config
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
 
- 
-#### Object Types
-* `root`: (This holds all the global info, like name, settings, and auth)
-* `tab` (Names of the tabs and its content)
-* `form` (The good stuff, all info about how a form is processed)
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+### `npm run eject`
 
-##### `root` Type
-This hold all the info for the top bar, name etc
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-* `display`: String
-  * What is displayed on the top left of app, usually this is your company or app name
-* `settings`: Array of objects
-  * an array of objects that have `name` and `display` properties, 
-    these are what settings are available in the "Settings" dropdown
-* `content`: Object
-** What content you want rendered, of `content` type 
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-##### `tab` Type
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-* `name`: String
-* `display`: String
-* `content`: Array of objects
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Learn More
 
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-##### `form` Type
-
-* `name`: String
-* `display`: String
-* `request`
-* `response`
-
-##### `request` Type
-
-* `url`: String
-* `location`: String (form,query,json)
-* `path`: String
-* `method`: String (GET,POST,PUT,DELETE)
-* `auth`: Auth
-* `fields`: Array[Field]
-
- 
- Content Types
-  - tabs
-  - form
-The `tabs` content type renders tabs to the page.
- ```
- {
-   "name": "The name used for routes, this should only be camel case",
-   "display": "The name displayed on the tab",
-   "content": {
-     "tabs|form": ... //Can be more nested tabs, or another type of content
-   }
- }
- ```
- 
- 
-The `form` content type renders a form to the page.
-```
-{
-  "type": "form",
-  "request": {
-    "url": "",
-    "path": "Path to call",
-     "method": "HTTP method to use [GET|PUT|POST]",
-     "location": "Location of form data [query|body]",
-     "auth": {
-       "type": "Type of authentication [bearer|basic|none]"
-     },
-     "submit": {
-       "display": "Submit",
-       "type": "primary",
-       "size": "sm"
-     },
-     "fields": [
-       {
-         "display": "Field display name",
-         "name": "Name used when adding to query or body",
-         "type": "Field type [text,password,select]",
-         "disabled": "Weather field is disabled [true,false]"
-       }
-     ]
-  },
-  "response": {
-    "root": "json root to get data from",
-    "type": "Response type [array|object]",
-    "fields": "Response fields to show, * for all that were retrieved, or array of fields to show"
-  }
-}
-```
-
-The `action` type
-```
-{
-  "type": "icon|button",
-  "link": "{{route.base}}.view",
-  "params": ["id"],
-  "autoSubmit": true,
-  "icon": "info-sign"
-}
-{
-  "type": "button",
-  "display": "Update",
-  "link": "{{route.base}}.update",
-  "params": ["id","name","ownerOrgId"]
-}
-```
-
-
-
-Condensed Config
-
-
-Expander
-
-`name` and `display` expander
-This will expand a string to a object with `name` and `display`
-
-```
-"Display Name::nameName"
-```
-Becomes 
-```
-{
-  "display": "Display Name",
-  "name": "nameName"
-}
-```
-Or you could
-```
-{
-  "name": "Display Name::nameName"
-}
-```
-Which would also become
-```
-{
-  "display": "Display Name",
-  "name": "nameName"
-}
-```
-
-Also
-```
-"::someName"
-```
-Will auto format to
-```
-"Some Name::someName"
-```
-Which then follows the name display expander
-
-
-
-The `rest` expander
-If your endpont is really "REST",
-then there is minimal config
-```
-{
-  "name": "Roles::roles",
-  "type": "rest",
-  "path": "/v2/roles",
-  "auth": "bearer",
-  "root": "role",
-  "fields": [
-    "::id",
-    "::name",
-    "::ownerOrgId"
-  ]
-}
-```
+To learn React, check out the [React documentation](https://reactjs.org/).
