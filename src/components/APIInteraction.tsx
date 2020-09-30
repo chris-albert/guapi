@@ -17,6 +17,7 @@ const APIInteraction = (props: APIInteractionProps) => {
 
   const [request , setRequest]  = React.useState<object>({})
   const [response, setResponse] = React.useState<Option<Either<any, AxiosResponse<any>>>>(none)
+  const [loading , setLoading]  = React.useState<boolean>(false)
 
   return (
     <Card>
@@ -29,11 +30,19 @@ const APIInteraction = (props: APIInteractionProps) => {
                 interaction={props.interaction}
                 setRequest={setRequest}
                 setResponse={setResponse}
+                loading={loading}
+                setLoading={setLoading}
               />
-              <Request request={request}/>
+              <Request
+                request={request}
+                interaction={props.interaction}
+              />
             </Col>
             <Col>
-              <Response response={response}/>
+              <Response
+                response={response}
+                loading={loading}
+              />
             </Col>
           </Row>
         </Container>

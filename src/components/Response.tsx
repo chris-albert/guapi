@@ -1,12 +1,13 @@
 import React from "react";
-import {Badge, Card} from "react-bootstrap";
+import { Badge, Card, Spinner } from "react-bootstrap";
 import JsonEditor from "./JsonEditor";
 import {Option, some, none, isSome} from "fp-ts/Option";
 import {Either, isRight} from "fp-ts/Either";
 import {AxiosResponse} from "axios";
 
 type ResponseProps = {
-  response: Option<Either<any, AxiosResponse<any>>>
+  response: Option<Either<any, AxiosResponse<any>>>,
+  loading : boolean
 }
 
 const Response = (props: ResponseProps) => {
@@ -60,12 +61,23 @@ const Response = (props: ResponseProps) => {
     {statusBadgeProps[1]}
   </Badge>
 
-  const body = isSome(content) ?
-    <JsonEditor
-      content={JSON.stringify(content.value, null, 2)}
-      readOnly={true}
-      onChange={() => null} /> :
-    <div>Nothing yet</div>
+  const body =
+    props.loading ?
+      <div className="text-center">
+        <Spinner
+          as="span"
+          animation="border"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+        />
+      </div>:
+      (isSome(content) ?
+        <JsonEditor
+          content={JSON.stringify(content.value, null, 2)}
+          readOnly={true}
+          onChange={() => null} /> :
+        <div>Nothing yet</div>)
 
   return (
     <Card border={statusBadgeProps[0]}>

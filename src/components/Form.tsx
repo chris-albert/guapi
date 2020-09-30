@@ -1,7 +1,7 @@
 import React from "react";
 import { Interaction } from "../data/Types"
 import * as t from 'io-ts'
-import { Card, Form as ReactForm, Button } from "react-bootstrap";
+import { Card, Form as ReactForm, Button, Spinner } from "react-bootstrap";
 import _ from "lodash";
 import FormField from "./FormField";
 import Template from '../util/Template'
@@ -12,7 +12,9 @@ import {Option, some} from 'fp-ts/Option'
 type FormProps = {
   interaction: t.TypeOf<typeof Interaction>,
   setRequest : (request: object) => void,
-  setResponse: (res: Option<Either<any, AxiosResponse<any>>>) => void
+  setResponse: (res: Option<Either<any, AxiosResponse<any>>>) => void,
+  loading    : boolean,
+  setLoading : (loading: boolean) => void
 }
 
 const Form = (props: FormProps) => {
@@ -33,12 +35,15 @@ const Form = (props: FormProps) => {
   }
 
   const onSubmit = () => {
+    props.setLoading(true)
     axios(buildRequest())
       .then(res => {
         props.setResponse(some(right(res)))
+        props.setLoading(false)
       })
       .catch(err => {
         props.setResponse(some(left(err)))
+        props.setLoading(false)
       })
   }
 
@@ -67,9 +72,20 @@ const Form = (props: FormProps) => {
           variant="primary"
           type="submit"
           size="sm"
-          onClick={onSubmit}
+          disabled={props.loading}
+          onClick={() => props.loading ? null : onSubmit()}
         >
-          Submit
+          {props.loading ?
+            <Spinner
+              as="span"
+              animation="border"
+              size="sm"
+              role="status"
+              aria-hidden="true"
+            /> :
+            <span>Submit</span>
+          }
+
         </Button>
       </Card.Footer>
     </Card>
