@@ -25,7 +25,7 @@ export const Field = t.type({
   placeholder: t.union([t.string, t.undefined])
 })
 
-export const Form = t.type({
+export const Interaction = t.type({
   display : t.string,
   name    : t.string,
   url     : t.string,
@@ -36,5 +36,5 @@ export const Form = t.type({
 })
 
 export const Config = t.type({
-  forms: t.array(Form)
+  interactions: t.array(Interaction)
 })

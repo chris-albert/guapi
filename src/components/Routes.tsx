@@ -7,14 +7,14 @@ import ConfigProvider from "../data/ConfigProvider";
 import { isRight } from "fp-ts/Either";
 import _ from 'lodash'
 import ConfigError from "./ConfigError";
-import Form from "./Form";
+import APIInteraction from "./APIInteraction";
 
 const Routes = () => {
 
   const config = ConfigProvider.config()
 
   const configLinks = isRight(config) ?
-    _.map(config.right.forms, form => (
+    _.map(config.right.interactions, form => (
       <LinkContainer to={`/${form.name}`}>
         <Nav.Link>{form.display}</Nav.Link>
       </LinkContainer>
@@ -26,9 +26,9 @@ const Routes = () => {
     )
 
   const configRoutes = isRight(config) ?
-    _.map(config.right.forms, form => (
-      <Route path={`/${form.name}`}>
-        <Form form={form} />
+    _.map(config.right.interactions, interaction => (
+      <Route path={`/${interaction.name}`}>
+        <APIInteraction interaction={interaction} />
       </Route>
     )) :
     (

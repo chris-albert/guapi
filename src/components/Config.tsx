@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Button } from "react-bootstrap";
 import JsonEditor from "./JsonEditor";
 import { StorageKey } from '../util/Storage'
-import { Form } from "../data/Types"
+import { Interaction } from "../data/Types"
 import { PathReporter } from 'io-ts/PathReporter'
 import { isRight } from 'fp-ts/lib/Either'
 
@@ -14,7 +14,7 @@ const Config = () => {
 
   const save = () => {
     storage.save(content)
-    const result = Form.decode(JSON.parse(content))
+    const result = Interaction.decode(JSON.parse(content))
 
     if(isRight(result)) {
       console.log("Success")
