@@ -30,9 +30,9 @@ const APIInteraction = (props: APIInteractionProps) => {
                 setRequest={setRequest}
                 setResponse={setResponse}
               />
+              <Request request={request}/>
             </Col>
             <Col>
-              <Request request={request}/>
               <Response response={response}/>
             </Col>
           </Row>

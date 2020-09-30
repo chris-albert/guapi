@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "react-bootstrap";
+import { Card, Accordion } from "react-bootstrap";
 import JsonEditor from "./JsonEditor";
 
 type RequestsProps = {
@@ -8,15 +8,21 @@ type RequestsProps = {
 
 const Request = (props: RequestsProps) => {
   return (
-    <Card>
-      <Card.Header>Request</Card.Header>
-      <Card.Body>
-        <JsonEditor
-          content={JSON.stringify(props.request, null, 2)}
-          readOnly={true}
-          onChange={() => null} />
-      </Card.Body>
-    </Card>
+    <Accordion defaultActiveKey="0" className="mt-3">
+      <Card>
+        <Accordion.Toggle as={Card.Header} eventKey="0">
+          Request
+        </Accordion.Toggle>
+        <Accordion.Collapse eventKey="0">
+          <Card.Body>
+            <JsonEditor
+              content={JSON.stringify(props.request, null, 2)}
+              readOnly={true}
+              onChange={() => null} />
+          </Card.Body>
+        </Accordion.Collapse>
+      </Card>
+    </Accordion>
   )
 }
 
