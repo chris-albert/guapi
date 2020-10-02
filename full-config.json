@@ -1,0 +1,31 @@
+{
+  "display": "MLB",
+  "icon": "",
+  "nav": [
+    {
+      "display": "Person",
+      "name": "person",
+      "nav": [
+        {
+          "display": "Find",
+          "name": "find",
+          "form": {
+            "request": {
+              "url": "http://statsapi.mlb.com",
+              "path": "/api/v1/people/{id}",
+              "location": "query",
+              "method": "get",
+              "fields": [
+                {
+                  "name": "id",
+                  "type": "string",
+                  "value": 457763
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

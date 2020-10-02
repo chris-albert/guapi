@@ -55,7 +55,7 @@ const Response = (props: ResponseProps) => {
     ["dark", 0]
 
   const statusBadge = <Badge
-    className="float-right"
+    className="float-right mt-1"
     variant={statusBadgeProps[0]}
   >
     {statusBadgeProps[1]}

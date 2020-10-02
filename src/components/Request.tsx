@@ -28,8 +28,8 @@ const Request = (props: RequestsProps) => {
         <Accordion.Toggle className="pointer" as={Card.Header} eventKey="0">
           Request
           <Badge
-            className="float-right"
-            variant="light"
+            className="float-right mt-1"
+            variant="dark"
             onClick={debugClick}
           >
             Show {debug ? "Request" : "Config"}
