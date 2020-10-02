@@ -1,5 +1,5 @@
 import React from "react";
-import { Interaction } from "../data/Types";
+import { FormItem } from "../data/Types";
 import * as t from 'io-ts'
 import { Card, Container, Row, Col } from "react-bootstrap";
 import Form from "./Form";
@@ -10,7 +10,7 @@ import {Either} from "fp-ts/Either";
 import {AxiosResponse} from "axios";
 
 type APIInteractionProps = {
-  interaction: t.TypeOf<typeof Interaction>
+  form: t.TypeOf<typeof FormItem>
 }
 
 const APIInteraction = (props: APIInteractionProps) => {
@@ -21,13 +21,13 @@ const APIInteraction = (props: APIInteractionProps) => {
 
   return (
     <Card>
-      <Card.Header>{props.interaction.display}</Card.Header>
+      <Card.Header>{props.form.display}</Card.Header>
       <Card.Body>
         <Container fluid>
           <Row>
             <Col>
               <Form
-                interaction={props.interaction}
+                form={props.form}
                 setRequest={setRequest}
                 setResponse={setResponse}
                 loading={loading}
@@ -35,7 +35,7 @@ const APIInteraction = (props: APIInteractionProps) => {
               />
               <Request
                 request={request}
-                interaction={props.interaction}
+                requestType={props.form.form.request}
               />
             </Col>
             <Col>

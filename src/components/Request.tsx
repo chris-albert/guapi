@@ -2,11 +2,11 @@ import React, { MouseEvent } from "react";
 import {Card, Accordion, Badge} from "react-bootstrap";
 import JsonEditor from "./JsonEditor";
 import * as t from "io-ts";
-import {Interaction} from "../data/Types";
+import {Request as RequestType} from "../data/Types";
 
 type RequestsProps = {
   request    : object,
-  interaction: t.TypeOf<typeof Interaction>
+  requestType: t.TypeOf<typeof RequestType>
 }
 
 const Request = (props: RequestsProps) => {
@@ -19,7 +19,7 @@ const Request = (props: RequestsProps) => {
   }
 
   const content = debug ?
-    Interaction.encode(props.interaction) :
+    RequestType.encode(props.requestType) :
     props.request
 
   return (

@@ -21,61 +21,47 @@ export const Field = t.type({
   display    : t.string,
   name       : t.string,
   type       : FieldType,
-  value      : t.unknown,
-  placeholder: t.union([t.string, t.undefined])
+  value      : t.unknown
 })
 
-export const Interaction = t.type({
-  display : t.string,
-  name    : t.string,
+export const Request = t.type({
   url     : t.string,
   path    : t.string,
   location: FormLocation,
   method  : FormMethod,
   fields  : t.array(Field)
 })
+
+export const Form = t.type({
+  request: Request
+})
+
+export const FormItem = t.type({
+  display: t.string,
+  name   : t.string,
+  form   : Form
+})
+
+interface NavItem {
+  display: string,
+  name   : string,
+  nav    : Array<Item>
+}
+
+type Item = t.TypeOf<typeof FormItem> | NavItem
+
+export const NavItem: t.Type<NavItem> = t.recursion('NavItem', () =>
+  t.type({
+    display: t.string,
+    name   : t.string,
+    nav    : t.array(Item)
+  })
+)
+
+export const Item = t.union([FormItem, NavItem])
 
 export const Config = t.type({
-  interactions: t.array(Interaction)
+  display: t.string,
+  icon   : t.union([t.string, t.undefined]),
+  nav    : t.array(Item)
 })
-
-export const InteractionRequest = t.type({
-  url     : t.string,
-  path    : t.string,
-  location: FormLocation,
-  method  : FormMethod,
-  fields  : t.array(Field)
-})
-
-export const InteractionForm = t.type({
-  request: InteractionRequest
-})
-
-// interface Nav {
-//   navs: Array<Nav>
-// }
-//
-// interface NavInteraction {
-//   display: string,
-//   name   : string
-// }
-//
-// export const NavInteraction = t.type({
-//   display: t.string,
-//   name   : t.string,
-//   nav    : t.array(Nav)
-// })
-//
-// export const FormInteraction = t.type({
-//   display: t.string,
-//   name   : t.string,
-//   form   : InteractionForm
-// })
-
-// export const Nav = t.union([NavInteraction, FormInteraction])
-
-// export const Config2 = t.type({
-//   display: t.string,
-//   name   : t.string,
-//   nav    : t.array(Nav)
-// })

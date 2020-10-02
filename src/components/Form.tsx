@@ -1,5 +1,5 @@
 import React from "react";
-import { Interaction } from "../data/Types"
+import { FormItem } from "../data/Types"
 import * as t from 'io-ts'
 import { Card, Form as ReactForm, Button, Spinner } from "react-bootstrap";
 import _ from "lodash";
@@ -10,7 +10,7 @@ import {Either, left, right} from "fp-ts/Either";
 import {Option, some} from 'fp-ts/Option'
 
 type FormProps = {
-  interaction: t.TypeOf<typeof Interaction>,
+  form       : t.TypeOf<typeof FormItem>,
   setRequest : (request: object) => void,
   setResponse: (res: Option<Either<any, AxiosResponse<any>>>) => void,
   loading    : boolean,
@@ -20,7 +20,7 @@ type FormProps = {
 const Form = (props: FormProps) => {
 
   const [fields, setFields] = React.useState<object>(
-    _.fromPairs(_.map(props.interaction.fields, field => {
+    _.fromPairs(_.map(props.form.form.request.fields, field => {
       return [field.name, field.value]
     }))
   )
@@ -49,8 +49,8 @@ const Form = (props: FormProps) => {
 
   const buildRequest = (): object => {
     return {
-      method: _.toUpper(props.interaction.method),
-      url   : Template.replace(props.interaction.url, fields) + Template.replace(props.interaction.path, fields),
+      method: _.toUpper(props.form.form.request.method),
+      url   : Template.replace(props.form.form.request.url, fields) + Template.replace(props.form.form.request.path, fields),
       params: fields
     }
   }
@@ -60,7 +60,7 @@ const Form = (props: FormProps) => {
       <Card.Header>Form</Card.Header>
       <Card.Body>
         <ReactForm>
-          {_.map(props.interaction.fields, field => (
+          {_.map(props.form.form.request.fields, field => (
             <FormField key={`form-field-${field.name}`} field={field} onChange={formChange}/>
           ))}
 

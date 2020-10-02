@@ -17,15 +17,76 @@
               "method": "get",
               "fields": [
                 {
+                  "display": "Id",
                   "name": "id",
                   "type": "string",
-                  "value": 457763
+                  "value": "457763"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "display": "Create",
+          "name": "create",
+          "form": {
+            "request": {
+              "url": "http://statsapi.mlb.com",
+              "path": "/api/v1/people",
+              "location": "query",
+              "method": "post",
+              "fields": [
+                {
+                  "display": "Id",
+                  "name": "id",
+                  "type": "string",
+                  "value": "457763"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "display": "Update",
+          "name": "update",
+          "form": {
+            "request": {
+              "url": "http://statsapi.mlb.com",
+              "path": "/api/v1/people/{id}",
+              "location": "query",
+              "method": "put",
+              "fields": [
+                {
+                  "display": "Id",
+                  "name": "id",
+                  "type": "string",
+                  "value": "457763"
                 }
               ]
             }
           }
         }
       ]
+    },
+    {
+      "display": "Test",
+      "name": "test",
+      "form": {
+        "request": {
+          "url": "http://localhost:8080",
+          "path": "/asdf/{id}",
+          "location": "query",
+          "method": "get",
+          "fields": [
+            {
+              "display": "String",
+              "name": "string",
+              "type": "string",
+              "value": "some string"
+            }
+          ]
+        }
+      }
     }
   ]
 }

@@ -1,19 +1,23 @@
 import * as t from 'io-ts'
 import { Either, left, right, isRight } from "fp-ts/Either";
 import { StorageKey } from "../util/Storage";
-import { Interaction, Config } from "./Types"
-import {PathReporter} from "io-ts/PathReporter";
+import { Config } from "./Types"
+import _ from 'lodash'
 
 const storage = StorageKey("config")
 
 const ConfigProvider = {
   config: (): Either<Array<string>, t.TypeOf<typeof Config>> => {
     const res = storage.getOrEmpty()
-    const form = Interaction.decode(JSON.parse(res))
-    if(isRight(form)) {
-      return right({interactions: [form.right]})
+    const config = Config.decode(JSON.parse(res))
+    if(isRight(config)) {
+      return right(config.right)
     } else {
-      return left(PathReporter.report(form))
+      console.error(config)
+      const errors = _.map(config.left, error => {
+        return _.join(_.map(error.context, c => c.key), '.')
+      })
+      return left(errors)
     }
   }
 }
