@@ -36,7 +36,6 @@ const Response = (props: ResponseProps) => {
           typeof props.response.value.left.response.data === "object") {
           setContent(some(props.response.value.left.response.data))
         } else {
-          console.log(props.response.value.left.response)
           setContent(some({
             message: "Request error",
             error: props.response.value.left

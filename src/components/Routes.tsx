@@ -15,7 +15,7 @@ const Routes = () => {
 
   const configLinks = isRight(config) ?
     _.map(config.right.nav, nav => (
-      <LinkContainer to={`/${nav.name}`}>
+      <LinkContainer key={`nav-link-${nav.name}`} to={`/${nav.name}`}>
         <Nav.Link>{nav.display}</Nav.Link>
       </LinkContainer>
     )) :
@@ -27,7 +27,7 @@ const Routes = () => {
 
   const configRoutes = isRight(config) ?
     _.map(config.right.nav, nav => (
-      <Route path={`/${nav.name}`}>
+      <Route key={`nav-route-${nav.name}`} path={`/${nav.name}`}>
         <Item item={nav} />
       </Route>
     )) :
@@ -57,18 +57,18 @@ const Routes = () => {
           </Navbar.Text>
         </Navbar.Collapse>
       </Navbar>
-      <Switch>
-        <Container fluid className="mt-3">
-          <Row>
-            <Col>
+      <Container fluid className="mt-3">
+        <Row>
+          <Col>
+            <Switch>
               <Route path="/config">
                 <Config />
               </Route>
               {configRoutes}
-            </Col>
-          </Row>
-        </Container>
-      </Switch>
+            </Switch>
+          </Col>
+        </Row>
+      </Container>
     </HashRouter>
   )
 }
