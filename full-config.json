@@ -85,16 +85,22 @@
           "method": "get",
           "fields": [
             {
-              "display": "String",
+              "display": "Some String",
               "name": "string",
               "type": "string",
               "value": "some string"
             },
             {
-              "display": "Number",
+              "display": "Some Number",
               "name": "number",
               "type": "number",
-              "value": "123.4"
+              "value": 123.4
+            },
+            {
+              "display": "Some Boolean",
+              "name": "boolean",
+              "type": "boolean",
+              "value": true
             }
           ]
         }

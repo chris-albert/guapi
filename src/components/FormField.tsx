@@ -4,6 +4,39 @@ import _ from 'lodash'
 import { Field } from "../data/Types"
 import {Form as ReactForm } from "react-bootstrap";
 
+type BooleanFieldProps = {
+  field   : t.TypeOf<typeof Field>,
+  onChange: (s: any) => void
+}
+
+const BooleanField = (props: BooleanFieldProps) => {
+
+  const [value, setValue] = React.useState<boolean>(
+    typeof props.field.value === 'boolean' ?
+      props.field.value :
+      false
+  )
+
+  const onChange = (s: any): void => {
+    console.log(s)
+    if(_.isBoolean(s)) {
+      setValue(s)
+      props.onChange(s)
+    }
+  }
+
+  return (
+    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
+      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
+      <ReactForm.Check
+        type="checkbox"
+        onChange={(e: any) => onChange(e.target.checked)}
+        checked={value}
+      />
+    </ReactForm.Group>
+  )
+}
+
 type NumberFieldProps = {
   field   : t.TypeOf<typeof Field>,
   onChange: (s: any) => void
@@ -27,7 +60,7 @@ const NumberField = (props: NumberFieldProps) => {
 
   return (
     <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label>{props.field.display}</ReactForm.Label>
+      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
     </ReactForm.Group>
   )
@@ -46,10 +79,6 @@ const StringField = (props: StringFieldProps) => {
       undefined
   )
 
-  // React.useEffect(() => {
-  //   setValue(typeof props.field.value === "string" ? props.field.value : "")
-  // }, [props.field.value])
-
   const onChange = (s: string): void => {
     setValue(s)
     props.onChange(s)
@@ -57,7 +86,7 @@ const StringField = (props: StringFieldProps) => {
 
   return (
     <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label>{props.field.display}</ReactForm.Label>
+      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
     </ReactForm.Group>
   )
@@ -77,7 +106,11 @@ const FormField = (props: FormFieldProps) => {
     return (
       <NumberField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
     )
-  } else {
+  } else if(props.field.type === "boolean") {
+    return (
+      <BooleanField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+    )
+  }else {
     return (
       <div>Unknown field</div>
     )

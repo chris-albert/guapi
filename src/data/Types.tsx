@@ -2,7 +2,8 @@ import * as t from 'io-ts'
 
 export const FieldType = t.union([
   t.literal("string"),
-  t.literal("number")
+  t.literal("number"),
+  t.literal("boolean")
 ])
 
 export const FormLocation = t.union([
