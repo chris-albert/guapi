@@ -10,7 +10,11 @@ type StringFieldProps = {
 
 const StringField = (props: StringFieldProps) => {
 
-  const [value, setValue] = React.useState<string>(typeof props.field.value === "string" ? props.field.value : "")
+  const [value, setValue] = React.useState<string>("")
+
+  React.useEffect(() => {
+    setValue(typeof props.field.value === "string" ? props.field.value : "")
+  }, [props.field.value])
 
   const onChange = (s: string): void => {
     setValue(s)

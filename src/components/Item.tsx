@@ -1,5 +1,5 @@
 import React from "react";
-import {FormItem, Item as ItemType} from "../data/Types"
+import { Item as ItemType } from "../data/Types"
 import * as t from 'io-ts'
 import APIInteraction from "./APIInteraction";
 import Nav from "./Nav";

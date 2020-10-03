@@ -28,7 +28,6 @@ const Routes = () => {
   const configRoutes = isRight(config) ?
     _.map(config.right.nav, nav => (
       <Route path={`/${nav.name}`}>
-        {/*<APIInteraction interaction={interaction} />*/}
         <Item item={nav} />
       </Route>
     )) :

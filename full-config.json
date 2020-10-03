@@ -20,7 +20,7 @@
                   "display": "Id",
                   "name": "id",
                   "type": "string",
-                  "value": "457763"
+                  "value": "find"
                 }
               ]
             }
@@ -37,10 +37,10 @@
               "method": "post",
               "fields": [
                 {
-                  "display": "Id",
-                  "name": "id",
+                  "display": "First Name",
+                  "name": "fistName",
                   "type": "string",
-                  "value": "457763"
+                  "value": "Chris Create"
                 }
               ]
             }
@@ -60,7 +60,13 @@
                   "display": "Id",
                   "name": "id",
                   "type": "string",
-                  "value": "457763"
+                  "value": "update"
+                },
+                {
+                  "display": "First Name",
+                  "name": "fistName",
+                  "type": "string",
+                  "value": "Chris Update"
                 }
               ]
             }

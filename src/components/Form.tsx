@@ -23,20 +23,31 @@ const Form = (props: FormProps) => {
     _.fromPairs(_.map(props.form.form.request.fields, field => {
       return [field.name, field.value]
     }))
+    // {}
   )
 
+  // React.useEffect(() => {
+  //   setFields(_.fromPairs(_.map(props.form.form.request.fields, field => {
+  //     return [field.name, field.value]
+  //   })))
+  // }, [])
+
   React.useEffect(() => {
-    props.setRequest(buildRequest())
-  }, [])
+    // const f = _.fromPairs(_.map(props.form.form.request.fields, field => {
+    //   return [field.name, field.value]
+    // }))
+    props.setRequest(buildRequest(fields))
+  }, [props.form.form.request.fields])
 
   const formChange = (key: string, value: any): void => {
-    setFields(_.set(fields, key, value))
-    props.setRequest(buildRequest())
+    const f = _.set(fields, key, value)
+    setFields(f)
+    props.setRequest(buildRequest(f))
   }
 
   const onSubmit = () => {
     props.setLoading(true)
-    axios(buildRequest())
+    axios(buildRequest(fields))
       .then(res => {
         props.setResponse(some(right(res)))
         props.setLoading(false)
@@ -47,17 +58,17 @@ const Form = (props: FormProps) => {
       })
   }
 
-  const buildRequest = (): object => {
+  const buildRequest = (f: Object): object => {
     return {
       method: _.toUpper(props.form.form.request.method),
-      url   : Template.replace(props.form.form.request.url, fields) + Template.replace(props.form.form.request.path, fields),
-      params: fields
+      url   : Template.replace(props.form.form.request.url, f) + Template.replace(props.form.form.request.path, f),
+      params: f
     }
   }
 
   return (
     <Card>
-      <Card.Header>Form</Card.Header>
+      <Card.Header>Form {props.form.form.request.method}</Card.Header>
       <Card.Body>
         <ReactForm>
           {_.map(props.form.form.request.fields, field => (
