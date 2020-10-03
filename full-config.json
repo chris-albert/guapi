@@ -89,6 +89,12 @@
               "name": "string",
               "type": "string",
               "value": "some string"
+            },
+            {
+              "display": "Number",
+              "name": "number",
+              "type": "number",
+              "value": "123.4"
             }
           ]
         }

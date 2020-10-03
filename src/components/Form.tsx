@@ -17,7 +17,7 @@ const Form = (props: FormProps) => {
 
   return (
     <Card>
-      <Card.Header>Form {props.form.form.request.method}</Card.Header>
+      <Card.Header>Form</Card.Header>
       <Card.Body>
         <ReactForm>
           {_.map(props.form.form.request.fields, field => (
