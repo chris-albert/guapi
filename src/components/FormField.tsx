@@ -1,12 +1,85 @@
 import React from "react";
 import * as t from 'io-ts'
 import _ from 'lodash'
-import { Field } from "../data/Types"
+import {
+  Field,
+  StringField as StringFieldType,
+  NumberField as NumberFieldType,
+  BooleanField as BooleanFieldType,
+  SelectField as SelectFieldType,
+  SelectMultiField as SelectMultiFieldType,
+} from "../data/Types"
 import {Form as ReactForm } from "react-bootstrap";
+import Select from 'react-select'
+
+type SelectMultiFieldProps = {
+  field   : t.TypeOf<typeof SelectMultiFieldType>,
+  onChange: (s: Array<string>) => void
+}
+
+const SelectMultiField = (props: SelectMultiFieldProps) => {
+
+  const [value, setValue] = React.useState<Array<string>>(
+    _.isArray(props.field.value) ?
+      props.field.value :
+      []
+  )
+
+  const onChange = (s: any): void => {
+
+
+  }
+
+  return (
+    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
+      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
+      Select Multi
+    </ReactForm.Group>
+  )
+}
+
+type SelectFieldProps = {
+  field   : t.TypeOf<typeof SelectFieldType>,
+  onChange: (s: string) => void
+}
+
+const SelectField = (props: SelectFieldProps) => {
+
+  const [value, setValue] = React.useState<{value: string, label: string} | undefined>(() => {
+    const val =  _.find(props.field.items, i => i.name === props.field.value)
+    if(_.isUndefined(val)) {
+      return undefined
+    } else {
+      return {
+        value: val.name,
+        label: val.display
+      }
+    }
+  })
+
+  const options = _.map(props.field.items, item => {
+    return {
+      value: item.name,
+      label: item.display
+    }
+  })
+
+  const onChange = (s: any): void => {
+    setValue(s)
+    props.onChange(s.value)
+  }
+
+  return (
+    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
+      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
+      <Select options={options} onChange={onChange} value={value}/>
+    </ReactForm.Group>
+  )
+}
 
 type BooleanFieldProps = {
-  field   : t.TypeOf<typeof Field>,
-  onChange: (s: any) => void
+  field   : t.TypeOf<typeof BooleanFieldType>,
+  onChange: (s: boolean) => void
 }
 
 const BooleanField = (props: BooleanFieldProps) => {
@@ -18,7 +91,6 @@ const BooleanField = (props: BooleanFieldProps) => {
   )
 
   const onChange = (s: any): void => {
-    console.log(s)
     if(_.isBoolean(s)) {
       setValue(s)
       props.onChange(s)
@@ -38,8 +110,8 @@ const BooleanField = (props: BooleanFieldProps) => {
 }
 
 type NumberFieldProps = {
-  field   : t.TypeOf<typeof Field>,
-  onChange: (s: any) => void
+  field   : t.TypeOf<typeof NumberFieldType>,
+  onChange: (s: number) => void
 }
 
 const NumberField = (props: NumberFieldProps) => {
@@ -67,8 +139,8 @@ const NumberField = (props: NumberFieldProps) => {
 }
 
 type StringFieldProps = {
-  field   : t.TypeOf<typeof Field>,
-  onChange: (s: any) => void
+  field   : t.TypeOf<typeof StringFieldType>,
+  onChange: (s: string) => void
 }
 
 const StringField = (props: StringFieldProps) => {
@@ -110,7 +182,15 @@ const FormField = (props: FormFieldProps) => {
     return (
       <BooleanField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
     )
-  }else {
+  } else if(props.field.type === "select") {
+    return (
+      <SelectField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+    )
+  } else if(props.field.type === "select-multi") {
+    return (
+      <SelectMultiField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+    )
+  } else {
     return (
       <div>Unknown field</div>
     )

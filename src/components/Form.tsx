@@ -23,7 +23,6 @@ const Form = (props: FormProps) => {
           {_.map(props.form.form.request.fields, field => (
             <FormField key={`form-field-${field.name}`} field={field} onChange={props.fieldChanged}/>
           ))}
-
         </ReactForm>
       </Card.Body>
       <Card.Footer>

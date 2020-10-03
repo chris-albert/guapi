@@ -101,6 +101,46 @@
               "name": "boolean",
               "type": "boolean",
               "value": true
+            },
+            {
+              "display": "Some Select",
+              "name": "someSelect",
+              "type": "select",
+              "items": [
+                {
+                  "display": "Foo",
+                  "name": "foo"
+                },
+                {
+                  "display": "Bar",
+                  "name": "bar"
+                },
+                {
+                  "display": "Baz",
+                  "name": "baz"
+                }
+              ],
+              "value": "foo"
+            },
+            {
+              "display": "Some Multi Select",
+              "name": "someMultiSelect",
+              "type": "select-multi",
+              "items": [
+                {
+                  "display": "Foo",
+                  "name": "foo"
+                },
+                {
+                  "display": "Bar",
+                  "name": "bar"
+                },
+                {
+                  "display": "Baz",
+                  "name": "baz"
+                }
+              ],
+              "value": ["foo", "baz"]
             }
           ]
         }
