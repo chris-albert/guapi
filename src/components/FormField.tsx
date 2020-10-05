@@ -19,21 +19,36 @@ type SelectMultiFieldProps = {
 
 const SelectMultiField = (props: SelectMultiFieldProps) => {
 
-  const [value, setValue] = React.useState<Array<string>>(
-    _.isArray(props.field.value) ?
-      props.field.value :
-      []
-  )
+  const [values, setValues] = React.useState<{value: string, label: string}[] | undefined>(() => {
+    return _.compact(_.map(props.field.items, item => {
+      const val =  _.find(props.field.value, v => item.name === v)
+      if(_.isUndefined(val)) {
+        return undefined
+      } else {
+        return {
+          value: item.name,
+          label: item.display
+        }
+      }
+    }))
+  })
+
+  const options = _.map(props.field.items, item => {
+    return {
+      value: item.name,
+      label: item.display
+    }
+  })
 
   const onChange = (s: any): void => {
-
-
+    setValues(s)
+    props.onChange(_.map(s, 'value'))
   }
 
   return (
     <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
       <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
-      Select Multi
+      <Select options={options} onChange={onChange} value={values} isMulti={true}/>
     </ReactForm.Group>
   )
 }
