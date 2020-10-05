@@ -33,9 +33,11 @@ const APIInteraction = (props: APIInteractionProps) => {
 
   const onFieldChange = (obj: object) => {
     const o = _.extend(obj, props.settings)
-    console.debug("onFieldChange", o)
-    setFields(obj)
-    setRequest(buildRequest(obj))
+    const root = typeof props.form.form.request.root === "string" ?
+      _.set({}, props.form.form.request.root, o) :
+      fields
+    setFields(root)
+    setRequest(buildRequest(root))
   }
 
   const fieldChange = (key: string, value: any): void => {
@@ -44,7 +46,7 @@ const APIInteraction = (props: APIInteractionProps) => {
 
   const onSubmit = () => {
     setLoading(true)
-    axios(buildRequest(fields))
+    axios(request)
       .then(res => {
         setResponse(some(right(res)))
         setLoading(false)

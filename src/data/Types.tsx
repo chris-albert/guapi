@@ -76,7 +76,8 @@ export const Request = t.type({
   path    : t.string,
   location: FormLocation,
   method  : FormMethod,
-  fields  : t.array(Field)
+  fields  : t.array(Field),
+  root    : t.union([t.string, t.undefined])
 })
 
 export const Form = t.type({

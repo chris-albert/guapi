@@ -95,6 +95,7 @@
           "path": "/asdf/{id}",
           "location": "query",
           "method": "get",
+          "root": "foo.bar",
           "fields": [
             {
               "display": "Some String",
