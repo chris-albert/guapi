@@ -14,6 +14,10 @@ const Routes = () => {
 
   const config = ConfigProvider.config()
 
+  const name = isRight(config) ?
+    config.right.display :
+    "GUAPI"
+
   const configLinks = isRight(config) ?
     _.map(config.right.nav, nav => (
       <LinkContainer key={`nav-link-${nav.name}`} to={`/${nav.name}`}>
@@ -41,7 +45,7 @@ const Routes = () => {
   return (
     <HashRouter>
       <Navbar bg="dark" variant="dark">
-        <Navbar.Brand href="#home">GUAPI</Navbar.Brand>
+        <Navbar.Brand href="#home">{name}</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
