@@ -12,46 +12,54 @@ export const FormMethod = t.union([
   t.literal("delete")
 ])
 
+export const DateField = t.type({
+  display: t.string,
+  name   : t.string,
+  type   : t.literal("date"),
+  format : t.string,
+  value  : t.union([t.string, t.undefined])
+})
+
 export const SelectItem = t.type({
-  display    : t.string,
-  name       : t.string,
+  display: t.string,
+  name   : t.string,
 })
 
 export const SelectMultiField = t.type({
-  display    : t.string,
-  name       : t.string,
-  type       : t.literal("select-multi"),
-  items      : t.array(SelectItem),
-  value      : t.union([t.array(t.string), t.undefined])
+  display: t.string,
+  name   : t.string,
+  type   : t.literal("select-multi"),
+  items  : t.array(SelectItem),
+  value  : t.union([t.array(t.string), t.undefined])
 })
 
 export const SelectField = t.type({
-  display    : t.string,
-  name       : t.string,
-  type       : t.literal("select"),
-  items      : t.array(SelectItem),
-  value      : t.union([t.string, t.undefined])
+  display: t.string,
+  name   : t.string,
+  type   : t.literal("select"),
+  items  : t.array(SelectItem),
+  value  : t.union([t.string, t.undefined])
 })
 
 export const BooleanField = t.type({
-  display    : t.string,
-  name       : t.string,
-  type       : t.literal("boolean"),
-  value      : t.union([t.boolean, t.undefined])
+  display: t.string,
+  name   : t.string,
+  type   : t.literal("boolean"),
+  value  : t.union([t.boolean, t.undefined])
 })
 
 export const NumberField = t.type({
-  display    : t.string,
-  name       : t.string,
-  type       : t.literal("number"),
-  value      : t.union([t.number, t.undefined])
+  display: t.string,
+  name   : t.string,
+  type   : t.literal("number"),
+  value  : t.union([t.number, t.undefined])
 })
 
 export const StringField = t.type({
-  display    : t.string,
-  name       : t.string,
-  type       : t.literal("string"),
-  value      : t.union([t.string, t.undefined])
+  display: t.string,
+  name   : t.string,
+  type   : t.literal("string"),
+  value  : t.union([t.string, t.undefined])
 })
 
 export const Field = t.union([
@@ -59,7 +67,8 @@ export const Field = t.union([
   NumberField,
   BooleanField,
   SelectField,
-  SelectMultiField
+  SelectMultiField,
+  DateField
 ])
 
 export const Request = t.type({
@@ -99,7 +108,8 @@ export const NavItem: t.Type<NavItem> = t.recursion('NavItem', () =>
 export const Item = t.union([FormItem, NavItem])
 
 export const Config = t.type({
-  display: t.string,
-  icon   : t.union([t.string, t.undefined]),
-  nav    : t.array(Item)
+  display : t.string,
+  icon    : t.union([t.string, t.undefined]),
+  settings: t.union([t.array(Field), t.undefined]),
+  nav     : t.array(Item)
 })

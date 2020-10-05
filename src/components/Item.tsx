@@ -5,18 +5,19 @@ import APIInteraction from "./APIInteraction";
 import Nav from "./Nav";
 
 interface ItemProps {
-  item: t.TypeOf<typeof ItemType>
+  settings: object,
+  item    : t.TypeOf<typeof ItemType>
 }
 
 const Item = (props: ItemProps) => {
 
   if('form' in props.item) {
     return (
-      <APIInteraction form={props.item} />
+      <APIInteraction settings={props.settings} form={props.item} />
     )
   } else {
     return (
-      <Nav nav={props.item} />
+      <Nav settings={props.settings} nav={props.item} />
     )
   }
 }

@@ -8,9 +8,44 @@ import {
   BooleanField as BooleanFieldType,
   SelectField as SelectFieldType,
   SelectMultiField as SelectMultiFieldType,
+  DateField as DateFieldType
 } from "../data/Types"
 import {Form as ReactForm } from "react-bootstrap";
 import Select from 'react-select'
+import Datetime from 'react-datetime';
+import { Moment, isMoment } from "moment";
+import "react-datetime/css/react-datetime.css";
+
+type DateFieldProps = {
+  field   : t.TypeOf<typeof DateFieldType>,
+  onChange: (s: string) => void
+}
+
+const DateField = (props: DateFieldProps) => {
+
+  const [value, setValue] = React.useState<Date | string | undefined>(
+    typeof props.field.value === 'string' ?
+      props.field.value:
+      undefined
+  )
+
+  const onChange = (s: Moment | string): void => {
+    if(isMoment(s)) {
+      setValue(s.toDate())
+      props.onChange(s.format(props.field.format))
+    } else {
+      setValue(s)
+      props.onChange(s)
+    }
+  }
+
+  return (
+    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
+      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
+      <Datetime onChange={onChange} dateFormat={props.field.format} timeFormat={false} value={value} input={true}/>
+    </ReactForm.Group>
+  )
+}
 
 type SelectMultiFieldProps = {
   field   : t.TypeOf<typeof SelectMultiFieldType>,
@@ -204,6 +239,10 @@ const FormField = (props: FormFieldProps) => {
   } else if(props.field.type === "select-multi") {
     return (
       <SelectMultiField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+    )
+  } else if(props.field.type === "date") {
+    return (
+      <DateField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
     )
   } else {
     return (

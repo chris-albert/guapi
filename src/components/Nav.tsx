@@ -8,7 +8,8 @@ import { Switch, Route, useRouteMatch, Redirect } from "react-router-dom"
 import Item from "./Item";
 
 interface NavProps {
-  nav: t.TypeOf<typeof NavItem>
+  settings: object,
+  nav     : t.TypeOf<typeof NavItem>
 }
 
 const Nav = (props: NavProps) => {
@@ -38,7 +39,7 @@ const Nav = (props: NavProps) => {
           {_.map(props.nav.nav, nav => {
             return (
               <Route key={`nav-route-${match.url}/${nav.name}`} exact path={`${match.path}/${nav.name}`}>
-                <Item item={nav} />
+                <Item settings={props.settings} item={nav} />
               </Route>
             )
           })}

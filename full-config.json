@@ -1,6 +1,18 @@
 {
   "display": "MLB",
   "icon": "",
+  "settings": [
+    {
+      "display": "Base Url",
+      "name": "baseUrl",
+      "type": "string"
+    },
+    {
+      "display": "Base Url 2",
+      "name": "baseUrl2",
+      "type": "number"
+    }
+  ],
   "nav": [
     {
       "display": "Person",
@@ -79,7 +91,7 @@
       "name": "test",
       "form": {
         "request": {
-          "url": "http://localhost:8080",
+          "url": "{baseUrl}",
           "path": "/asdf/{id}",
           "location": "query",
           "method": "get",
@@ -141,6 +153,13 @@
                 }
               ],
               "value": ["foo", "baz"]
+            },
+            {
+              "display": "Some Date",
+              "name": "someDate",
+              "type": "date",
+              "format": "YYYY-MM-DD",
+              "value": "2020-01-01"
             }
           ]
         }

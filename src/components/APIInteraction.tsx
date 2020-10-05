@@ -12,7 +12,8 @@ import axios, { AxiosResponse } from 'axios'
 import Template from "../util/Template";
 
 type APIInteractionProps = {
-  form: t.TypeOf<typeof FormItem>
+  settings: object,
+  form    : t.TypeOf<typeof FormItem>
 }
 
 const APIInteraction = (props: APIInteractionProps) => {
@@ -31,7 +32,8 @@ const APIInteraction = (props: APIInteractionProps) => {
   }, [])
 
   const onFieldChange = (obj: object) => {
-    console.debug("onFieldChange", obj)
+    const o = _.extend(obj, props.settings)
+    console.debug("onFieldChange", o)
     setFields(obj)
     setRequest(buildRequest(obj))
   }

@@ -7,6 +7,7 @@ import ConfigProvider from "../data/ConfigProvider";
 import { isRight } from "fp-ts/Either";
 import _ from 'lodash'
 import ConfigError from "./ConfigError";
+import SettingsRepository from "../data/SettingsRepository";
 import Item from "./Item";
 
 const Routes = () => {
@@ -28,7 +29,7 @@ const Routes = () => {
   const configRoutes = isRight(config) ?
     _.map(config.right.nav, nav => (
       <Route key={`nav-route-${nav.name}`} path={`/${nav.name}`}>
-        <Item item={nav} />
+        <Item settings={SettingsRepository.get()} item={nav} />
       </Route>
     )) :
     (
