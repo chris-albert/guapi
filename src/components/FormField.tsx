@@ -10,7 +10,7 @@ import {
   SelectMultiField as SelectMultiFieldType,
   DateField as DateFieldType
 } from "../data/Types"
-import { Form as ReactForm, InputGroup, Button } from "react-bootstrap";
+import { Form as ReactForm, InputGroup, Button, Row, Col } from "react-bootstrap";
 import Select from 'react-select'
 import Creatable from 'react-select/creatable';
 import Datetime from 'react-datetime';
@@ -335,16 +335,22 @@ const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
   }, [props.doGenerate]);
 
   return (
-    <ReactForm.Group controlId={`form-basic-${props.name}`}>
-      <ReactForm.Label className="font-weight-bold">{props.display}</ReactForm.Label>
-      <InputGroup size="sm">
-        {props.children}
-        {props.generate ?
-          (<InputGroup.Append>
-            <Button variant="secondary" onClick={props.onGenerate}><Shuffle/></Button>
-          </InputGroup.Append>) : (<span></span>)
-        }
-      </InputGroup>
+    <ReactForm.Group as={Row} controlId={`form-basic-${props.name}`}>
+      <ReactForm.Label column sm={2} className="font-weight-bold text-right">{props.display}</ReactForm.Label>
+      <Col sm={10}>
+        <InputGroup size="sm">
+          {/*<InputGroup.Prepend>*/}
+          {/*  <InputGroup.Text id="basic-addon1">{props.display}</InputGroup.Text>*/}
+          {/*</InputGroup.Prepend>*/}
+
+            {props.children}
+            {props.generate ?
+              (<InputGroup.Append>
+                <Button variant="secondary" onClick={props.onGenerate}><Shuffle/></Button>
+              </InputGroup.Append>) : (<span></span>)
+            }
+        </InputGroup>
+      </Col>
     </ReactForm.Group>
   )
 }
