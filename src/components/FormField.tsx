@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FunctionComponent } from "react";
 import * as t from 'io-ts'
 import _ from 'lodash'
 import {
@@ -10,11 +10,14 @@ import {
   SelectMultiField as SelectMultiFieldType,
   DateField as DateFieldType
 } from "../data/Types"
-import {Form as ReactForm } from "react-bootstrap";
+import { Form as ReactForm, InputGroup, Button } from "react-bootstrap";
 import Select from 'react-select'
+import Creatable from 'react-select/creatable';
 import Datetime from 'react-datetime';
-import { Moment, isMoment } from "moment";
+import moment, { Moment, isMoment } from "moment";
 import "react-datetime/css/react-datetime.css";
+import { Shuffle } from 'react-bootstrap-icons';
+import faker from 'faker'
 
 type DateFieldProps = {
   field   : t.TypeOf<typeof DateFieldType>,
@@ -39,11 +42,23 @@ const DateField = (props: DateFieldProps) => {
     }
   }
 
+  const generate = () => {
+    onChange(moment(faker.date.past()))
+  }
+
   return (
-    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
-      <Datetime onChange={onChange} dateFormat={props.field.format} timeFormat={false} value={value} input={true}/>
-    </ReactForm.Group>
+    <GenericField
+      generate={!_.isUndefined(props.field.generate)}
+      onGenerate={generate}
+      name={props.field.name}
+      display={props.field.display}
+    >
+      <div style={{
+        flex: "1 1 auto"
+      }}>
+        <Datetime onChange={onChange} dateFormat={props.field.format} timeFormat={false} value={value} input={true}/>
+      </div>
+    </GenericField>
   )
 }
 
@@ -80,11 +95,28 @@ const SelectMultiField = (props: SelectMultiFieldProps) => {
     props.onChange(_.map(s, 'value'))
   }
 
+  const element = !_.isUndefined(props.field.creatable) && props.field.creatable ?
+    <Creatable options={options} onChange={onChange} value={values} isMulti={true}/> :
+    <Select options={options} onChange={onChange} value={values} isMulti={true}/>
+
+  const generate = () => {
+    const num = faker.random.number(options.length)
+    onChange(_.take(faker.helpers.shuffle(options), num))
+  }
+
   return (
-    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
-      <Select options={options} onChange={onChange} value={values} isMulti={true}/>
-    </ReactForm.Group>
+    <GenericField
+      generate={!_.isUndefined(props.field.generate)}
+      onGenerate={generate}
+      name={props.field.name}
+      display={props.field.display}
+    >
+      <div style={{
+        flex: "1 1 auto"
+      }}>
+        {element}
+      </div>
+    </GenericField>
   )
 }
 
@@ -119,11 +151,27 @@ const SelectField = (props: SelectFieldProps) => {
     props.onChange(s.value)
   }
 
+  const element = !_.isUndefined(props.field.creatable) && props.field.creatable ?
+    <Creatable options={options} onChange={onChange} value={value}/> :
+    <Select options={options} onChange={onChange} value={value}/>
+
+  const generate = () => {
+    onChange(faker.helpers.randomize(options))
+  }
+
   return (
-    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
-      <Select options={options} onChange={onChange} value={value}/>
-    </ReactForm.Group>
+    <GenericField
+      generate={!_.isUndefined(props.field.generate)}
+      onGenerate={generate}
+      name={props.field.name}
+      display={props.field.display}
+    >
+      <div style={{
+        flex: "1 1 auto"
+      }}>
+       {element}
+      </div>
+    </GenericField>
   )
 }
 
@@ -147,15 +195,27 @@ const BooleanField = (props: BooleanFieldProps) => {
     }
   }
 
+  const generate = () => {
+    onChange(faker.random.boolean())
+  }
+
   return (
-    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
-      <ReactForm.Check
-        type="checkbox"
-        onChange={(e: any) => onChange(e.target.checked)}
-        checked={value}
-      />
-    </ReactForm.Group>
+    <GenericField
+      generate={!_.isUndefined(props.field.generate)}
+      onGenerate={generate}
+      name={props.field.name}
+      display={props.field.display}
+    >
+      <div style={{
+        flex: "1 1 auto"
+      }}>
+        <ReactForm.Check
+          type="checkbox"
+          onChange={(e: any) => onChange(e.target.checked)}
+          checked={value}
+        />
+      </div>
+    </GenericField>
   )
 }
 
@@ -180,11 +240,27 @@ const NumberField = (props: NumberFieldProps) => {
     }
   }
 
+  const generate = () => {
+    if(typeof props.field.generate === 'object' && 'min' in props.field.generate) {
+      onChange(faker.random.float({
+        min      : props.field.generate.min,
+        max      : props.field.generate.max,
+        precision: props.field.generate.precision
+      }).toString())
+    } else if(props.field.generate) {
+      onChange(faker.random.float().toString())
+    }
+  }
+
   return (
-    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
+    <GenericField
+      generate={!_.isUndefined(props.field.generate)}
+      onGenerate={generate}
+      name={props.field.name}
+      display={props.field.display}
+    >
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
-    </ReactForm.Group>
+    </GenericField>
   )
 }
 
@@ -206,10 +282,48 @@ const StringField = (props: StringFieldProps) => {
     props.onChange(s)
   }
 
+  const generate = () => {
+    if(typeof props.field.generate === "number") {
+      onChange(faker.random.alpha({count: props.field.generate, upcase: false}))
+    } else if(props.field.generate === "name") {
+      onChange(faker.name.firstName())
+    } else if(typeof props.field.generate === "boolean" && props.field.generate) {
+      onChange(faker.random.alpha({count: 10, upcase: false}))
+    }
+  }
+
   return (
-    <ReactForm.Group controlId={`form-basic-${props.field.name}`}>
-      <ReactForm.Label className="font-weight-bold">{props.field.display}</ReactForm.Label>
+    <GenericField
+      generate={!_.isUndefined(props.field.generate)}
+      onGenerate={generate}
+      name={props.field.name}
+      display={props.field.display}
+    >
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
+    </GenericField>
+  )
+}
+
+type GenericFieldProps = {
+  generate  : boolean,
+  onGenerate: () => void,
+  name      : string,
+  display   : string
+}
+
+const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
+
+  return (
+    <ReactForm.Group controlId={`form-basic-${props.name}`}>
+      <ReactForm.Label className="font-weight-bold">{props.display}</ReactForm.Label>
+      <InputGroup>
+        {props.children}
+        {props.generate ?
+          (<InputGroup.Append>
+            <Button variant="secondary" onClick={props.onGenerate}><Shuffle/></Button>
+          </InputGroup.Append>) : (<span></span>)
+        }
+      </InputGroup>
     </ReactForm.Group>
   )
 }

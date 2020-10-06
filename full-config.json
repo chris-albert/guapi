@@ -101,19 +101,22 @@
               "display": "Some String",
               "name": "string",
               "type": "string",
-              "value": "some string"
+              "value": "some string",
+              "generate": "name"
             },
             {
               "display": "Some Number",
               "name": "number",
               "type": "number",
-              "value": 123.4
+              "value": 123.4,
+              "generate": true
             },
             {
               "display": "Some Boolean",
               "name": "boolean",
               "type": "boolean",
-              "value": true
+              "value": true,
+              "generate": true
             },
             {
               "display": "Some Select",
@@ -133,7 +136,8 @@
                   "name": "baz"
                 }
               ],
-              "value": "foo"
+              "value": "foo",
+              "generate": true
             },
             {
               "display": "Some Multi Select",
@@ -153,14 +157,16 @@
                   "name": "baz"
                 }
               ],
-              "value": ["foo", "baz"]
+              "value": ["foo", "baz"],
+              "generate": true
             },
             {
               "display": "Some Date",
               "name": "someDate",
               "type": "date",
               "format": "YYYY-MM-DD",
-              "value": "2020-01-01"
+              "value": "2020-01-01",
+              "generate": true
             }
           ]
         }

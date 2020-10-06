@@ -36,7 +36,7 @@ const APIInteraction = (props: APIInteractionProps) => {
     const root = typeof props.form.form.request.root === "string" ?
       _.set({}, props.form.form.request.root, o) :
       fields
-    setFields(root)
+    setFields(o)
     setRequest(buildRequest(root))
   }
 

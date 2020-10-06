@@ -13,11 +13,12 @@ export const FormMethod = t.union([
 ])
 
 export const DateField = t.type({
-  display: t.string,
-  name   : t.string,
-  type   : t.literal("date"),
-  format : t.string,
-  value  : t.union([t.string, t.undefined])
+  display : t.string,
+  name    : t.string,
+  type    : t.literal("date"),
+  format  : t.string,
+  value   : t.union([t.string, t.undefined]),
+  generate: t.union([t.boolean, t.undefined])
 })
 
 export const SelectItem = t.type({
@@ -26,40 +27,60 @@ export const SelectItem = t.type({
 })
 
 export const SelectMultiField = t.type({
-  display: t.string,
-  name   : t.string,
-  type   : t.literal("select-multi"),
-  items  : t.array(SelectItem),
-  value  : t.union([t.array(t.string), t.undefined])
+  display  : t.string,
+  name     : t.string,
+  type     : t.literal("select-multi"),
+  items    : t.array(SelectItem),
+  value    : t.union([t.array(t.string), t.undefined]),
+  creatable: t.union([t.boolean, t.undefined]),
+  generate : t.union([t.boolean, t.undefined])
 })
 
 export const SelectField = t.type({
-  display: t.string,
-  name   : t.string,
-  type   : t.literal("select"),
-  items  : t.array(SelectItem),
-  value  : t.union([t.string, t.undefined])
+  display  : t.string,
+  name     : t.string,
+  type     : t.literal("select"),
+  items    : t.array(SelectItem),
+  value    : t.union([t.string, t.undefined]),
+  creatable: t.union([t.boolean, t.undefined]),
+  generate : t.union([t.boolean, t.undefined])
 })
 
 export const BooleanField = t.type({
-  display: t.string,
-  name   : t.string,
-  type   : t.literal("boolean"),
-  value  : t.union([t.boolean, t.undefined])
+  display : t.string,
+  name    : t.string,
+  type    : t.literal("boolean"),
+  value   : t.union([t.boolean, t.undefined]),
+  generate: t.union([t.boolean, t.undefined])
 })
 
 export const NumberField = t.type({
-  display: t.string,
-  name   : t.string,
-  type   : t.literal("number"),
-  value  : t.union([t.number, t.undefined])
+  display : t.string,
+  name    : t.string,
+  type    : t.literal("number"),
+  value   : t.union([t.number, t.undefined]),
+  generate: t.union([
+    t.type({
+      min      : t.number,
+      max      : t.number,
+      precision: t.number
+    }),
+    t.boolean,
+    t.undefined
+  ])
 })
 
 export const StringField = t.type({
-  display: t.string,
-  name   : t.string,
-  type   : t.literal("string"),
-  value  : t.union([t.string, t.undefined])
+  display : t.string,
+  name    : t.string,
+  type    : t.literal("string"),
+  value   : t.union([t.string, t.undefined]),
+  generate: t.union([
+    t.number,
+    t.boolean,
+    t.literal("name"),
+    t.undefined
+  ])
 })
 
 export const Field = t.union([

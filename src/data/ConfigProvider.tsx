@@ -8,16 +8,20 @@ const storage = StorageKey("config")
 
 const ConfigProvider = {
   config: (): Either<Array<string>, t.TypeOf<typeof Config>> => {
-    const res = storage.getOrEmpty()
-    const config = Config.decode(JSON.parse(res))
-    if(isRight(config)) {
-      return right(config.right)
+    const res = storage.get()
+    if(_.isNull(res)) {
+     return left(["Empty config"])
     } else {
-      console.error(config)
-      const errors = _.map(config.left, error => {
-        return _.join(_.map(error.context, c => c.key), '.')
-      })
-      return left(errors)
+      const config = Config.decode(JSON.parse(res))
+      if (isRight(config)) {
+        return right(config.right)
+      } else {
+        console.error(config)
+        const errors = _.map(config.left, error => {
+          return _.join(_.map(error.context, c => c.key), '.')
+        })
+        return left(errors)
+      }
     }
   }
 }
