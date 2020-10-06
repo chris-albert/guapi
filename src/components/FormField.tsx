@@ -21,7 +21,8 @@ import faker from 'faker'
 
 type DateFieldProps = {
   field   : t.TypeOf<typeof DateFieldType>,
-  onChange: (s: string) => void
+  onChange: (s: string) => void,
+  doGenerate?: boolean | null
 }
 
 const DateField = (props: DateFieldProps) => {
@@ -52,6 +53,7 @@ const DateField = (props: DateFieldProps) => {
       onGenerate={generate}
       name={props.field.name}
       display={props.field.display}
+      doGenerate={props.doGenerate}
     >
       <div style={{
         flex: "1 1 auto"
@@ -64,7 +66,8 @@ const DateField = (props: DateFieldProps) => {
 
 type SelectMultiFieldProps = {
   field   : t.TypeOf<typeof SelectMultiFieldType>,
-  onChange: (s: Array<string>) => void
+  onChange: (s: Array<string>) => void,
+  doGenerate?: boolean | null
 }
 
 const SelectMultiField = (props: SelectMultiFieldProps) => {
@@ -110,6 +113,7 @@ const SelectMultiField = (props: SelectMultiFieldProps) => {
       onGenerate={generate}
       name={props.field.name}
       display={props.field.display}
+      doGenerate={props.doGenerate}
     >
       <div style={{
         flex: "1 1 auto"
@@ -122,7 +126,8 @@ const SelectMultiField = (props: SelectMultiFieldProps) => {
 
 type SelectFieldProps = {
   field   : t.TypeOf<typeof SelectFieldType>,
-  onChange: (s: string) => void
+  onChange: (s: string) => void,
+  doGenerate?: boolean | null
 }
 
 const SelectField = (props: SelectFieldProps) => {
@@ -165,6 +170,7 @@ const SelectField = (props: SelectFieldProps) => {
       onGenerate={generate}
       name={props.field.name}
       display={props.field.display}
+      doGenerate={props.doGenerate}
     >
       <div style={{
         flex: "1 1 auto"
@@ -177,7 +183,8 @@ const SelectField = (props: SelectFieldProps) => {
 
 type BooleanFieldProps = {
   field   : t.TypeOf<typeof BooleanFieldType>,
-  onChange: (s: boolean) => void
+  onChange: (s: boolean) => void,
+  doGenerate?: boolean | null
 }
 
 const BooleanField = (props: BooleanFieldProps) => {
@@ -205,6 +212,7 @@ const BooleanField = (props: BooleanFieldProps) => {
       onGenerate={generate}
       name={props.field.name}
       display={props.field.display}
+      doGenerate={props.doGenerate}
     >
       <div style={{
         flex: "1 1 auto"
@@ -221,7 +229,8 @@ const BooleanField = (props: BooleanFieldProps) => {
 
 type NumberFieldProps = {
   field   : t.TypeOf<typeof NumberFieldType>,
-  onChange: (s: number) => void
+  onChange: (s: number) => void,
+  doGenerate?: boolean | null
 }
 
 const NumberField = (props: NumberFieldProps) => {
@@ -258,6 +267,7 @@ const NumberField = (props: NumberFieldProps) => {
       onGenerate={generate}
       name={props.field.name}
       display={props.field.display}
+      doGenerate={props.doGenerate}
     >
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
     </GenericField>
@@ -266,7 +276,8 @@ const NumberField = (props: NumberFieldProps) => {
 
 type StringFieldProps = {
   field   : t.TypeOf<typeof StringFieldType>,
-  onChange: (s: string) => void
+  onChange: (s: string) => void,
+  doGenerate?: boolean | null
 }
 
 const StringField = (props: StringFieldProps) => {
@@ -298,6 +309,7 @@ const StringField = (props: StringFieldProps) => {
       onGenerate={generate}
       name={props.field.name}
       display={props.field.display}
+      doGenerate={props.doGenerate}
     >
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
     </GenericField>
@@ -308,15 +320,24 @@ type GenericFieldProps = {
   generate  : boolean,
   onGenerate: () => void,
   name      : string,
-  display   : string
+  display   : string,
+  doGenerate?: boolean | null
 }
 
 const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
 
+  React.useEffect(() => {
+    if(!_.isUndefined(props.doGenerate)) {
+      if(typeof props.doGenerate === "boolean") {
+        props.onGenerate()
+      }
+    }
+  }, [props.doGenerate]);
+
   return (
     <ReactForm.Group controlId={`form-basic-${props.name}`}>
       <ReactForm.Label className="font-weight-bold">{props.display}</ReactForm.Label>
-      <InputGroup>
+      <InputGroup size="sm">
         {props.children}
         {props.generate ?
           (<InputGroup.Append>
@@ -329,34 +350,39 @@ const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
 }
 
 type FormFieldProps = {
-  field   : t.TypeOf<typeof Field>,
-  onChange: (key: string, value: any) => void
+  field      : t.TypeOf<typeof Field>,
+  onChange   : (key: string, value: any) => void,
+  doGenerate?: boolean | null
 }
 
 const FormField = (props: FormFieldProps) => {
   if(props.field.type === "string") {
     return (
-      <StringField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+      <StringField
+        field={props.field}
+        onChange={a => props.onChange(props.field.name, a)}
+        doGenerate={props.doGenerate}
+      />
     )
   } else if(props.field.type === "number") {
     return (
-      <NumberField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+      <NumberField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
     )
   } else if(props.field.type === "boolean") {
     return (
-      <BooleanField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+      <BooleanField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
     )
   } else if(props.field.type === "select") {
     return (
-      <SelectField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+      <SelectField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
     )
   } else if(props.field.type === "select-multi") {
     return (
-      <SelectMultiField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+      <SelectMultiField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
     )
   } else if(props.field.type === "date") {
     return (
-      <DateField field={props.field} onChange={a => props.onChange(props.field.name, a)}/>
+      <DateField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
     )
   } else {
     return (

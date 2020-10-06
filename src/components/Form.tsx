@@ -4,6 +4,7 @@ import * as t from 'io-ts'
 import { Card, Form as ReactForm, Button, Spinner } from "react-bootstrap";
 import _ from "lodash";
 import FormField from "./FormField";
+import {Shuffle} from "react-bootstrap-icons";
 
 type FormProps = {
   form        : t.TypeOf<typeof FormItem>,
@@ -15,13 +16,30 @@ type FormProps = {
 
 const Form = (props: FormProps) => {
 
+  const [generate, setGenerate] = React.useState<boolean | null>(null)
+
+  const onGenerate = () => {
+    if(typeof generate === "boolean") {
+      setGenerate(!generate)
+    } else {
+      setGenerate(true)
+    }
+  }
+
   return (
     <Card>
-      <Card.Header>Form</Card.Header>
+      <Card.Header>
+        Form
+      </Card.Header>
       <Card.Body>
         <ReactForm>
           {_.map(props.form.form.request.fields, field => (
-            <FormField key={`form-field-${field.name}`} field={field} onChange={props.fieldChanged}/>
+            <FormField
+              key={`form-field-${field.name}`}
+              field={field}
+              onChange={props.fieldChanged}
+              doGenerate={generate}
+            />
           ))}
         </ReactForm>
       </Card.Body>
@@ -46,6 +64,11 @@ const Form = (props: FormProps) => {
           }
 
         </Button>
+        <Button
+          className="float-right"
+          size="sm"
+          variant="secondary"
+          onClick={onGenerate}><Shuffle/></Button>
       </Card.Footer>
     </Card>
   )
