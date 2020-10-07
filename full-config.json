@@ -31,8 +31,13 @@
                 {
                   "display": "Id",
                   "name": "id",
-                  "type": "string",
-                  "value": "find"
+                  "type": "select",
+                  "items": [
+                    {
+                      "display": "Buster Posey",
+                      "name": "457763"
+                    }
+                  ]
                 }
               ]
             }
@@ -61,6 +66,12 @@
         {
           "display": "Update",
           "name": "update",
+          "load": {
+            "url": "http://statsapi.mlb.com/api/v1/people/{id}",
+            "mapping": {
+              "firstName": "people[0].firstName"
+            }
+          },
           "form": {
             "request": {
               "url": "http://statsapi.mlb.com",

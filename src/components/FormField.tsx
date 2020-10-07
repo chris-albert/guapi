@@ -54,6 +54,7 @@ const DateField = (props: DateFieldProps) => {
       name={props.field.name}
       display={props.field.display}
       doGenerate={props.doGenerate}
+      valid={false}
     >
       <div style={{
         flex: "1 1 auto"
@@ -114,6 +115,7 @@ const SelectMultiField = (props: SelectMultiFieldProps) => {
       name={props.field.name}
       display={props.field.display}
       doGenerate={props.doGenerate}
+      valid={false}
     >
       <div style={{
         flex: "1 1 auto"
@@ -156,7 +158,7 @@ const SelectField = (props: SelectFieldProps) => {
     props.onChange(s.value)
   }
 
-  const element = !_.isUndefined(props.field.creatable) && props.field.creatable ?
+  const element = props.field.creatable ?
     <Creatable options={options} onChange={onChange} value={value}/> :
     <Select options={options} onChange={onChange} value={value}/>
 
@@ -171,6 +173,7 @@ const SelectField = (props: SelectFieldProps) => {
       name={props.field.name}
       display={props.field.display}
       doGenerate={props.doGenerate}
+      valid={false}
     >
       <div style={{
         flex: "1 1 auto"
@@ -213,12 +216,14 @@ const BooleanField = (props: BooleanFieldProps) => {
       name={props.field.name}
       display={props.field.display}
       doGenerate={props.doGenerate}
+      valid={false}
     >
-      <div style={{
+      <div className="mt-1 ml-2" style={{
         flex: "1 1 auto"
       }}>
         <ReactForm.Check
-          type="checkbox"
+          type="switch"
+          label=""
           onChange={(e: any) => onChange(e.target.checked)}
           checked={value}
         />
@@ -268,6 +273,7 @@ const NumberField = (props: NumberFieldProps) => {
       name={props.field.name}
       display={props.field.display}
       doGenerate={props.doGenerate}
+      valid={false}
     >
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
     </GenericField>
@@ -281,6 +287,8 @@ type StringFieldProps = {
 }
 
 const StringField = (props: StringFieldProps) => {
+
+  const [valid, setValid] = React.useState(false)
 
   const [value, setValue] = React.useState<string | undefined>(
     typeof props.field.value === 'string' ?
@@ -298,18 +306,19 @@ const StringField = (props: StringFieldProps) => {
       onChange(faker.random.alpha({count: props.field.generate, upcase: false}))
     } else if(props.field.generate === "name") {
       onChange(faker.name.firstName())
-    } else if(typeof props.field.generate === "boolean" && props.field.generate) {
+    } else if(props.field.generate) {
       onChange(faker.random.alpha({count: 10, upcase: false}))
     }
   }
 
   return (
     <GenericField
-      generate={!_.isUndefined(props.field.generate)}
+      generate={!!props.field.generate}
       onGenerate={generate}
       name={props.field.name}
       display={props.field.display}
       doGenerate={props.doGenerate}
+      valid={valid}
     >
       <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
     </GenericField>
@@ -317,11 +326,12 @@ const StringField = (props: StringFieldProps) => {
 }
 
 type GenericFieldProps = {
-  generate  : boolean,
-  onGenerate: () => void,
-  name      : string,
-  display   : string,
-  doGenerate?: boolean | null
+  generate   : boolean,
+  onGenerate : () => void,
+  name       : string,
+  display    : string,
+  doGenerate?: boolean | null,
+  valid      : boolean
 }
 
 const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
@@ -334,21 +344,20 @@ const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
     }
   }, [props.doGenerate]);
 
+  const labelClass = "" //props.valid ? "text-success" : "text-danger"
+
   return (
     <ReactForm.Group as={Row} controlId={`form-basic-${props.name}`}>
-      <ReactForm.Label column sm={2} className="font-weight-bold text-right">{props.display}</ReactForm.Label>
+      <ReactForm.Label column sm={2} className={`font-weight-bold text-right ${labelClass}`}>{props.display}</ReactForm.Label>
       <Col sm={10}>
         <InputGroup size="sm">
-          {/*<InputGroup.Prepend>*/}
-          {/*  <InputGroup.Text id="basic-addon1">{props.display}</InputGroup.Text>*/}
-          {/*</InputGroup.Prepend>*/}
-
             {props.children}
             {props.generate ?
               (<InputGroup.Append>
                 <Button variant="secondary" onClick={props.onGenerate}><Shuffle/></Button>
               </InputGroup.Append>) : (<span></span>)
             }
+
         </InputGroup>
       </Col>
     </ReactForm.Group>
@@ -372,23 +381,43 @@ const FormField = (props: FormFieldProps) => {
     )
   } else if(props.field.type === "number") {
     return (
-      <NumberField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
+      <NumberField
+        field={props.field}
+        onChange={a => props.onChange(props.field.name, a)}
+        doGenerate={props.doGenerate}
+      />
     )
   } else if(props.field.type === "boolean") {
     return (
-      <BooleanField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
+      <BooleanField
+        field={props.field}
+        onChange={a => props.onChange(props.field.name, a)}
+        doGenerate={props.doGenerate}
+      />
     )
   } else if(props.field.type === "select") {
     return (
-      <SelectField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
+      <SelectField
+        field={props.field}
+        onChange={a => props.onChange(props.field.name, a)}
+        doGenerate={props.doGenerate}
+      />
     )
   } else if(props.field.type === "select-multi") {
     return (
-      <SelectMultiField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
+      <SelectMultiField
+        field={props.field}
+        onChange={a => props.onChange(props.field.name, a)}
+        doGenerate={props.doGenerate}
+      />
     )
   } else if(props.field.type === "date") {
     return (
-      <DateField field={props.field} onChange={a => props.onChange(props.field.name, a)} doGenerate={props.doGenerate}/>
+      <DateField
+        field={props.field}
+        onChange={a => props.onChange(props.field.name, a)}
+        doGenerate={props.doGenerate}
+      />
     )
   } else {
     return (

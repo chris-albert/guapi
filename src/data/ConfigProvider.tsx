@@ -3,6 +3,7 @@ import { Either, left, right, isRight } from "fp-ts/Either";
 import { StorageKey } from "../util/Storage";
 import { Config } from "./Types"
 import _ from 'lodash'
+import reporter from 'io-ts-reporters';
 
 const storage = StorageKey("config")
 
@@ -16,11 +17,11 @@ const ConfigProvider = {
       if (isRight(config)) {
         return right(config.right)
       } else {
-        console.error(config)
         const errors = _.map(config.left, error => {
           return _.join(_.map(error.context, c => c.key), '.')
         })
         return left(errors)
+        // return left(reporter.report(config))
       }
     }
   }

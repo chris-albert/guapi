@@ -1,4 +1,7 @@
 import * as t from 'io-ts'
+import { withFallback } from 'io-ts-types/lib/withFallback'
+import { option } from 'io-ts-types/lib/option'
+import { none } from 'fp-ts/Option'
 
 export const FormLocation = t.union([
   t.literal("query"),
@@ -12,9 +15,15 @@ export const FormMethod = t.union([
   t.literal("delete")
 ])
 
-export const DateField = t.type({
+
+export const FieldCommon = {
   display : t.string,
   name    : t.string,
+  required: withFallback(t.boolean, true)
+}
+
+export const DateField = t.type({
+  ...FieldCommon,
   type    : t.literal("date"),
   format  : t.string,
   value   : t.union([t.string, t.undefined]),
@@ -27,36 +36,32 @@ export const SelectItem = t.type({
 })
 
 export const SelectMultiField = t.type({
-  display  : t.string,
-  name     : t.string,
+  ...FieldCommon,
   type     : t.literal("select-multi"),
   items    : t.array(SelectItem),
   value    : t.union([t.array(t.string), t.undefined]),
-  creatable: t.union([t.boolean, t.undefined]),
+  creatable: withFallback(t.boolean, true),
   generate : t.union([t.boolean, t.undefined])
 })
 
 export const SelectField = t.type({
-  display  : t.string,
-  name     : t.string,
+  ...FieldCommon,
   type     : t.literal("select"),
   items    : t.array(SelectItem),
   value    : t.union([t.string, t.undefined]),
-  creatable: t.union([t.boolean, t.undefined]),
+  creatable: withFallback(t.boolean, true),
   generate : t.union([t.boolean, t.undefined])
 })
 
 export const BooleanField = t.type({
-  display : t.string,
-  name    : t.string,
+  ...FieldCommon,
   type    : t.literal("boolean"),
   value   : t.union([t.boolean, t.undefined]),
   generate: t.union([t.boolean, t.undefined])
 })
 
 export const NumberField = t.type({
-  display : t.string,
-  name    : t.string,
+  ...FieldCommon,
   type    : t.literal("number"),
   value   : t.union([t.number, t.undefined]),
   generate: t.union([
@@ -71,16 +76,17 @@ export const NumberField = t.type({
 })
 
 export const StringField = t.type({
-  display : t.string,
-  name    : t.string,
+  ...FieldCommon,
   type    : t.literal("string"),
   value   : t.union([t.string, t.undefined]),
-  generate: t.union([
-    t.number,
-    t.boolean,
-    t.literal("name"),
-    t.undefined
-  ])
+  generate: withFallback(
+    t.union([
+      t.boolean,
+      t.number,
+      t.literal("name")
+    ]),
+    true
+  )
 })
 
 export const Field = t.union([
