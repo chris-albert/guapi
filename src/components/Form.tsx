@@ -1,5 +1,5 @@
 import React from "react";
-import { FormItem } from "../data/Types"
+import { FormItem, Field } from "../data/Types"
 import * as t from 'io-ts'
 import { Card, Form as ReactForm, Button, Spinner } from "react-bootstrap";
 import _ from "lodash";
@@ -8,7 +8,7 @@ import {Shuffle} from "react-bootstrap-icons";
 
 type FormProps = {
   form        : t.TypeOf<typeof FormItem>,
-  fields      : object,
+  fields      : Record<string, t.TypeOf<typeof Field>>,
   fieldChanged: (key: string, value: any) => void,
   onSubmit    : () => void,
   loading     : boolean
@@ -33,7 +33,7 @@ const Form = (props: FormProps) => {
       </Card.Header>
       <Card.Body>
         <ReactForm>
-          {_.map(props.form.form.request.fields, field => (
+          {_.map(props.fields, field => (
             <FormField
               key={`form-field-${field.name}`}
               field={field}

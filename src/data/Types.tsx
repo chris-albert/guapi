@@ -1,7 +1,5 @@
 import * as t from 'io-ts'
 import { withFallback } from 'io-ts-types/lib/withFallback'
-import { option } from 'io-ts-types/lib/option'
-import { none } from 'fp-ts/Option'
 
 export const FormLocation = t.union([
   t.literal("query"),

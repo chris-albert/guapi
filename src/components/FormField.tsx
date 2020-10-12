@@ -27,18 +27,10 @@ type DateFieldProps = {
 
 const DateField = (props: DateFieldProps) => {
 
-  const [value, setValue] = React.useState<Date | string | undefined>(
-    typeof props.field.value === 'string' ?
-      props.field.value:
-      undefined
-  )
-
   const onChange = (s: Moment | string): void => {
     if(isMoment(s)) {
-      setValue(s.toDate())
       props.onChange(s.format(props.field.format))
     } else {
-      setValue(s)
       props.onChange(s)
     }
   }
@@ -59,7 +51,7 @@ const DateField = (props: DateFieldProps) => {
       <div style={{
         flex: "1 1 auto"
       }}>
-        <Datetime onChange={onChange} dateFormat={props.field.format} timeFormat={false} value={value} input={true}/>
+        <Datetime onChange={onChange} dateFormat={props.field.format} timeFormat={false} value={props.field.value} input={true}/>
       </div>
     </GenericField>
   )
@@ -73,20 +65,6 @@ type SelectMultiFieldProps = {
 
 const SelectMultiField = (props: SelectMultiFieldProps) => {
 
-  const [values, setValues] = React.useState<{value: string, label: string}[] | undefined>(() => {
-    return _.compact(_.map(props.field.items, item => {
-      const val =  _.find(props.field.value, v => item.name === v)
-      if(_.isUndefined(val)) {
-        return undefined
-      } else {
-        return {
-          value: item.name,
-          label: item.display
-        }
-      }
-    }))
-  })
-
   const options = _.map(props.field.items, item => {
     return {
       value: item.name,
@@ -94,8 +72,16 @@ const SelectMultiField = (props: SelectMultiFieldProps) => {
     }
   })
 
+  const values = _.compact(_.map(options, opt => {
+    const val =  _.find(props.field.value, v => opt.value === v)
+    if(_.isUndefined(val)) {
+      return undefined
+    } else {
+      return opt
+    }
+  }))
+
   const onChange = (s: any): void => {
-    setValues(s)
     props.onChange(_.map(s, 'value'))
   }
 
@@ -134,18 +120,6 @@ type SelectFieldProps = {
 
 const SelectField = (props: SelectFieldProps) => {
 
-  const [value, setValue] = React.useState<{value: string, label: string} | undefined>(() => {
-    const val =  _.find(props.field.items, i => i.name === props.field.value)
-    if(_.isUndefined(val)) {
-      return undefined
-    } else {
-      return {
-        value: val.name,
-        label: val.display
-      }
-    }
-  })
-
   const options = _.map(props.field.items, item => {
     return {
       value: item.name,
@@ -154,9 +128,10 @@ const SelectField = (props: SelectFieldProps) => {
   })
 
   const onChange = (s: any): void => {
-    setValue(s)
     props.onChange(s.value)
   }
+
+  const value = _.find(options, i => i.value === props.field.value)
 
   const element = props.field.creatable ?
     <Creatable options={options} onChange={onChange} value={value}/> :
@@ -192,15 +167,8 @@ type BooleanFieldProps = {
 
 const BooleanField = (props: BooleanFieldProps) => {
 
-  const [value, setValue] = React.useState<boolean>(
-    typeof props.field.value === 'boolean' ?
-      props.field.value :
-      false
-  )
-
   const onChange = (s: any): void => {
     if(_.isBoolean(s)) {
-      setValue(s)
       props.onChange(s)
     }
   }
@@ -225,7 +193,7 @@ const BooleanField = (props: BooleanFieldProps) => {
           type="switch"
           label=""
           onChange={(e: any) => onChange(e.target.checked)}
-          checked={value}
+          checked={props.field.value}
         />
       </div>
     </GenericField>
@@ -240,16 +208,9 @@ type NumberFieldProps = {
 
 const NumberField = (props: NumberFieldProps) => {
 
-  const [value, setValue] = React.useState<number | undefined>(
-    typeof props.field.value === 'number' ?
-      props.field.value :
-      undefined
-  )
-
   const onChange = (s: string): void => {
     const num = _.toNumber(s)
     if(!_.isNaN(num)) {
-      setValue(num)
       props.onChange(num)
     }
   }
@@ -275,7 +236,7 @@ const NumberField = (props: NumberFieldProps) => {
       doGenerate={props.doGenerate}
       valid={false}
     >
-      <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
+      <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={props.field.value}/>
     </GenericField>
   )
 }
@@ -288,26 +249,13 @@ type StringFieldProps = {
 
 const StringField = (props: StringFieldProps) => {
 
-  const [valid, setValid] = React.useState(false)
-
-  const [value, setValue] = React.useState<string | undefined>(
-    typeof props.field.value === 'string' ?
-      props.field.value :
-      undefined
-  )
-
-  const onChange = (s: string): void => {
-    setValue(s)
-    props.onChange(s)
-  }
-
   const generate = () => {
     if(typeof props.field.generate === "number") {
-      onChange(faker.random.alpha({count: props.field.generate, upcase: false}))
+      props.onChange(faker.random.alpha({count: props.field.generate, upcase: false}))
     } else if(props.field.generate === "name") {
-      onChange(faker.name.firstName())
+      props.onChange(faker.name.firstName())
     } else if(props.field.generate) {
-      onChange(faker.random.alpha({count: 10, upcase: false}))
+      props.onChange(faker.random.alpha({count: 10, upcase: false}))
     }
   }
 
@@ -318,9 +266,9 @@ const StringField = (props: StringFieldProps) => {
       name={props.field.name}
       display={props.field.display}
       doGenerate={props.doGenerate}
-      valid={valid}
+      valid={true}
     >
-      <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={value}/>
+      <ReactForm.Control type="input" onChange={e => props.onChange(e.target.value)} value={props.field.value}/>
     </GenericField>
   )
 }

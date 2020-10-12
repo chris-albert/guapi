@@ -1,11 +1,11 @@
 import React from "react";
-import { FormItem } from "../data/Types";
+import { FormItem, Field } from "../data/Types";
 import * as t from 'io-ts'
 import { Container, Row, Col } from "react-bootstrap";
 import Form from "./Form";
 import Request from "./Request";
 import Response from "./Response";
-import {Option, none, some, isSome } from "fp-ts/Option";
+import {Option, none, some } from "fp-ts/Option";
 import {Either, right, left} from "fp-ts/Either";
 import _ from "lodash";
 import axios, { AxiosResponse } from 'axios'
@@ -25,27 +25,59 @@ const APIInteraction = (props: APIInteractionProps) => {
   const [request , setRequest]  = React.useState<object>({})
   const [response, setResponse] = React.useState<Option<Either<any, AxiosResponse<any>>>>(none)
   const [loading , setLoading]  = React.useState<boolean>(false)
-  const [fields  , setFields]   = React.useState<object>(() => {
-    const f = _.fromPairs(_.map(props.form.form.request.fields, field => {
-      return [field.name, field.value]
+
+  const initialFields = _.fromPairs(_.map(props.form.form.request.fields, field => {
+    const i = _.get(params, field.name)
+    if(!_.isUndefined(i) && typeof i === 'string') {
+      field.value = i
+    }
+    return [field.name, field]
+  }))
+
+  type Fields = Record<string, t.TypeOf<typeof Field>>
+
+  const buildRequest = (fields: object, all: object): object => {
+    return {
+      method: _.toUpper(props.form.form.request.method),
+      url   : Template.replace(props.form.form.request.url, all) + Template.replace(props.form.form.request.path, all),
+      params: fields
+    }
+  }
+
+  const paramsFromFields = (fields: Array<t.TypeOf<typeof Field>>): object => {
+    return _.fromPairs(_.map(fields, field => {
+      return [_.clone(field.name), _.clone(field.value)]
     }))
-    return _.extend(f, params)
-  })
+  }
 
-  React.useEffect(() => {
-    onFieldChange(fields)
-  }, [])
-
-  const onFieldChange = (obj: object) => {
+  const fieldsChange = (obj: object) => {
     const root = typeof props.form.form.request.root === "string" ?
       _.set({}, props.form.form.request.root, obj) :
-      fields
-    setFields(obj)
+      obj
     setRequest(buildRequest(root, _.extend(_.clone(obj), props.settings)))
   }
 
+  const fieldsReducer = (state: Fields, action: any): Fields => {
+    const key = action.key
+    const value = action.value
+    const field: t.TypeOf<typeof Field> = _.get(state, key)
+    const updatedField = {
+      ...field,
+      value
+    }
+    const u = _.set(_.cloneDeep(state), key, updatedField)
+    fieldsChange(paramsFromFields(_.values(u)))
+    return u
+  }
+
+  const [fieldsState, fieldsDispatch] = React.useReducer(fieldsReducer, initialFields)
+
+  React.useEffect(() => {
+    fieldsChange(paramsFromFields(_.values(initialFields)))
+  }, [])
+
   const fieldChange = (key: string, value: any): void => {
-    onFieldChange(_.set(fields, key, value))
+    fieldsDispatch({key, value})
   }
 
   const onSubmit = () => {
@@ -61,21 +93,13 @@ const APIInteraction = (props: APIInteractionProps) => {
       })
   }
 
-  const buildRequest = (fields: object, all: object): object => {
-    return {
-      method: _.toUpper(props.form.form.request.method),
-      url   : Template.replace(props.form.form.request.url, all) + Template.replace(props.form.form.request.path, all),
-      params: fields
-    }
-  }
-
   return (
     <Container fluid>
       <Row>
         <Col>
           <Form
             form={props.form}
-            fields={fields}
+            fields={fieldsState}
             fieldChanged={fieldChange}
             loading={loading}
             onSubmit={onSubmit}

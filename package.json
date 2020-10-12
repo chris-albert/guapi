@@ -27,6 +27,7 @@
     "es6-dynamic-template": "^2.0.0",
     "faker": "^5.1.0",
     "fp-ts": "^2.8.3",
+    "immutability-helper": "^3.1.1",
     "io-ts": "^2.2.10",
     "io-ts-reporters": "^1.2.2",
     "io-ts-types": "^0.5.11",
