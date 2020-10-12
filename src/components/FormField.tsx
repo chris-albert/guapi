@@ -8,7 +8,8 @@ import {
   BooleanField as BooleanFieldType,
   SelectField as SelectFieldType,
   SelectMultiField as SelectMultiFieldType,
-  DateField as DateFieldType
+  DateField as DateFieldType,
+  FieldFunctions
 } from "../data/Types"
 import { Form as ReactForm, InputGroup, Button, Row, Col } from "react-bootstrap";
 import Select from 'react-select'
@@ -131,7 +132,16 @@ const SelectField = (props: SelectFieldProps) => {
     props.onChange(s.value)
   }
 
-  const value = _.find(options, i => i.value === props.field.value)
+  const value = (() => {
+    const v = _.find(options, i => i.value === props.field.value)
+    if(props.field.creatable && _.isUndefined(v)) {
+      return {
+        value: props.field.value,
+        label: props.field.value
+      }
+    }
+    return v
+  })()
 
   const element = props.field.creatable ?
     <Creatable options={options} onChange={onChange} value={value}/> :
@@ -257,6 +267,7 @@ const StringField = (props: StringFieldProps) => {
     } else if(props.field.generate) {
       props.onChange(faker.random.alpha({count: 10, upcase: false}))
     }
+    // FieldFunctions.generate(props.field)
   }
 
   return (

@@ -1,5 +1,8 @@
 import * as t from 'io-ts'
 import { withFallback } from 'io-ts-types/lib/withFallback'
+import faker from 'faker'
+import _ from "lodash";
+import moment from "moment";
 
 export const FormLocation = t.union([
   t.literal("query"),
@@ -95,6 +98,61 @@ export const Field = t.union([
   SelectMultiField,
   DateField
 ])
+
+export const FieldFunctions = {
+  generate: (field: t.TypeOf<typeof Field>): t.TypeOf<typeof Field> => {
+    switch(field.type) {
+      case "string":
+        let strValue: string | undefined = undefined
+        if(typeof field.generate === "number") {
+          strValue = faker.random.alpha({count: field.generate, upcase: false})
+        } else if(field.generate === "name") {
+          strValue = faker.name.firstName()
+        } else if(field.generate) {
+          strValue = faker.random.alpha({count: 10, upcase: false})
+        }
+        return {
+          value: strValue, ...field
+        }
+      case "number":
+        let numValue: number | undefined = undefined
+        if(typeof field.generate === 'object' && 'min' in field.generate) {
+          numValue = faker.random.float({
+            min      : field.generate.min,
+            max      : field.generate.max,
+            precision: field.generate.precision
+          })
+        } else if(field.generate) {
+          numValue = faker.random.float()
+        }
+        return {
+          value: numValue, ...field
+        }
+      case "boolean":
+        return {
+          value: faker.random.boolean(),
+          ...field
+        }
+      case "select":
+        return {
+          value: faker.helpers.randomize(_.get(field.items, "name")),
+          ...field
+        }
+      case "select-multi":
+        const num = faker.random.number(field.items.length)
+        return {
+          value: _.take(faker.helpers.shuffle(_.get(field.items, "name")), num),
+          ...field
+        }
+      case "date":
+        return {
+          value: moment(faker.date.past()).format(field.format),
+          ...field
+        }
+    }
+    return field
+  }
+}
 
 export const Request = t.type({
   url     : t.string,
