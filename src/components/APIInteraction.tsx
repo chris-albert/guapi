@@ -1,5 +1,5 @@
 import React from "react";
-import { FormItem, Field } from "../data/Types";
+import { FormItem, Field, FieldFunctions } from "../data/Types";
 import * as t from 'io-ts'
 import { Container, Row, Col } from "react-bootstrap";
 import Form from "./Form";
@@ -34,7 +34,8 @@ const APIInteraction = (props: APIInteractionProps) => {
     return [field.name, field]
   }))
 
-  type Fields = Record<string, t.TypeOf<typeof Field>>
+  type FieldT = t.TypeOf<typeof Field>
+  type Fields = Record<string, FieldT>
 
   const buildRequest = (fields: object, all: object): object => {
     return {
@@ -44,7 +45,7 @@ const APIInteraction = (props: APIInteractionProps) => {
     }
   }
 
-  const paramsFromFields = (fields: Array<t.TypeOf<typeof Field>>): object => {
+  const paramsFromFields = (fields: Array<FieldT>): object => {
     return _.fromPairs(_.map(fields, field => {
       return [_.clone(field.name), _.clone(field.value)]
     }))
@@ -57,14 +58,15 @@ const APIInteraction = (props: APIInteractionProps) => {
     setRequest(buildRequest(root, _.extend(_.clone(obj), props.settings)))
   }
 
-  const fieldsReducer = (state: Fields, action: any): Fields => {
+  type ActionType = {
+    key           : string,
+    updateFunction: (field: FieldT) => FieldT
+  }
+
+  const fieldsReducer = (state: Fields, action: ActionType): Fields => {
     const key = action.key
-    const value = action.value
     const field: t.TypeOf<typeof Field> = _.get(state, key)
-    const updatedField = {
-      ...field,
-      value
-    }
+    const updatedField = action.updateFunction(field)
     const u = _.set(_.cloneDeep(state), key, updatedField)
     fieldsChange(paramsFromFields(_.values(u)))
     return u
@@ -77,7 +79,22 @@ const APIInteraction = (props: APIInteractionProps) => {
   }, [])
 
   const fieldChange = (key: string, value: any): void => {
-    fieldsDispatch({key, value})
+    fieldsDispatch({
+      key,
+      updateFunction: (field: FieldT): FieldT => {
+        return FieldFunctions.setValue(field, value)
+      }
+    })
+  }
+
+  const onGenerate = (key: string): void => {
+    console.log('onGenerate', key)
+    fieldsDispatch({
+      key,
+      updateFunction: (field: FieldT): FieldT => {
+        return FieldFunctions.generate(field)
+      }
+    })
   }
 
   const onSubmit = () => {
@@ -103,6 +120,7 @@ const APIInteraction = (props: APIInteractionProps) => {
             fieldChanged={fieldChange}
             loading={loading}
             onSubmit={onSubmit}
+            onGenerate={onGenerate}
           />
           <Request
             request={request}

@@ -11,19 +11,16 @@ type FormProps = {
   fields      : Record<string, t.TypeOf<typeof Field>>,
   fieldChanged: (key: string, value: any) => void,
   onSubmit    : () => void,
-  loading     : boolean
+  loading     : boolean,
+  onGenerate  : (key: string) => void
 }
 
 const Form = (props: FormProps) => {
 
-  const [generate, setGenerate] = React.useState<boolean | null>(null)
-
   const onGenerate = () => {
-    if(typeof generate === "boolean") {
-      setGenerate(!generate)
-    } else {
-      setGenerate(true)
-    }
+    _.forEach(props.fields, field => {
+      props.onGenerate(field.name)
+    })
   }
 
   return (
@@ -38,7 +35,7 @@ const Form = (props: FormProps) => {
               key={`form-field-${field.name}`}
               field={field}
               onChange={props.fieldChanged}
-              doGenerate={generate}
+              onGenerate={() => props.onGenerate(field.name)}
             />
           ))}
         </ReactForm>

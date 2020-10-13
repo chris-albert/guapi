@@ -2,7 +2,7 @@ import * as t from 'io-ts'
 import { withFallback } from 'io-ts-types/lib/withFallback'
 import faker from 'faker'
 import _ from "lodash";
-import moment from "moment";
+import moment, { isMoment } from "moment";
 
 export const FormLocation = t.union([
   t.literal("query"),
@@ -99,8 +99,10 @@ export const Field = t.union([
   DateField
 ])
 
+type FieldT = t.TypeOf<typeof Field>
+
 export const FieldFunctions = {
-  generate: (field: t.TypeOf<typeof Field>): t.TypeOf<typeof Field> => {
+  generate: (field: FieldT): FieldT => {
     switch(field.type) {
       case "string":
         let strValue: string | undefined = undefined
@@ -112,7 +114,8 @@ export const FieldFunctions = {
           strValue = faker.random.alpha({count: 10, upcase: false})
         }
         return {
-          value: strValue, ...field
+          ...field,
+          value: strValue
         }
       case "number":
         let numValue: number | undefined = undefined
@@ -126,31 +129,80 @@ export const FieldFunctions = {
           numValue = faker.random.float()
         }
         return {
-          value: numValue, ...field
+          ...field,
+          value: numValue
         }
       case "boolean":
         return {
-          value: faker.random.boolean(),
-          ...field
+          ...field,
+          value: faker.random.boolean()
         }
       case "select":
         return {
-          value: faker.helpers.randomize(_.get(field.items, "name")),
-          ...field
+          ...field,
+          value: faker.helpers.randomize(_.map(field.items, "name"))
         }
       case "select-multi":
         const num = faker.random.number(field.items.length)
         return {
-          value: _.take(faker.helpers.shuffle(_.get(field.items, "name")), num),
-          ...field
+          ...field,
+          value: _.take(faker.helpers.shuffle(_.map(field.items, "name")), num)
         }
       case "date":
         return {
-          value: moment(faker.date.past()).format(field.format),
-          ...field
+          ...field,
+          value: moment(faker.date.past()).format(field.format)
         }
     }
-    return field
+  },
+  setValue: (field: FieldT, value: any): FieldT => {
+    switch (field.type) {
+      case "string":
+        if(_.isString(value)) {
+          return { ...field, value }
+        } else {
+          return field
+        }
+      case "number":
+        const num = _.toNumber(value)
+        if(!_.isNaN(num)) {
+          return {
+            ...field,
+            value: num
+          }
+        } else {
+          return field
+        }
+      case "boolean":
+        if(_.isBoolean(value)) {
+          return { ...field, value }
+        } else {
+          return field
+        }
+      case "select":
+        if(_.isString(value)) {
+          return { ...field, value }
+        } else {
+          return field
+        }
+      case "select-multi":
+        if(_.isArray(value)) {
+          return { ...field, value }
+        } else {
+          return field
+        }
+      case "date":
+        if(isMoment(value)) {
+          return {
+            ...field,
+            value: value.format(field.format)
+          }
+        } else if(_.isString(value)) {
+          return { ...field, value }
+        } else {
+          return field
+        }
+    }
   }
 }
 

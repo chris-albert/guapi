@@ -8,60 +8,44 @@ import {
   BooleanField as BooleanFieldType,
   SelectField as SelectFieldType,
   SelectMultiField as SelectMultiFieldType,
-  DateField as DateFieldType,
-  FieldFunctions
+  DateField as DateFieldType
 } from "../data/Types"
 import { Form as ReactForm, InputGroup, Button, Row, Col } from "react-bootstrap";
 import Select from 'react-select'
 import Creatable from 'react-select/creatable';
 import Datetime from 'react-datetime';
-import moment, { Moment, isMoment } from "moment";
 import "react-datetime/css/react-datetime.css";
 import { Shuffle } from 'react-bootstrap-icons';
-import faker from 'faker'
 
 type DateFieldProps = {
-  field   : t.TypeOf<typeof DateFieldType>,
-  onChange: (s: string) => void,
-  doGenerate?: boolean | null
+  field     : t.TypeOf<typeof DateFieldType>,
+  onChange  : (s: any) => void,
+  onGenerate: () => void
 }
 
 const DateField = (props: DateFieldProps) => {
 
-  const onChange = (s: Moment | string): void => {
-    if(isMoment(s)) {
-      props.onChange(s.format(props.field.format))
-    } else {
-      props.onChange(s)
-    }
-  }
-
-  const generate = () => {
-    onChange(moment(faker.date.past()))
-  }
-
   return (
     <GenericField
       generate={!_.isUndefined(props.field.generate)}
-      onGenerate={generate}
+      onGenerate={props.onGenerate}
       name={props.field.name}
       display={props.field.display}
-      doGenerate={props.doGenerate}
       valid={false}
     >
       <div style={{
         flex: "1 1 auto"
       }}>
-        <Datetime onChange={onChange} dateFormat={props.field.format} timeFormat={false} value={props.field.value} input={true}/>
+        <Datetime onChange={props.onChange} dateFormat={props.field.format} timeFormat={false} value={props.field.value} input={true}/>
       </div>
     </GenericField>
   )
 }
 
 type SelectMultiFieldProps = {
-  field   : t.TypeOf<typeof SelectMultiFieldType>,
-  onChange: (s: Array<string>) => void,
-  doGenerate?: boolean | null
+  field     : t.TypeOf<typeof SelectMultiFieldType>,
+  onChange  : (s: any) => void,
+  onGenerate: () => void
 }
 
 const SelectMultiField = (props: SelectMultiFieldProps) => {
@@ -90,18 +74,12 @@ const SelectMultiField = (props: SelectMultiFieldProps) => {
     <Creatable options={options} onChange={onChange} value={values} isMulti={true}/> :
     <Select options={options} onChange={onChange} value={values} isMulti={true}/>
 
-  const generate = () => {
-    const num = faker.random.number(options.length)
-    onChange(_.take(faker.helpers.shuffle(options), num))
-  }
-
   return (
     <GenericField
       generate={!_.isUndefined(props.field.generate)}
-      onGenerate={generate}
+      onGenerate={props.onGenerate}
       name={props.field.name}
       display={props.field.display}
-      doGenerate={props.doGenerate}
       valid={false}
     >
       <div style={{
@@ -114,9 +92,9 @@ const SelectMultiField = (props: SelectMultiFieldProps) => {
 }
 
 type SelectFieldProps = {
-  field   : t.TypeOf<typeof SelectFieldType>,
-  onChange: (s: string) => void,
-  doGenerate?: boolean | null
+  field     : t.TypeOf<typeof SelectFieldType>,
+  onChange  : (s: any) => void,
+  onGenerate: () => void
 }
 
 const SelectField = (props: SelectFieldProps) => {
@@ -147,17 +125,12 @@ const SelectField = (props: SelectFieldProps) => {
     <Creatable options={options} onChange={onChange} value={value}/> :
     <Select options={options} onChange={onChange} value={value}/>
 
-  const generate = () => {
-    onChange(faker.helpers.randomize(options))
-  }
-
   return (
     <GenericField
       generate={!_.isUndefined(props.field.generate)}
-      onGenerate={generate}
+      onGenerate={props.onGenerate}
       name={props.field.name}
       display={props.field.display}
-      doGenerate={props.doGenerate}
       valid={false}
     >
       <div style={{
@@ -170,30 +143,19 @@ const SelectField = (props: SelectFieldProps) => {
 }
 
 type BooleanFieldProps = {
-  field   : t.TypeOf<typeof BooleanFieldType>,
-  onChange: (s: boolean) => void,
-  doGenerate?: boolean | null
+  field     : t.TypeOf<typeof BooleanFieldType>,
+  onChange  : (s: any) => void,
+  onGenerate: () => void
 }
 
 const BooleanField = (props: BooleanFieldProps) => {
 
-  const onChange = (s: any): void => {
-    if(_.isBoolean(s)) {
-      props.onChange(s)
-    }
-  }
-
-  const generate = () => {
-    onChange(faker.random.boolean())
-  }
-
   return (
     <GenericField
       generate={!_.isUndefined(props.field.generate)}
-      onGenerate={generate}
+      onGenerate={props.onGenerate}
       name={props.field.name}
       display={props.field.display}
-      doGenerate={props.doGenerate}
       valid={false}
     >
       <div className="mt-1 ml-2" style={{
@@ -202,7 +164,7 @@ const BooleanField = (props: BooleanFieldProps) => {
         <ReactForm.Check
           type="switch"
           label=""
-          onChange={(e: any) => onChange(e.target.checked)}
+          onChange={(e: any) => props.onChange(e.target.checked)}
           checked={props.field.value}
         />
       </div>
@@ -211,72 +173,40 @@ const BooleanField = (props: BooleanFieldProps) => {
 }
 
 type NumberFieldProps = {
-  field   : t.TypeOf<typeof NumberFieldType>,
-  onChange: (s: number) => void,
-  doGenerate?: boolean | null
+  field     : t.TypeOf<typeof NumberFieldType>,
+  onChange  : (s: any) => void,
+  onGenerate: () => void
 }
 
 const NumberField = (props: NumberFieldProps) => {
 
-  const onChange = (s: string): void => {
-    const num = _.toNumber(s)
-    if(!_.isNaN(num)) {
-      props.onChange(num)
-    }
-  }
-
-  const generate = () => {
-    if(typeof props.field.generate === 'object' && 'min' in props.field.generate) {
-      onChange(faker.random.float({
-        min      : props.field.generate.min,
-        max      : props.field.generate.max,
-        precision: props.field.generate.precision
-      }).toString())
-    } else if(props.field.generate) {
-      onChange(faker.random.float().toString())
-    }
-  }
-
   return (
     <GenericField
       generate={!_.isUndefined(props.field.generate)}
-      onGenerate={generate}
+      onGenerate={props.onGenerate}
       name={props.field.name}
       display={props.field.display}
-      doGenerate={props.doGenerate}
       valid={false}
     >
-      <ReactForm.Control type="input" onChange={e => onChange(e.target.value)} value={props.field.value}/>
+      <ReactForm.Control type="input" onChange={e => props.onChange(e.target.value)} value={props.field.value}/>
     </GenericField>
   )
 }
 
 type StringFieldProps = {
-  field   : t.TypeOf<typeof StringFieldType>,
-  onChange: (s: string) => void,
-  doGenerate?: boolean | null
+  field     : t.TypeOf<typeof StringFieldType>,
+  onChange  : (s: any) => void,
+  onGenerate: () => void
 }
 
 const StringField = (props: StringFieldProps) => {
 
-  const generate = () => {
-    if(typeof props.field.generate === "number") {
-      props.onChange(faker.random.alpha({count: props.field.generate, upcase: false}))
-    } else if(props.field.generate === "name") {
-      props.onChange(faker.name.firstName())
-    } else if(props.field.generate) {
-      props.onChange(faker.random.alpha({count: 10, upcase: false}))
-    }
-    // FieldFunctions.generate(props.field)
-  }
-
   return (
     <GenericField
       generate={!!props.field.generate}
-      onGenerate={generate}
+      onGenerate={props.onGenerate}
       name={props.field.name}
       display={props.field.display}
-      doGenerate={props.doGenerate}
       valid={true}
     >
       <ReactForm.Control type="input" onChange={e => props.onChange(e.target.value)} value={props.field.value}/>
@@ -289,19 +219,10 @@ type GenericFieldProps = {
   onGenerate : () => void,
   name       : string,
   display    : string,
-  doGenerate?: boolean | null,
   valid      : boolean
 }
 
 const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
-
-  React.useEffect(() => {
-    if(!_.isUndefined(props.doGenerate)) {
-      if(typeof props.doGenerate === "boolean") {
-        props.onGenerate()
-      }
-    }
-  }, [props.doGenerate]);
 
   const labelClass = "" //props.valid ? "text-success" : "text-danger"
 
@@ -326,16 +247,22 @@ const GenericField: FunctionComponent<GenericFieldProps> = (props) => {
 type FormFieldProps = {
   field      : t.TypeOf<typeof Field>,
   onChange   : (key: string, value: any) => void,
-  doGenerate?: boolean | null
+  onGenerate?: (() => void)
 }
 
 const FormField = (props: FormFieldProps) => {
+
+  const onGenerate = () => {
+    if(!_.isUndefined(props.onGenerate)) {
+      props.onGenerate()
+    }
+  }
   if(props.field.type === "string") {
     return (
       <StringField
         field={props.field}
         onChange={a => props.onChange(props.field.name, a)}
-        doGenerate={props.doGenerate}
+        onGenerate={onGenerate}
       />
     )
   } else if(props.field.type === "number") {
@@ -343,7 +270,7 @@ const FormField = (props: FormFieldProps) => {
       <NumberField
         field={props.field}
         onChange={a => props.onChange(props.field.name, a)}
-        doGenerate={props.doGenerate}
+        onGenerate={onGenerate}
       />
     )
   } else if(props.field.type === "boolean") {
@@ -351,7 +278,7 @@ const FormField = (props: FormFieldProps) => {
       <BooleanField
         field={props.field}
         onChange={a => props.onChange(props.field.name, a)}
-        doGenerate={props.doGenerate}
+        onGenerate={onGenerate}
       />
     )
   } else if(props.field.type === "select") {
@@ -359,7 +286,7 @@ const FormField = (props: FormFieldProps) => {
       <SelectField
         field={props.field}
         onChange={a => props.onChange(props.field.name, a)}
-        doGenerate={props.doGenerate}
+        onGenerate={onGenerate}
       />
     )
   } else if(props.field.type === "select-multi") {
@@ -367,7 +294,7 @@ const FormField = (props: FormFieldProps) => {
       <SelectMultiField
         field={props.field}
         onChange={a => props.onChange(props.field.name, a)}
-        doGenerate={props.doGenerate}
+        onGenerate={onGenerate}
       />
     )
   } else if(props.field.type === "date") {
@@ -375,7 +302,7 @@ const FormField = (props: FormFieldProps) => {
       <DateField
         field={props.field}
         onChange={a => props.onChange(props.field.name, a)}
-        doGenerate={props.doGenerate}
+        onGenerate={onGenerate}
       />
     )
   } else {

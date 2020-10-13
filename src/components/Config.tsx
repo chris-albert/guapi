@@ -79,7 +79,11 @@ const Config = () => {
             <Card.Body>
               <ReactForm>
                 {_.map(fields, field => (
-                  <FormField key={`form-field-settings-${field.name}`} field={field} onChange={fieldChanged}/>
+                  <FormField
+                    key={`form-field-settings-${field.name}`}
+                    field={field}
+                    onChange={fieldChanged}
+                  />
                 ))}
               </ReactForm>
             </Card.Body>
