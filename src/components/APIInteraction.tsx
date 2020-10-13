@@ -28,10 +28,11 @@ const APIInteraction = (props: APIInteractionProps) => {
 
   const initialFields = _.fromPairs(_.map(props.form.form.request.fields, field => {
     const i = _.get(params, field.name)
-    if(!_.isUndefined(i) && typeof i === 'string') {
-      field.value = i
+    if(!_.isUndefined(i)) {
+      return [field.name, FieldFunctions.setValue(field, i)]
+    } else {
+      return [field.name, field]
     }
-    return [field.name, field]
   }))
 
   type FieldT = t.TypeOf<typeof Field>
