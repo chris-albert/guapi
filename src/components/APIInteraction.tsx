@@ -5,8 +5,9 @@ import { Container, Row, Col } from "react-bootstrap";
 import Form from "./Form";
 import Request from "./Request";
 import Response from "./Response";
-import {Option, none, some } from "fp-ts/Option";
-import {Either, right, left} from "fp-ts/Either";
+import Actions from "./Actions"
+import {Option, none, some, isSome } from "fp-ts/Option";
+import {Either, right, left, isRight } from "fp-ts/Either";
 import _ from "lodash";
 import axios, { AxiosResponse } from 'axios'
 import Template from "../util/Template";
@@ -111,6 +112,14 @@ const APIInteraction = (props: APIInteractionProps) => {
       })
   }
 
+  const actionResponse: Option<any> = (() => {
+    if(isSome(response) && isRight(response.value)) {
+      return some(response.value.right.data)
+    } else {
+      return none
+    }
+  })()
+
   return (
     <Container fluid>
       <Row>
@@ -129,6 +138,10 @@ const APIInteraction = (props: APIInteractionProps) => {
           />
         </Col>
         <Col>
+          <Actions
+            actions={props.form.form.actions}
+            response={actionResponse}
+          />
           <Response
             response={response}
             loading={loading}

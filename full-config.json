@@ -40,7 +40,14 @@
                   ]
                 }
               ]
-            }
+            },
+            "actions": [
+              {
+                "display": "Update",
+                "path": "/person/update",
+                "params": "people[0]"
+              }
+            ]
           }
         },
         {
@@ -87,7 +94,7 @@
                 },
                 {
                   "display": "First Name",
-                  "name": "fistName",
+                  "name": "firstName",
                   "type": "string",
                   "value": "Chris Update"
                 }

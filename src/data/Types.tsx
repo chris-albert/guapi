@@ -215,8 +215,15 @@ export const Request = t.type({
   root    : t.union([t.string, t.undefined])
 })
 
+export const Actions = t.type({
+  display: t.string,
+  path   : t.string,
+  params : t.string
+})
+
 export const Form = t.type({
-  request: Request
+  request: Request,
+  actions: t.union([t.array(Actions), t.undefined])
 })
 
 export const FormItem = t.type({
