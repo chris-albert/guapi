@@ -185,6 +185,34 @@
               "format": "YYYY-MM-DD",
               "value": "2020-01-01",
               "generate": true
+            },
+            {
+              "display": "Some Array",
+              "name": "someArray",
+              "type": "array(string)",
+              "values": ["a", "b", "c"],
+              "generate": "name"
+            },
+            {
+              "display": "Some Object",
+              "name": "someObject",
+              "type": "object",
+              "fields": [
+                {
+                  "display": "Nested String",
+                  "name": "nestedString",
+                  "type": "string",
+                  "value": "nested string",
+                  "generate": "name"
+                },
+                {
+                  "display": "Nested Number",
+                  "name": "nestedNumber",
+                  "type": "number",
+                  "value": 1000,
+                  "generate": true
+                }
+              ]
             }
           ]
         }

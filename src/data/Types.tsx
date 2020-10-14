@@ -3,6 +3,8 @@ import { withFallback } from 'io-ts-types/lib/withFallback'
 import faker from 'faker'
 import _ from "lodash";
 import moment, { isMoment } from "moment";
+import {Errors} from "io-ts";
+import {Either} from "fp-ts/Either";
 
 export const FormLocation = t.union([
   t.literal("query"),
@@ -90,6 +92,22 @@ export const StringField = t.type({
   )
 })
 
+const StringField2 = <C extends t.Mixed>(codec: C) =>
+  t.type({
+    ...FieldCommon,
+    type    : t.literal("string"),
+    value   : t.union([codec, t.undefined]),
+    generate: withFallback(
+      t.union([
+        t.boolean,
+        t.number,
+        t.literal("name")
+      ]),
+      true
+    )
+  })
+
+
 export const Field = t.union([
   StringField,
   NumberField,
@@ -100,6 +118,32 @@ export const Field = t.union([
 ])
 
 type FieldT = t.TypeOf<typeof Field>
+
+interface ArrayFieldI {
+  name   : string,
+  display: string,
+  field  : FieldT
+}
+
+const ArrayField = new t.Type<ArrayFieldI, object, unknown>(
+  'array',
+  (input: unknown): input is ArrayFieldI => {
+    if(_.isObject(input)) {
+      return _.startsWith(_.get(input, 'type'), 'array(')
+    } else {
+      return false
+    }
+  },
+  // `t.success` and `t.failure` are helpers used to build `Either` instances
+  (input: unknown, context): Either<Errors, ArrayFieldI> => {
+
+    return t.failure(input, context)
+  },
+  // `A` and `O` are the same, so `encode` is just the identity function
+  (field: ArrayFieldI): object => {
+    return {}
+  }
+)
 
 export const FieldFunctions = {
   generate: (field: FieldT): FieldT => {
