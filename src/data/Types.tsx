@@ -4,7 +4,7 @@ import faker from 'faker'
 import _ from "lodash";
 import moment, { isMoment } from "moment";
 import {Errors} from "io-ts";
-import {Either} from "fp-ts/Either";
+import { Either, isRight, right, isLeft, left, map} from "fp-ts/Either";
 
 export const FormLocation = t.union([
   t.literal("query"),
@@ -92,22 +92,6 @@ export const StringField = t.type({
   )
 })
 
-const StringField2 = <C extends t.Mixed>(codec: C) =>
-  t.type({
-    ...FieldCommon,
-    type    : t.literal("string"),
-    value   : t.union([codec, t.undefined]),
-    generate: withFallback(
-      t.union([
-        t.boolean,
-        t.number,
-        t.literal("name")
-      ]),
-      true
-    )
-  })
-
-
 export const Field = t.union([
   StringField,
   NumberField,
@@ -122,12 +106,14 @@ type FieldT = t.TypeOf<typeof Field>
 interface ArrayFieldI {
   name   : string,
   display: string,
-  field  : FieldT
+  field  : FieldT,
+  values : Array<any>
 }
 
-const ArrayField = new t.Type<ArrayFieldI, object, unknown>(
+export const ArrayField = new t.Type<ArrayFieldI, object, unknown>(
   'array',
   (input: unknown): input is ArrayFieldI => {
+    console.log("Type guard", input)
     if(_.isObject(input)) {
       return _.startsWith(_.get(input, 'type'), 'array(')
     } else {
@@ -136,12 +122,37 @@ const ArrayField = new t.Type<ArrayFieldI, object, unknown>(
   },
   // `t.success` and `t.failure` are helpers used to build `Either` instances
   (input: unknown, context): Either<Errors, ArrayFieldI> => {
+    // console.log("ArrayField.validate", input)
+    const fieldObj = {
+      display : _.get(input, "display"),
+      name    : _.get(input, "name"),
+      type    : _.replace(_.replace(_.get(input, "type"), "array(", ""), ")", ""),
+      generate: _.get(input, "generate")
+    }
+    const values = _.get(input, "values")
+    // console.log("Field obj", fieldObj)
+    const field = Field.decode(fieldObj)
 
-    return t.failure(input, context)
+    // console.log("Field res", field)
+    if(isRight(field) && _.isArray(values)) {
+      return t.success({
+        name   : field.right.name,
+        display: field.right.display,
+        field  : field.right,
+        values : values
+      })
+    }
+
+    return t.failure(input, context, `Failure trying to decode ArrayField [${input}]`)
   },
   // `A` and `O` are the same, so `encode` is just the identity function
   (field: ArrayFieldI): object => {
-    return {}
+    return {
+      name   : field.name,
+      display: field.display,
+      field  : Field.encode(field.field),
+      values : field.values
+    }
   }
 )
 

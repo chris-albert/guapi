@@ -18,11 +18,9 @@ const Actions = (props: ActionProps) => {
 
   const onClick = (action: t.TypeOf<typeof ActionsType>): void => {
     if(isSome(props.response)) {
-      console.log(props.response.value)
       const params = _.get(props.response.value, action.params)
       const query = qs.stringify(params)
       const link = action.path + "?" + query
-      console.log("Link to", link)
       history.push(link)
     }
   }
