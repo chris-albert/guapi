@@ -92,25 +92,16 @@ export const StringField = t.type({
   )
 })
 
-export const Field = t.union([
-  StringField,
-  NumberField,
-  BooleanField,
-  SelectField,
-  SelectMultiField,
-  DateField
-])
-
-type FieldT = t.TypeOf<typeof Field>
-
 interface ArrayFieldI {
-  name   : string,
-  display: string,
-  field  : FieldT,
-  values : Array<any>
+  name    : string,
+  display : string,
+  type    : 'array',
+  field   : FieldT,
+  value   : Array<any>,
+  generate: boolean
 }
 
-export const ArrayField = new t.Type<ArrayFieldI, object, unknown>(
+export const ArrayField = new t.Type<ArrayFieldI>(
   'array',
   (input: unknown): input is ArrayFieldI => {
     console.log("Type guard", input)
@@ -138,23 +129,30 @@ export const ArrayField = new t.Type<ArrayFieldI, object, unknown>(
       return t.success({
         name   : field.right.name,
         display: field.right.display,
+        type   : 'array',
         field  : field.right,
-        values : values
+        value  : values,
+        generate: _.get(input, "generate")
       })
     }
 
     return t.failure(input, context, `Failure trying to decode ArrayField [${input}]`)
   },
   // `A` and `O` are the same, so `encode` is just the identity function
-  (field: ArrayFieldI): object => {
-    return {
-      name   : field.name,
-      display: field.display,
-      field  : Field.encode(field.field),
-      values : field.values
-    }
-  }
+  t.identity
 )
+
+export const Field = t.union([
+  StringField,
+  NumberField,
+  BooleanField,
+  SelectField,
+  SelectMultiField,
+  DateField,
+  ArrayField
+])
+
+export type FieldT = t.TypeOf<typeof Field>
 
 export const FieldFunctions = {
   generate: (field: FieldT): FieldT => {
@@ -208,6 +206,8 @@ export const FieldFunctions = {
           ...field,
           value: moment(faker.date.past()).format(field.format)
         }
+      case "array":
+        return field
     }
   },
   setValue: (field: FieldT, value: any): FieldT => {
@@ -257,6 +257,8 @@ export const FieldFunctions = {
         } else {
           return field
         }
+      case "array":
+        return field
     }
   }
 }
