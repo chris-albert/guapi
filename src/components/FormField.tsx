@@ -8,7 +8,8 @@ import {
   BooleanField as BooleanFieldType,
   SelectField as SelectFieldType,
   SelectMultiField as SelectMultiFieldType,
-  DateField as DateFieldType
+  DateField as DateFieldType,
+  ArrayFieldI
 } from "../data/Types"
 import { Form as ReactForm, InputGroup, Button, Row, Col } from "react-bootstrap";
 import Select from 'react-select'
@@ -16,6 +17,30 @@ import Creatable from 'react-select/creatable';
 import Datetime from 'react-datetime';
 import "react-datetime/css/react-datetime.css";
 import { Shuffle } from 'react-bootstrap-icons';
+
+type ArrayFieldProps = {
+  field: ArrayFieldI,
+  onChange  : (s: any) => void,
+  onGenerate: () => void
+}
+
+const ArrayField = (props: ArrayFieldProps) => {
+  return (
+    <GenericField
+      generate={!_.isUndefined(props.field.generate)}
+      onGenerate={props.onGenerate}
+      name={props.field.name}
+      display={props.field.display}
+      valid={false}
+    >
+      <div style={{
+        flex: "1 1 auto"
+      }}>
+        Array
+      </div>
+    </GenericField>
+  )
+}
 
 type DateFieldProps = {
   field     : t.TypeOf<typeof DateFieldType>,
@@ -304,6 +329,14 @@ const FormField = (props: FormFieldProps) => {
         onChange={a => props.onChange(props.field.name, a)}
         onGenerate={onGenerate}
       />
+    )
+  } else if(props.field.type === "array") {
+    return (
+      <ArrayField
+        field={props.field}
+        onChange={a => props.onChange(props.field.name, a)}
+        onGenerate={onGenerate}
+        />
     )
   } else {
     return (

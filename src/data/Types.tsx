@@ -92,7 +92,7 @@ export const StringField = t.type({
   )
 })
 
-interface ArrayFieldI {
+export interface ArrayFieldI {
   name    : string,
   display : string,
   type    : 'array',
@@ -207,7 +207,10 @@ export const FieldFunctions = {
           value: moment(faker.date.past()).format(field.format)
         }
       case "array":
-        return field
+        return {
+          ...field,
+          value: [FieldFunctions.generate(field.field).value]
+        }
     }
   },
   setValue: (field: FieldT, value: any): FieldT => {
@@ -258,6 +261,7 @@ export const FieldFunctions = {
           return field
         }
       case "array":
+        console.log("FieldFunctions.setValue", field, value)
         return field
     }
   }

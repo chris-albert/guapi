@@ -90,7 +90,6 @@ const APIInteraction = (props: APIInteractionProps) => {
   }
 
   const onGenerate = (key: string): void => {
-    console.log('onGenerate', key)
     fieldsDispatch({
       key,
       updateFunction: (field: FieldT): FieldT => {
